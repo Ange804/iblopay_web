@@ -1,0 +1,251 @@
+<!-- src/app/modules/agents/pages/agent-list/agent-list.component.html -->
+<div class="dashboard-container" [class.dark-mode]="isDarkMode">
+  <!-- HEADER -->
+  <header class="dashboard-header">
+    <div class="header-left">
+      <div class="logo">
+        <div class="logo-icon">IB</div>
+        <div class="logo-text">IbloPay<span>Admin</span></div>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="theme-toggle" (click)="toggleTheme()" title="Changer de thème">
+        <i class="fas" [class.fa-moon]="!isDarkMode" [class.fa-sun]="isDarkMode"></i>
+      </button>
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Rechercher par nom, carte..." (input)="onSearch($event)" [value]="searchTerm" />
+      </div>
+      <div class="notifications" (click)="toggleNotifications()">
+        <i class="fas fa-bell"></i>
+        <span class="badge">{{ notifications.length }}</span>
+        <div class="notifications-dropdown" *ngIf="showNotifications">
+          <div class="dropdown-header">
+            <span>Notifications</span>
+            <button class="mark-all-read" (click)="markAllRead()">Tout marquer comme lu</button>
+          </div>
+          <div class="dropdown-body">
+            <div class="notification-item" *ngFor="let notif of notifications" [class.unread]="!notif.read">
+              <div class="notif-icon" [class]="notif.type">
+                <i class="fas" [class.fa-check-circle]="notif.type === 'success'"
+                            [class.fa-exclamation-circle]="notif.type === 'warning'"
+                            [class.fa-times-circle]="notif.type === 'error'"
+                            [class.fa-info-circle]="notif.type === 'info'"></i>
+              </div>
+              <div class="notif-content">
+                <div class="notif-title">{{ notif.title }}</div>
+                <div class="notif-message">{{ notif.message }}</div>
+                <div class="notif-time">{{ notif.time }}</div>
+              </div>
+              <button class="notif-close" (click)="removeNotification(notif.id)">×</button>
+            </div>
+          </div>
+          <div class="dropdown-footer" *ngIf="notifications.length === 0">
+            <span>Aucune notification</span>
+          </div>
+        </div>
+      </div>
+      <div class="user-profile">
+        <div class="avatar">AI</div>
+        <div class="user-info">
+          <span class="user-name">Admin IbloPay</span>
+          <span class="user-role">Administrateur</span>
+        </div>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <!-- Page Title -->
+    <div class="page-title-section">
+      <div>
+        <h1><i class="fas fa-user-tie"></i> Super Agents</h1>
+        <p class="subtitle">Gérez tous les super agents de la plateforme IbloPay</p>
+      </div>
+      <button class="btn-primary" (click)="createAgent()">
+        <i class="fas fa-plus-circle"></i> Nouveau Super Agent
+      </button>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card blue">
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.total }}</span>
+          <span class="stat-label">Total Super Agents</span>
+        </div>
+        <span class="stat-change positive"><i class="fas fa-arrow-up"></i> 12.5%</span>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.active }}</span>
+          <span class="stat-label">Actifs</span>
+        </div>
+        <span class="stat-change positive"><i class="fas fa-arrow-up"></i> 8.3%</span>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.pending }}</span>
+          <span class="stat-label">En attente</span>
+        </div>
+        <span class="stat-change positive"><i class="fas fa-arrow-up"></i> 2.1%</span>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-icon"><i class="fas fa-ban"></i></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.blocked }}</span>
+          <span class="stat-label">Bloqués</span>
+        </div>
+        <span class="stat-change negative"><i class="fas fa-arrow-down"></i> 0.5%</span>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-icon"><i class="fas fa-coins"></i></div>
+        <div class="stat-info">
+          <span class="stat-value">{{ stats.totalElectronicsAmount | number:'1.0-0' }}</span>
+          <span class="stat-label">Électroniques en circulation</span>
+        </div>
+        <span class="stat-change positive"><i class="fas fa-arrow-up"></i> 5.2%</span>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-section">
+      <div class="filters-left">
+        <div class="filter-group">
+          <i class="fas fa-filter"></i>
+          <select (change)="onStatusChange($event)">
+            <option *ngFor="let status of statuses" [value]="status.value">{{ status.label }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <i class="fas fa-calendar-alt"></i>
+          <input type="date" placeholder="Date de début" />
+        </div>
+        <div class="filter-group">
+          <i class="fas fa-calendar-alt"></i>
+          <input type="date" placeholder="Date de fin" />
+        </div>
+        <button class="btn-secondary" (click)="resetFilters()">
+          <i class="fas fa-redo-alt"></i> Réinitialiser
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+      <div class="table-header">
+        <div class="table-title">
+          <span>Liste des Super Agents</span>
+          <span class="table-count">{{ filteredAgents.length }} agents</span>
+        </div>
+        <button class="btn-export">
+          <i class="fas fa-file-export"></i> Exporter
+        </button>
+      </div>
+
+      <div class="table-scroll">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th style="min-width:180px;">Super Agent</th>
+              <th style="min-width:130px;">Carte</th>
+              <th style="min-width:150px;">Contact</th>
+              <th style="min-width:150px;">Adresse</th>
+              <th style="min-width:110px;text-align:center;">Électroniques</th>
+              <th style="min-width:70px;text-align:center;">Agents</th>
+              <th style="min-width:100px;">Statut</th>
+              <th style="min-width:90px;text-align:center;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="isLoading">
+              <td colspan="8" class="loading-cell">
+                <div class="spinner"></div>
+                <span>Chargement...</span>
+              </td>
+            </tr>
+            <tr *ngIf="!isLoading && paginatedAgents.length === 0">
+              <td colspan="8" class="empty-cell">
+                <i class="fas fa-users"></i>
+                <p>Aucun super agent trouvé</p>
+              </td>
+            </tr>
+            <tr *ngFor="let agent of paginatedAgents; let i = index">
+              <td>
+                <div class="agent-cell">
+                  <div class="agent-avatar" [style.background]="'hsl(' + (i * 45 + 200) + ', 70%, 50%)'">
+                    {{ getInitials(agent.firstName, agent.lastName) }}
+                  </div>
+                  <div class="agent-info">
+                    <div class="agent-name">{{ agent.firstName }} {{ agent.lastName }}</div>
+                    <div class="agent-code">{{ agent.code }}</div>
+                  </div>
+                </div>
+              </td>
+              <td><span class="card-number">{{ agent.cardNumber }}</span></td>
+              <td>
+                <div class="contact-info">
+                  <span class="phone">{{ agent.phone }}</span>
+                  <span class="email">{{ agent.email }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="address-cell">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <span>{{ agent.address.completeAddress }}</span>
+                </div>
+              </td>
+              <td style="text-align:center;">
+                <span class="electronics-amount">{{ getTotalElectronicsAmount(agent) | number:'1.0-0' }} <span class="electronics-label">Fbu</span></span>
+              </td>
+              <td style="text-align:center;"><span class="badge">{{ agent.agents?.length || 0 }}</span></td>
+              <td>
+                <span class="status-badge" [class]="getStatusClass(agent.status)">
+                  <span class="status-dot"></span>
+                  {{ getStatusLabel(agent.status) }}
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button class="action-btn view" (click)="viewAgent(agent)" title="Voir">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="action-btn block" (click)="blockAgent(agent)" 
+                          [class.unblock]="agent.status === 'BLOCKED'"
+                          title="{{ agent.status === 'BLOCKED' ? 'Débloquer' : 'Bloquer' }}">
+                    <i class="fas" [class.fa-lock]="agent.status !== 'BLOCKED'" [class.fa-unlock]="agent.status === 'BLOCKED'"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="table-footer">
+        <div class="pagination-info">
+          Affichage de <strong>{{ getStartIndex() }}</strong> à <strong>{{ getEndIndex() }}</strong> sur <strong>{{ filteredAgents.length }}</strong>
+        </div>
+        <div class="pagination-controls">
+          <button (click)="changePage('prev')" [disabled]="currentPage === 1">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button *ngFor="let page of [].constructor(totalPages); let i = index" 
+                  [class.active]="currentPage === i + 1"
+                  (click)="goToPage(i + 1)">
+            {{ i + 1 }}
+          </button>
+          <button (click)="changePage('next')" [disabled]="currentPage === totalPages">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
