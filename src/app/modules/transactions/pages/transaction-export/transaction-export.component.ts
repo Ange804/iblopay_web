@@ -26,11 +26,20 @@ export class TransactionExportComponent {
     this.errorMessage = '';
 
     const filter: TransactionFilter = {
+<<<<<<< HEAD
       ...(this.dateFrom && { dateFrom: this.dateFrom }),
       ...(this.dateTo && { dateTo: this.dateTo }),
+=======
+>>>>>>> origin/Blaze-adddummydata/feature
       page: 1,
       pageSize: EXPORT_PAGE_SIZE
-    };
+    } as TransactionFilter;
+    if (this.dateFrom) {
+      filter.dateFrom = this.dateFrom;
+    }
+    if (this.dateTo) {
+      filter.dateTo = this.dateTo;
+    }
 
     this.transactionService.getTransactions(filter).subscribe({
       next: ({ items, total }) => {
