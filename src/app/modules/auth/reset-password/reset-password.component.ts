@@ -1,6 +1,7 @@
 // src/app/modules/auth/reset-password/reset-password.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -11,6 +12,8 @@ import { pinValidator, pinMatchValidator } from '../validators/password.validato
 
 @Component({
   selector: 'app-reset-password',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss']
 })

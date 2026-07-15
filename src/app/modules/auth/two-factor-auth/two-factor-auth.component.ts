@@ -1,6 +1,7 @@
 // src/app/modules/auth/two-factor-auth/two-factor-auth.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, timer, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -10,6 +11,8 @@ import { otpValidator } from '../validators/email.validator';
 
 @Component({
   selector: 'app-two-factor-auth',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './two-factor-auth.component.html',
   styleUrls: ['./two-factor-auth.component.scss']
 })

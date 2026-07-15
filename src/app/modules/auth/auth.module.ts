@@ -11,17 +11,15 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { TwoFactorAuthComponent } from './two-factor-auth/two-factor-auth.component';
 
 @NgModule({
-  declarations: [
-    LoginComponent,
-    ForgotPasswordComponent,
-    ResetPasswordComponent,
-    TwoFactorAuthComponent
-  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    AuthRoutingModule
+    AuthRoutingModule,
+    LoginComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent,
+    TwoFactorAuthComponent
   ]
 })
 export class AuthModule { }

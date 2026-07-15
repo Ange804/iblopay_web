@@ -26,8 +26,8 @@ export class TransactionExportComponent {
     this.errorMessage = '';
 
     const filter: TransactionFilter = {
-      dateFrom: this.dateFrom || undefined,
-      dateTo: this.dateTo || undefined,
+      ...(this.dateFrom && { dateFrom: this.dateFrom }),
+      ...(this.dateTo && { dateTo: this.dateTo }),
       page: 1,
       pageSize: EXPORT_PAGE_SIZE
     };
