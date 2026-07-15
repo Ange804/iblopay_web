@@ -1,0 +1,41 @@
+/* Couleurs */
+:root {
+    --bg-darkest: #061426;
+    --bg-dark: #07182b;
+    --bg-card: #0d1a2f;
+    --bg-card-hover: #15203a;
+    --bg-sidebar: #07182b;
+    --border-color: #1a2a45;
+    --border-light: #243150;
+    --text-primary: #e8edf7;
+    --text-secondary: #8896b3;
+    --text-muted: #5c6986;
+    --accent-blue: #3b82f6;
+    --accent-blue-light: #60a5fa;
+    --accent-green: #22c55e;
+    --accent-purple: #a855f7;
+    --accent-orange: #f97316;
+    --accent-teal: #14b8a6;
+    --accent-yellow: #eab308;
+    --accent-red: #ef4444;
+    --accent-cyan: #06b6d4;
+    --accent-pink: #ec4899;
+    --gold: #f5c842;
+}
+
+/* Mode clair */
+body.light-mode {
+    --bg-darkest: #f1f5f9;
+    --bg-dark: #e2e8f0;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f8fafc;
+    --bg-sidebar: #ffffff;
+    --border-color: #e2e8f0;
+    --border-light: #cbd5e1;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+}
+
+/* Breakpoints */
+/* Les breakpoints seront gérés directement dans les composants */

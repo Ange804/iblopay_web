@@ -1,0 +1,331 @@
+<div class="dashboard-container">
+
+    <!-- L'overlay n'apparaît que lorsque la sidebar est ouverte, et la referme au clic -->
+    <div class="overlay" [class.show]="isSidebarOpen" (click)="closeSidebar()"></div>
+
+    <!-- ================= SIDEBAR ================= -->
+    <!-- Masquée par défaut (isSidebarOpen = false), ne s'affiche que si on clique sur le bouton menu -->
+    <aside class="sidebar" [class.open]="isSidebarOpen">
+        <div class="sidebar-logo">
+            <div class="sun-arc" style="right:auto; left:-40px; top:-40px;"></div>
+            <div class="logo-icon">IB</div>
+            <div class="logo-text">
+                <div class="logo-text-main">IBLOPAY</div>
+                <div class="logo-text-sub">Super Admin Dashboard</div>
+            </div>
+        </div>
+
+        <div class="sidebar-section-label">Menu principal</div>
+        <ul class="nav-list">
+            <li class="nav-item" *ngFor="let item of menuItems" [class.active]="item.active">
+                <a class="nav-link" [routerLink]="item.link" routerLinkActive="active" (click)="closeSidebar()">
+                    <i class="nav-icon {{ item.icon }}"></i>
+                    <span class="nav-label">{{ item.label }}</span>
+                    <span class="nav-badge" *ngIf="item.badge">{{ item.badge }}</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="logout-card">
+                <div class="logout-content">
+                    <div class="logout-icon-wrapper"><i class="fa-solid fa-sign-out-alt"></i></div>
+                    <div class="logout-info">
+                        <div class="logout-title">Déconnexion</div>
+                        <div class="logout-sub">Quitter la session</div>
+                    </div>
+                </div>
+                <button class="logout-btn"><i class="fa-solid fa-sign-out-alt"></i> Se déconnecter</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ================= MAIN ================= -->
+    <div class="main-content">
+        <header class="topbar">
+            <div class="sun-arc"></div>
+            <div class="topbar-left">
+                <!-- Bouton toujours visible, à côté de la sidebar : reclic = masque -->
+                <button class="menu-toggle" [class.active]="isSidebarOpen" (click)="toggleSidebar()"
+                    title="Afficher/masquer le menu">
+                    <i [class]="menuToggleIcon"></i>
+                </button>
+                <div class="topbar-logo">IBLOPAY<span>.</span></div>
+                <div class="topbar-title">Tableau de bord global</div>
+            </div>
+            <div class="topbar-right">
+                <div class="search-box">
+                    <i class="fa-solid fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Rechercher (Ctrl + K)" />
+                </div>
+                <button class="icon-btn" title="Notifications">
+                    <i class="fa-solid fa-bell"></i><span class="notif-dot">12</span>
+                </button>
+                <div class="lang-select"><i class="fa-solid fa-globe"></i> FR <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <!-- L'icône change réellement selon le thème actif -->
+                <button class="theme-toggle" title="Changer de thème" (click)="toggleTheme()">
+                    <i [class]="themeToggleIcon"></i>
+                </button>
+                <div class="profile-box">
+                    <div class="profile-avatar">SA</div>
+                    <div class="profile-info">
+                        <div class="profile-name">Super Admin</div>
+                        <div class="profile-role">Administrateur Principal</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+
+            <!-- Bienvenue -->
+            <div class="welcome-row">
+                <div class="sun-arc"></div>
+                <div class="welcome-left">
+                    <div class="welcome-title">Bienvenue, Super Admin</div>
+                    <div class="welcome-sub">Vue d'ensemble de toute la plateforme IBLOPAY</div>
+                </div>
+                <div class="welcome-right">
+                    <div class="datetime"><b>{{ currentDay }}</b><br><span>{{ currentTime }}</span></div>
+                    <button class="refresh-btn" [disabled]="isRefreshing" (click)="refreshData()">
+                        <i class="fa-solid fa-rotate" [class.spinning]="isRefreshing"></i>
+                        Actualiser
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-card" *ngFor="let stat of stats" [class.highlight]="stat.highlight">
+                    <div class="stat-top">
+                        <div class="stat-icon" [style.background]="stat.iconBg"><i class="{{ stat.icon }}"></i></div>
+                        <div class="stat-label">{{ stat.label }}</div>
+                    </div>
+                    <div class="stat-value num">{{ formatNumber(stat.value) }}</div>
+                    <div class="stat-change" [ngClass]="getChangeClass(stat.change)">
+                        {{ getChangeSymbol(stat.change) }}{{ stat.change }}%
+                        <span class="stat-change-sub">{{ stat.changeLabel }}</span>
+                    </div>
+                    <div class="stat-footer">
+                        <a class="voir-plus" [routerLink]="stat.link">Voir plus <i
+                                class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panneaux row 1 -->
+            <div class="panels-row">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fa-solid fa-arrow-down"></i> Dépôts par province</div>
+                        <select class="period-select">
+                            <option>Aujourd'hui</option>
+                        </select>
+                    </div>
+                    <div class="province-list">
+                        <div class="list-header">
+                            <span class="total-label">Total dépôts</span>
+                            <span class="total-value green num">{{ formatAmount(stats[0]!.value) }}</span>
+                        </div>
+                        <div class="province-items">
+                            <div class="province-item" *ngFor="let p of provinceData.depots">
+                                <span class="province-name"><i class="fa-solid fa-location-dot"></i>{{ p.name }}</span>
+                                <span class="province-amount green num">{{ formatAmount(p.amount) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <a class="panel-link" routerLink="/deposits">Voir tous les détails <i
+                                class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fa-solid fa-arrows-rotate"></i> Transactions par province
+                        </div>
+                        <select class="period-select">
+                            <option>Aujourd'hui</option>
+                        </select>
+                    </div>
+                    <div class="province-list">
+                        <div class="list-header">
+                            <span class="total-label">Total</span>
+                            <span class="total-value blue num">{{ formatAmount(stats[1]!.value) }}</span>
+                        </div>
+                        <div class="province-items">
+                            <div class="province-item" *ngFor="let p of provinceData.transactions">
+                                <span class="province-name"><i class="fa-solid fa-location-dot"></i>{{ p.name }}</span>
+                                <span class="province-amount blue num">{{ formatAmount(p.amount) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <a class="panel-link" routerLink="/transactions">Voir tous les détails <i
+                                class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="panel chart-panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fa-solid fa-chart-line"></i> Évolution des transactions</div>
+                        <select class="period-select">
+                            <option>7 derniers jours</option>
+                            <option>30 derniers jours</option>
+                            <option>Cette année</option>
+                        </select>
+                    </div>
+                    <div class="chart-wrap"><canvas #chartCanvas></canvas></div>
+                    <div class="panel-footer">
+                        <a class="panel-link" routerLink="/transactions">Voir les détails complets <i
+                                class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fa-solid fa-coins"></i> Commissions par province</div>
+                        <select class="period-select">
+                            <option>Aujourd'hui</option>
+                        </select>
+                    </div>
+                    <div class="province-list">
+                        <div class="list-header">
+                            <span class="total-label">Total</span>
+                            <span class="total-value purple num">{{ formatAmount(stats[2]!.value) }}</span>
+                        </div>
+                        <div class="province-items">
+                            <div class="province-item" *ngFor="let p of provinceData.commissions">
+                                <span class="province-name"><i class="fa-solid fa-location-dot"></i>{{ p.name }}</span>
+                                <span class="province-amount purple num">{{ formatAmount(p.amount) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <a class="panel-link" routerLink="/commissions">Voir tous les détails <i
+                                class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services publics -->
+            <div class="public-services-panel">
+                <div class="ps-header">
+                    <div class="ps-title"><i class="fa-solid fa-building-columns"></i> SERVICES PUBLICS — Aperçu (30
+                        derniers jours)</div>
+                    <a class="ps-link" routerLink="/services-publics">Voir tout <i
+                            class="fa-solid fa-arrow-right"></i></a>
+                </div>
+                <div class="ps-stats">
+                    <div class="ps-stat"><span class="ps-stat-value num" style="color:var(--blue);">128 456</span><span
+                            class="ps-stat-label">Demandes totales</span></div>
+                    <div class="ps-stat"><span class="ps-stat-value num" style="color:var(--green);">112 345</span><span
+                            class="ps-stat-label">Traitées</span></div>
+                    <div class="ps-stat"><span class="ps-stat-value num" style="color:var(--sun);">12 453</span><span
+                            class="ps-stat-label">En cours</span></div>
+                    <div class="ps-stat"><span class="ps-stat-value num" style="color:var(--red);">3 658</span><span
+                            class="ps-stat-label">Rejetées</span></div>
+                </div>
+                <table class="ps-table">
+                    <thead>
+                        <tr>
+                            <th>Top 5 services publics</th>
+                            <th>Demandes</th>
+                            <th>Traitées</th>
+                            <th>En cours</th>
+                            <th>Rejetées</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let s of services">
+                            <td class="name">{{ s.name }}</td>
+                            <td class="num">{{ formatNumber(s.total) }}</td>
+                            <td class="num">{{ formatNumber(s.traitees) }}</td>
+                            <td class="num">{{ formatNumber(s.enCours) }}</td>
+                            <td class="num rejected">{{ formatNumber(s.rejetees) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <a class="ps-footer-link" routerLink="/services-publics">Accéder au portail des services publics <i
+                        class="fa-solid fa-arrow-right"></i></a>
+            </div>
+
+            <!-- Mid row -->
+            <div class="mid-row">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fa-solid fa-user-plus"></i> Inscriptions récentes</div>
+                        <a class="panel-link" routerLink="/users">Voir tout <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                    <div class="list-container">
+                        <div class="list-item" *ngFor="let r of recentRegistrations">
+                            <div class="list-avatar"><i class="fa-solid fa-user"></i></div>
+                            <div class="list-info">
+                                <div class="list-name">{{ r.name }}</div>
+                                <div class="list-sub">{{ r.time }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fa-solid fa-clock"></i> Demandes en attente</div>
+                        <a class="panel-link" routerLink="/requests">Voir tout <i
+                                class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                    <div class="list-container">
+                        <div class="activity-row" *ngFor="let req of pendingRequests">
+                            <span class="activity-label">{{ req.label }}</span>
+                            <span class="activity-value num">{{ formatNumber(req.value) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fa-solid fa-user-tie"></i> Activités des agents <span
+                                class="panel-subtitle">(30j)</span></div>
+                    </div>
+                    <div class="list-container">
+                        <div class="activity-row" *ngFor="let a of agentActivities">
+                            <span class="activity-label">{{ a.label }}</span>
+                            <span class="activity-value num">{{ formatNumber(a.value) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accès rapides : mis en avant avec des icônes en pastille colorée -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title"><i class="fa-solid fa-bolt"></i> Accès rapides</div>
+                    </div>
+                    <div class="quick-grid">
+                        <a class="quick-btn {{ q.color }}" [routerLink]="q.link" *ngFor="let q of quickAccess">
+                            <span class="qicon-wrap"><i class="qicon {{ q.icon }}"></i></span>
+                            {{ q.label }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status bar -->
+            <div class="status-bar">
+                <div class="status-pill"><span class="dot-status green"></span>Environnement: <b>Production</b></div>
+                <div class="status-pill"><i class="fa-solid fa-code"></i>Version: <b>v2.5.1</b></div>
+                <div class="status-pill"><i class="fa-solid fa-clock"></i>Uptime: <b>99.98%</b></div>
+                <div class="status-pill"><i class="fa-solid fa-microchip"></i>CPU: <b>23%</b></div>
+                <div class="status-pill"><span class="dot-status green"></span>Base de données: <b>Opérationnelle</b>
+                </div>
+                <div class="status-pill"><span class="dot-status green"></span>Redis: <b>Opérationnel</b></div>
+            </div>
+
+            <footer class="footer">
+                <div>© 2026 IBLOPAY — Tous droits réservés</div>
+                <div>Plateforme de paiement et services numériques du Burundi <i class="fa-solid fa-flag"></i></div>
+            </footer>
+
+        </div>
+    </div>
+</div>

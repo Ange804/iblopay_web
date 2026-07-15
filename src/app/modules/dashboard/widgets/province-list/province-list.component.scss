@@ -1,0 +1,134 @@
+.province-list {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    .list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+
+        .total-label {
+            font-size: 13px;
+            color: #8896b3;
+        }
+
+        .total-value {
+            font-size: 18px;
+            font-weight: 800;
+
+            &.green {
+                color: #22c55e;
+            }
+
+            &.blue {
+                color: #60a5fa;
+            }
+
+            &.purple {
+                color: #a855f7;
+            }
+
+            &.gold {
+                color: #f5c842;
+            }
+
+            &.orange {
+                color: #f97316;
+            }
+
+            &.cyan {
+                color: #06b6d4;
+            }
+        }
+
+        .change-badge {
+            font-size: 11px;
+            font-weight: 600;
+
+            &.positive {
+                color: #22c55e;
+            }
+
+            &.negative {
+                color: #ef4444;
+            }
+        }
+    }
+
+    .province-items {
+        flex: 1;
+
+        .province-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 12px;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.04);
+                padding-left: 12px;
+            }
+
+            .province-name {
+                color: #8896b3;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+
+                i {
+                    font-size: 14px;
+                    opacity: 0.7;
+                }
+            }
+
+            .province-amount {
+                font-weight: 700;
+                font-size: 12px;
+                font-family: 'Inter', monospace;
+
+                &.green {
+                    color: #22c55e;
+                }
+
+                &.blue {
+                    color: #60a5fa;
+                }
+
+                &.orange {
+                    color: #f97316;
+                }
+
+                &.purple {
+                    color: #a855f7;
+                }
+
+                &.gold {
+                    color: #f5c842;
+                }
+
+                &.cyan {
+                    color: #06b6d4;
+                }
+            }
+        }
+    }
+}
+
+// Light mode
+:host-context(body.light-mode) {
+    .province-item {
+        .province-name {
+            color: #475569;
+        }
+
+        .province-amount {
+            color: #0f172a;
+        }
+    }
+}
