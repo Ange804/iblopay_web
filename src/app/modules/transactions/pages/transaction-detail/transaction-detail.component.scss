@@ -1,0 +1,73 @@
+.transaction-detail-page {
+  padding: 24px 32px;
+  max-width: 720px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0 0 8px;
+    }
+  }
+}
+
+.info-section {
+  margin-bottom: 28px;
+
+  h2 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  row-gap: 12px;
+  column-gap: 16px;
+
+  dt {
+    color: #6f737c;
+    font-size: 13px;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 14px;
+    word-break: break-all;
+  }
+}
+
+.metadata {
+  margin-top: 16px;
+
+  summary {
+    cursor: pointer;
+    font-size: 13px;
+    color: #6f737c;
+  }
+
+  pre {
+    margin-top: 8px;
+    background: #f5f6f8;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12px;
+    overflow-x: auto;
+  }
+}
+
+.state-message {
+  color: #6f737c;
+  padding: 24px 0;
+
+  &--error {
+    color: #e14b4b;
+  }
+}

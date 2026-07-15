@@ -1,0 +1,59 @@
+.transaction-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #eef0f3;
+
+  &__icon {
+    font-size: 18px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f6f8;
+    border-radius: 10px;
+  }
+
+  &__main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1c1e26;
+  }
+
+  &__ref {
+    font-weight: 400;
+    color: #8a8f98;
+  }
+
+  &__date {
+    font-size: 12px;
+    color: #8a8f98;
+    margin-top: 2px;
+  }
+
+  &__right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  &__amount {
+    font-weight: 700;
+    font-size: 14px;
+    color: #1fae5b;
+
+    &.outbound {
+      color: #1c1e26;
+    }
+  }
+}

@@ -1,0 +1,106 @@
+.transaction-list-page {
+  padding: 24px 32px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h1 {
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  &__layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  &__sidebar {
+    background: #fff;
+    border: 1px solid #eef0f3;
+    border-radius: 12px;
+    padding: 18px;
+
+    h2 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 14px;
+    }
+  }
+}
+
+.btn {
+  border: 1px solid #d7dae0;
+  background: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  color: #1c1e26;
+}
+
+.state-message {
+  color: #6f737c;
+  padding: 24px 0;
+  text-align: center;
+
+  &--error {
+    color: #e14b4b;
+  }
+
+  button {
+    margin-left: 12px;
+    border: none;
+    background: #1c1e26;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+}
+
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &__item {
+    cursor: pointer;
+  }
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+  font-size: 13px;
+
+  button {
+    border: 1px solid #d7dae0;
+    background: #fff;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .transaction-list-page__layout {
+    grid-template-columns: 1fr;
+  }
+}
