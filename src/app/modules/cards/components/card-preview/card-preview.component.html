@@ -1,0 +1,15 @@
+<div class="card-preview" [class.dimmed]="isDimmed">
+  <div class="card-preview__top">
+    <span class="card-preview__brand">IBLOPAY</span>
+    <app-card-type-badge [type]="card.cardType"></app-card-type-badge>
+  </div>
+
+  <div class="card-preview__pan">
+    {{ card.maskedPan || '•••• •••• •••• ' + card.cardUid.slice(-4) }}
+  </div>
+
+  <div class="card-preview__bottom">
+    <span class="card-preview__holder">{{ card.holderName || 'Cardholder' }}</span>
+    <app-card-status [status]="card.status"></app-card-status>
+  </div>
+</div>

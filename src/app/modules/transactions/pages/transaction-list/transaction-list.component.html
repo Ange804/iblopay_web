@@ -1,0 +1,46 @@
+<div class="transaction-list-page">
+  <header class="transaction-list-page__header">
+    <h1>Transactions</h1>
+    <a class="btn" routerLink="/transactions/export">Export</a>
+  </header>
+
+  <app-transaction-summary [summary]="summary"></app-transaction-summary>
+
+  <div class="transaction-list-page__layout">
+    <div class="transaction-list-page__main">
+      <app-transaction-filters (filterChange)="onFilterChange($event)"></app-transaction-filters>
+
+      <div *ngIf="isLoading" class="state-message">Loading transactions…</div>
+
+      <div *ngIf="errorMessage" class="state-message state-message--error">
+        {{ errorMessage }}
+        <button (click)="loadTransactions()">Retry</button>
+      </div>
+
+      <div *ngIf="!isLoading && !errorMessage && transactions.length === 0" class="state-message">
+        No transactions match this filter.
+      </div>
+
+      <div class="transaction-list" *ngIf="!isLoading && !errorMessage">
+        <div
+          class="transaction-list__item"
+          *ngFor="let tx of transactions"
+          (click)="openTransaction(tx)"
+        >
+          <app-transaction-card [transaction]="tx"></app-transaction-card>
+        </div>
+      </div>
+
+      <div class="pagination" *ngIf="!isLoading && totalPages > 1">
+        <button [disabled]="currentPage <= 1" (click)="goToPage(currentPage - 1)">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button [disabled]="currentPage >= totalPages" (click)="goToPage(currentPage + 1)">Next</button>
+      </div>
+    </div>
+
+    <aside class="transaction-list-page__sidebar">
+      <h2>By type</h2>
+      <app-transaction-chart [summary]="summary"></app-transaction-chart>
+    </aside>
+  </div>
+</div>

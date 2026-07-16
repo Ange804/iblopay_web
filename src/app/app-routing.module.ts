@@ -1,17 +1,21 @@
+// src/app/app-routing.module.ts
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
     {
         path: '',
-        redirectTo: '/dashboard',
+        redirectTo: '/auth',
         pathMatch: 'full'
+    },
+    {
+        path: 'auth',
+        loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
     },
     {
         path: 'dashboard',
         loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule)
     },
-    // Ajouter les routes pour tous les modules du menu
     {
         path: 'users',
         loadChildren: () => import('./modules/users/users.module').then(m => m.UsersModule)
@@ -67,6 +71,10 @@ const routes: Routes = [
     {
         path: 'settings',
         loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule)
+    },
+    {
+        path: '**',
+        redirectTo: '/auth'
     }
 ];
 

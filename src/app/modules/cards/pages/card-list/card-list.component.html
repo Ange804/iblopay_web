@@ -1,0 +1,31 @@
+<div class="card-list-page">
+  <header class="card-list-page__header">
+    <h1>Cards</h1>
+    <select class="status-filter" [(ngModel)]="statusFilter">
+      <option *ngFor="let opt of statusOptions" [ngValue]="opt">
+        {{ opt === 'ALL' ? 'All statuses' : opt }}
+      </option>
+    </select>
+  </header>
+
+  <div *ngIf="isLoading" class="state-message">Loading cards…</div>
+
+  <div *ngIf="errorMessage" class="state-message state-message--error">
+    {{ errorMessage }}
+    <button (click)="loadCards()">Retry</button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage && filteredCards.length === 0" class="state-message">
+    No cards match this filter.
+  </div>
+
+  <div class="card-grid" *ngIf="!isLoading && !errorMessage">
+    <div
+      class="card-grid__item"
+      *ngFor="let card of filteredCards"
+      (click)="openCard(card)"
+    >
+      <app-card-preview [card]="card"></app-card-preview>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+.tx-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: flex-end;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #eef0f3;
+  border-radius: 12px;
+  margin-bottom: 20px;
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    label {
+      font-size: 11px;
+      color: #8a8f98;
+      text-transform: uppercase;
+    }
+
+    select,
+    input {
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 1px solid #d7dae0;
+      font-size: 13px;
+      min-width: 120px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+}
+
+.btn {
+  border: 1px solid #d7dae0;
+  background: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &--primary {
+    background: #1c1e26;
+    color: #fff;
+    border-color: #1c1e26;
+  }
+}

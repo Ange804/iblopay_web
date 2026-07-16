@@ -1,0 +1,46 @@
+.card-preview {
+  border-radius: 16px;
+  padding: 20px;
+  background: linear-gradient(135deg, #1c1e26 0%, #2c2f3a 100%);
+  color: #fff;
+  min-width: 280px;
+  max-width: 340px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transition: opacity 0.2s ease;
+
+  &.dimmed {
+    opacity: 0.55;
+    filter: grayscale(40%);
+  }
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__brand {
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    font-size: 13px;
+  }
+
+  &__pan {
+    margin-top: 28px;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__bottom {
+    margin-top: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__holder {
+    font-size: 13px;
+    opacity: 0.85;
+  }
+}

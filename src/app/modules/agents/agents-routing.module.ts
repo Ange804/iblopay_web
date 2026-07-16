@@ -1,23 +1,21 @@
-﻿import { Component, NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import type { Routes } from '@angular/router';
-
-@Component({
-  selector: 'app-agents',
-  template: '<h1>Agents</h1><p>Agents module placeholder.</p>'
-})
-class AgentsComponent {}
+﻿import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AgentListComponent } from './pages/agent-list/agent-list.component'
+import { AgentDetailComponent } from './pages/agent-detail/agent-detail.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: AgentsComponent
+    component: AgentListComponent
+  },
+  {
+    path: ':id',
+    component: AgentDetailComponent
   }
 ];
 
 @NgModule({
-  declarations: [AgentsComponent],
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AgentsRoutingModule {}
+export class AgentsRoutingModule { }

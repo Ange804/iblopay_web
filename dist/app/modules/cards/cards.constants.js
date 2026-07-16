@@ -1,0 +1,22 @@
+import { CardStatus } from './enums/card-status.enum';
+import { CardType } from './enums/card-type.enum';
+// Display metadata for each CardStatus. Keep in sync with card-status.enum.ts.
+export const CARD_STATUS_META = {
+    [CardStatus.NEUTRAL]: { label: 'Not activated', color: '#8a8f98' },
+    [CardStatus.ACTIVE]: { label: 'Active', color: '#1fae5b' },
+    [CardStatus.BLOCKED]: { label: 'Blocked', color: '#e0932c' },
+    [CardStatus.REPLACED]: { label: 'Replaced', color: '#6f6fef' },
+    [CardStatus.CLOSED]: { label: 'Closed', color: '#e14b4b' }
+};
+export const CARD_TYPE_META = {
+    [CardType.PHYSICAL]: { label: 'Physical', icon: '💳' },
+    [CardType.VIRTUAL]: { label: 'Virtual', icon: '🖥️' }
+};
+export const CARDS_ROUTE_PATHS = {
+    list: '',
+    detail: ':id',
+    activation: 'activation',
+    distribution: 'distribution',
+    stock: 'stock'
+};
+//# sourceMappingURL=cards.constants.js.map

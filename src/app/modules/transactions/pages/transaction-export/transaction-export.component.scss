@@ -1,0 +1,68 @@
+.export-page {
+  padding: 24px 32px;
+  max-width: 480px;
+
+  h1 {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  &__hint {
+    color: #8a8f98;
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+}
+
+.export-form {
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    label {
+      font-size: 11px;
+      color: #8a8f98;
+      text-transform: uppercase;
+    }
+
+    input {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid #d7dae0;
+    }
+  }
+}
+
+.btn {
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &--primary {
+    background: #1c1e26;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.state-message {
+  margin-top: 16px;
+  font-size: 13px;
+
+  &--error {
+    color: #e0932c;
+  }
+}
