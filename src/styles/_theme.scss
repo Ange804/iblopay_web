@@ -39,12 +39,15 @@
     // ---- Variantes RGB (nécessaires pour rgba(var(--x-rgb), alpha)) ----
     --ink-rgb: 10, 15, 28;
     --surface-rgb: 16, 24, 40;
+    --surface-2-rgb: 21, 31, 51;
+    --surface-3-rgb: 27, 39, 64;
     --border-soft-rgb: 27, 37, 64;
     --sun-rgb: 242, 183, 5;
     --red-rgb: 232, 84, 47;
     --green-rgb: 43, 201, 138;
     --blue-rgb: 76, 141, 255;
     --purple-rgb: 155, 107, 255;
+    --text-rgb: 238, 242, 250;
 
     // ---- Divers ----
     --overlay-bg: rgba(6, 9, 16, 0.6);
@@ -52,6 +55,10 @@
     --font-heading: 'Space Grotesk', sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
     --font-body: 'Inter', sans-serif;
+
+    // ---- Fond global avec dégradé ----
+    --bg-gradient: radial-gradient(circle at 40% 0, #0f2b4a 0%, #071526 42%, #03101d 100%);
+    --bg-gradient-rgb: 7, 21, 38;
 }
 
 // ==========================================================
@@ -80,15 +87,22 @@ body.light-mode {
 
     --ink-rgb: 243, 245, 250;
     --surface-rgb: 255, 255, 255;
+    --surface-2-rgb: 243, 246, 251;
+    --surface-3-rgb: 233, 238, 246;
     --border-soft-rgb: 232, 237, 245;
     --sun-rgb: 201, 143, 4;
     --red-rgb: 214, 69, 42;
     --green-rgb: 30, 159, 114;
     --blue-rgb: 44, 98, 214;
     --purple-rgb: 124, 79, 224;
+    --text-rgb: 16, 24, 40;
 
     --overlay-bg: rgba(16, 24, 40, 0.35);
     --shadow-color: rgba(16, 24, 40, 0.10);
+
+    // ---- Fond clair avec dégradé ----
+    --bg-gradient: radial-gradient(circle at 40% 0, #dbeafe 0%, #f0f5ff 42%, #f8fafc 100%);
+    --bg-gradient-rgb: 240, 245, 255;
 }
 
 // Transition douce lors du changement de thème

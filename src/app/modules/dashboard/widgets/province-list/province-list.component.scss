@@ -11,7 +11,7 @@
 
         .total-label {
             font-size: 13px;
-            color: #8896b3;
+            color: var(--text-dim);
         }
 
         .total-value {
@@ -19,19 +19,19 @@
             font-weight: 800;
 
             &.green {
-                color: #22c55e;
+                color: var(--green);
             }
 
             &.blue {
-                color: #60a5fa;
+                color: var(--blue);
             }
 
             &.purple {
-                color: #a855f7;
+                color: var(--purple);
             }
 
             &.gold {
-                color: #f5c842;
+                color: var(--sun);
             }
 
             &.orange {
@@ -48,11 +48,11 @@
             font-weight: 600;
 
             &.positive {
-                color: #22c55e;
+                color: var(--green);
             }
 
             &.negative {
-                color: #ef4444;
+                color: var(--red);
             }
         }
     }
@@ -65,18 +65,18 @@
             align-items: center;
             justify-content: space-between;
             padding: 5px 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid var(--border-soft);
             font-size: 12px;
             transition: all 0.3s ease;
             border-radius: 4px;
 
             &:hover {
-                background: rgba(255, 255, 255, 0.04);
+                background: var(--surface-2);
                 padding-left: 12px;
             }
 
             .province-name {
-                color: #8896b3;
+                color: var(--text-dim);
                 display: flex;
                 align-items: center;
                 gap: 8px;
@@ -90,14 +90,14 @@
             .province-amount {
                 font-weight: 700;
                 font-size: 12px;
-                font-family: 'Inter', monospace;
+                font-family: var(--font-mono);
 
                 &.green {
-                    color: #22c55e;
+                    color: var(--green);
                 }
 
                 &.blue {
-                    color: #60a5fa;
+                    color: var(--blue);
                 }
 
                 &.orange {
@@ -105,30 +105,17 @@
                 }
 
                 &.purple {
-                    color: #a855f7;
+                    color: var(--purple);
                 }
 
                 &.gold {
-                    color: #f5c842;
+                    color: var(--sun);
                 }
 
                 &.cyan {
                     color: #06b6d4;
                 }
             }
-        }
-    }
-}
-
-// Light mode
-:host-context(body.light-mode) {
-    .province-item {
-        .province-name {
-            color: #475569;
-        }
-
-        .province-amount {
-            color: #0f172a;
         }
     }
 }
