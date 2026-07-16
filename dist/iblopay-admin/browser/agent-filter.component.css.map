@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["angular:styles/component:css;7fb0be6a1c1614f2a52c777f481047277914de05bb3d5a1b07e218410d540c4e;C:/iblo_web-main/iblopay_web/src/app/modules/agents/components/agent-filter/agent-filter.component.ts"],
+  "sourcesContent": ["\n    .filter-container {\n      display: flex;\n      gap: 12px;\n      padding: 16px;\n      background: white;\n      border-radius: 8px;\n      margin-bottom: 16px;\n    }\n    .search-input {\n      flex: 1;\n      padding: 8px 12px;\n      border: 1px solid #ddd;\n      border-radius: 4px;\n      font-size: 14px;\n      \n      &:focus {\n        outline: none;\n        border-color: #1a237e;\n      }\n    }\n    .filter-select {\n      padding: 8px 12px;\n      border: 1px solid #ddd;\n      border-radius: 4px;\n      font-size: 14px;\n      background: white;\n      \n      &:focus {\n        outline: none;\n        border-color: #1a237e;\n      }\n    }\n  "],
+  "mappings": ";AACI,CAAC;AACC,WAAS;AACT,OAAK;AACL,WAAS;AACT,cAAY;AACZ,iBAAe;AACf,iBAAe;AACjB;AACA,CAAC;AACC,QAAM;AACN,WAAS,IAAI;AACb,UAAQ,IAAI,MAAM;AAClB,iBAAe;AACf,aAAW;AAEX,GAAC;AACC,aAAS;AACT,kBAAc;AAChB;AACF;AACA,CAAC;AACC,WAAS,IAAI;AACb,UAAQ,IAAI,MAAM;AAClB,iBAAe;AACf,aAAW;AACX,cAAY;AAEZ,GAAC;AACC,aAAS;AACT,kBAAc;AAChB;AACF;",
+  "names": []
+}

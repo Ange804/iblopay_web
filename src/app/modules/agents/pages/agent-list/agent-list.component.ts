@@ -27,6 +27,17 @@ export class AgentListComponent implements OnInit {
   isDarkMode = false;
   showNotifications = false;
   
+  // ─── Modal OTP ──────────────────────────────
+  showOtpModal = false;
+  otpCode = '';
+  otpError = '';
+  otpLoading = false;
+  otpCooldown = 0;
+  otpCanResend = false;
+  private otpTimerInterval: any;
+  agentToBlock: Agent | null = null;
+  blockAction: 'bloquer' | 'débloquer' = 'bloquer';
+
   notifications: Notification[] = [
     {
       id: 1,
@@ -97,6 +108,10 @@ export class AgentListComponent implements OnInit {
     this.loadTheme();
   }
 
+  ngOnDestroy(): void {
+    this.clearOtpTimer();
+  }
+
   loadTheme(): void {
     const saved = localStorage.getItem('iblopay-theme');
     if (saved === 'dark') {
@@ -138,7 +153,7 @@ export class AgentListComponent implements OnInit {
     });
   }
 
- 
+  
   // Dans agent-list.component.ts, mettre à jour loadStats()
 loadStats(): void {
   this.agentService.getAgentStats().subscribe({
@@ -193,35 +208,116 @@ loadStats(): void {
   }
 
   viewAgent(agent: Agent): void {
-    this.router.navigate(['/agents/detail', agent.id]);
+    this.router.navigate(['/agents', agent.id]);
   }
 
   createAgent(): void {
     this.router.navigate(['/agents/create']);
   }
 
-  blockAgent(agent: Agent): void {
-    const action = agent.status === 'BLOCKED' ? 'débloquer' : 'bloquer';
-    if (confirm(`Voulez-vous vraiment ${action} le super agent ${agent.firstName} ${agent.lastName} ?`)) {
-      const newStatus = agent.status === 'BLOCKED' ? 'ACTIVE' : 'BLOCKED';
-      this.agentService.updateAgent(agent.id, { status: newStatus }).subscribe({
-        next: () => {
-          this.loadAgents();
-          // Ajouter une notification
-          this.notifications.unshift({
-            id: Date.now(),
-            title: `Agent ${action === 'bloquer' ? 'bloqué' : 'débloqué'}`,
-            message: `${agent.firstName} ${agent.lastName} a été ${action === 'bloquer' ? 'bloqué' : 'débloqué'} avec succès`,
-            type: action === 'bloquer' ? 'error' : 'success',
-            time: 'À l\'instant',
-            read: false
-          });
-        },
-        error: () => {
-          alert('Erreur lors du blocage/déblocage');
-        }
-      });
+  // ─── OTP Modal pour blocage/déblocage ───────
+
+  openBlockOtpModal(agent: Agent): void {
+    this.agentToBlock = agent;
+    this.blockAction = agent.status === 'BLOCKED' ? 'débloquer' : 'bloquer';
+    this.otpCode = '';
+    this.otpError = '';
+    this.showOtpModal = true;
+    this.sendOtpSimulation();
+  }
+
+  closeOtpModal(): void {
+    this.showOtpModal = false;
+    this.agentToBlock = null;
+    this.otpCode = '';
+    this.otpError = '';
+    this.otpLoading = false;
+    this.clearOtpTimer();
+  }
+
+  private sendOtpSimulation(): void {
+    this.otpCooldown = 30;
+    this.otpCanResend = false;
+    this.startOtpTimer();
+    // Simulation : le code OTP est "123456"
+    console.log('[SIMULATION] Code OTP envoyé : 123456');
+  }
+
+  private startOtpTimer(): void {
+    this.clearOtpTimer();
+    this.otpTimerInterval = setInterval(() => {
+      if (this.otpCooldown > 0) {
+        this.otpCooldown--;
+      } else {
+        this.otpCanResend = true;
+        this.clearOtpTimer();
+      }
+    }, 1000);
+  }
+
+  private clearOtpTimer(): void {
+    if (this.otpTimerInterval) {
+      clearInterval(this.otpTimerInterval);
+      this.otpTimerInterval = null;
     }
+  }
+
+  resendOtp(): void {
+    if (!this.otpCanResend) return;
+    this.otpError = '';
+    this.sendOtpSimulation();
+  }
+
+  verifyOtpAndBlock(): void {
+    if (!this.otpCode || this.otpCode.length < 4) {
+      this.otpError = 'Veuillez entrer le code OTP reçu';
+      return;
+    }
+
+    this.otpLoading = true;
+    this.otpError = '';
+
+    // Simulation de vérification OTP : le code "123456" est valide
+    setTimeout(() => {
+      if (this.otpCode === '123456') {
+        // OTP valide → procéder au blocage/déblocage
+        this.executeBlock();
+      } else {
+        this.otpLoading = false;
+        this.otpError = 'Code OTP invalide. Veuillez réessayer.';
+      }
+    }, 1000);
+  }
+
+  private executeBlock(): void {
+    if (!this.agentToBlock) {
+      this.otpLoading = false;
+      return;
+    }
+
+    const agent = this.agentToBlock;
+    const newStatus = agent.status === 'BLOCKED' ? 'ACTIVE' : 'BLOCKED';
+
+    this.agentService.updateAgent(agent.id, { status: newStatus }).subscribe({
+      next: () => {
+        this.otpLoading = false;
+        this.closeOtpModal();
+        this.loadAgents();
+
+        this.notifications.unshift({
+          id: Date.now(),
+          title: `Agent ${this.blockAction === 'bloquer' ? 'bloqué' : 'débloqué'}`,
+          message: `${agent.firstName} ${agent.lastName} a été ${this.blockAction === 'bloquer' ? 'bloqué' : 'débloqué'} avec succès`,
+          type: this.blockAction === 'bloquer' ? 'error' : 'success',
+          time: 'À l\'instant',
+          read: false
+        });
+      },
+      error: () => {
+        this.otpLoading = false;
+        this.otpError = 'Erreur lors du blocage/déblocage';
+      }
+    });
   }
 
   getTotalElectronicsAmount(agent: Agent): number {

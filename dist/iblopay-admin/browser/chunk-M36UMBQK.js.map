@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/modules/settings/settings-routing.module.ts", "src/app/modules/settings/settings.module.ts"],
+  "sourcesContent": ["import { NgModule } from '@angular/core';\r\nimport { RouterModule, Routes } from '@angular/router';\r\n\r\nconst routes: Routes = [];\r\n\r\n@NgModule({\r\n  imports: [RouterModule.forChild(routes)],\r\n  exports: [RouterModule]\r\n})\r\nexport class SettingsRoutingModule { }\r\n", "import { NgModule } from '@angular/core';\r\nimport { CommonModule } from '@angular/common';\r\n\r\nimport { SettingsRoutingModule } from './settings-routing.module';\r\n\r\n\r\n@NgModule({\r\n  declarations: [],\r\n  imports: [\r\n    CommonModule,\r\n    SettingsRoutingModule\r\n  ]\r\n})\r\nexport class SettingsModule { }\r\n"],
+  "mappings": ";;;;;;;;AAGA,IAAM,SAAiB,CAAA;AAMjB,IAAO,wBAAP,MAAO,uBAAqB;;;uBAArB,wBAAqB;IAAA;EAAA;;wEAArB,uBAAqB,CAAA;EAAA;;4EAHtB,aAAa,SAAS,MAAM,GAC5B,YAAY,EAAA,CAAA;EAAA;;;;ACMlB,IAAO,iBAAP,MAAO,gBAAc;;;uBAAd,iBAAc;IAAA;EAAA;;wEAAd,gBAAc,CAAA;EAAA;;;MAJvB;MACA;IAAqB,EAAA,CAAA;EAAA;;",
+  "names": []
+}

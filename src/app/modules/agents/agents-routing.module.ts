@@ -2,11 +2,16 @@
 import { RouterModule, Routes } from '@angular/router';
 import { AgentListComponent } from './pages/agent-list/agent-list.component'
 import { AgentDetailComponent } from './pages/agent-detail/agent-detail.component';
+import { AgentCreateComponent } from './pages/agent-create/agent-create.component';
 
 const routes: Routes = [
   {
     path: '',
     component: AgentListComponent
+  },
+  {
+    path: 'create',
+    component: AgentCreateComponent
   },
   {
     path: ':id',

@@ -215,7 +215,7 @@
                   <button class="action-btn view" (click)="viewAgent(agent)" title="Voir">
                     <i class="fas fa-eye"></i>
                   </button>
-                  <button class="action-btn block" (click)="blockAgent(agent)" 
+                  <button class="action-btn block" (click)="openBlockOtpModal(agent)" 
                           [class.unblock]="agent.status === 'BLOCKED'"
                           title="{{ agent.status === 'BLOCKED' ? 'Débloquer' : 'Bloquer' }}">
                     <i class="fas" [class.fa-lock]="agent.status !== 'BLOCKED'" [class.fa-unlock]="agent.status === 'BLOCKED'"></i>
@@ -248,4 +248,66 @@
       </div>
     </div>
   </main>
+
+  <!-- ================= MODAL OTP ================= -->
+  <div class="otp-modal-overlay" *ngIf="showOtpModal" (click)="closeOtpModal()">
+    <div class="otp-modal" (click)="$event.stopPropagation()">
+      <button class="otp-modal-close" (click)="closeOtpModal()">&times;</button>
+
+      <div class="otp-modal-icon">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+
+      <h3>Confirmation {{ blockAction === 'bloquer' ? 'de blocage' : 'de déblocage' }}</h3>
+
+      <p class="otp-modal-desc" *ngIf="agentToBlock">
+        Pour {{ blockAction }} l'agent <strong>{{ agentToBlock.firstName }} {{ agentToBlock.lastName }}</strong>,
+        veuillez entrer le code de vérification envoyé à votre numéro de téléphone.
+      </p>
+
+      <!-- Message d'erreur -->
+      <div class="otp-error" *ngIf="otpError">
+        <i class="fas fa-exclamation-circle"></i> {{ otpError }}
+      </div>
+
+      <!-- Champ OTP -->
+      <div class="otp-input-group">
+        <label for="otpCode">Code de vérification</label>
+        <input
+          id="otpCode"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]*"
+          maxlength="6"
+          placeholder="123456"
+          [value]="otpCode"
+          (input)="otpCode = $any($event.target).value"
+          autocomplete="one-time-code"
+          class="otp-input"
+        />
+        <small>Code de simulation : 123456</small>
+      </div>
+
+      <!-- Boutons -->
+      <div class="otp-actions">
+        <button class="otp-btn-cancel" (click)="closeOtpModal()" [disabled]="otpLoading">
+          Annuler
+        </button>
+        <button class="otp-btn-confirm" (click)="verifyOtpAndBlock()" [disabled]="otpLoading || !otpCode">
+          <span *ngIf="!otpLoading">Confirmer {{ blockAction === 'bloquer' ? 'le blocage' : 'le déblocage' }}</span>
+          <span *ngIf="otpLoading" class="otp-btn-loader">
+            <span class="otp-spinner"></span> Vérification...
+          </span>
+        </button>
+      </div>
+
+      <!-- Renvoyer -->
+      <div class="otp-resend">
+        <span *ngIf="!otpCanResend">Renvoyer le code dans <strong>{{ otpCooldown }}s</strong></span>
+        <button *ngIf="otpCanResend" (click)="resendOtp()" class="otp-resend-btn" [disabled]="otpLoading">
+          <i class="fas fa-redo"></i> Renvoyer le code
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

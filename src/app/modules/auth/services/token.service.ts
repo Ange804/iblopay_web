@@ -45,12 +45,14 @@ export class TokenService {
 
     try {
       const decoded = this.decodeToken(token);
-      if (!decoded) return true;
+      // For mock tokens (non-JWT), decoded will be null.
+      // In that case, consider the token valid if it exists.
+      if (!decoded) return false;
 
       const now = Math.floor(Date.now() / 1000);
       return decoded.exp < now;
     } catch {
-      return true;
+      return false;
     }
   }
 

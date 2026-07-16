@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/modules/transactions/components/transaction-summary/transaction-summary.component.scss"],
+  "sourcesContent": [".summary-cards {\r\n  display: flex;\r\n  gap: 16px;\r\n  margin-bottom: 20px;\r\n\r\n  &--loading {\r\n    color: #8a8f98;\r\n    font-size: 14px;\r\n  }\r\n}\r\n\r\n.summary-card {\r\n  flex: 1;\r\n  background: #fff;\r\n  border: 1px solid #eef0f3;\r\n  border-radius: 12px;\r\n  padding: 16px 18px;\r\n  display: flex;\r\n  flex-direction: column;\r\n  gap: 6px;\r\n\r\n  &__label {\r\n    font-size: 12px;\r\n    color: #8a8f98;\r\n    text-transform: uppercase;\r\n    letter-spacing: 0.02em;\r\n  }\r\n\r\n  &__value {\r\n    font-size: 20px;\r\n    font-weight: 700;\r\n    color: #1c1e26;\r\n  }\r\n}\r\n"],
+  "mappings": ";AAAA,CAAA;AACE,WAAA;AACA,OAAA;AACA,iBAAA;;AAEA,CAAA;AACE,SAAA;AACA,aAAA;;AAIJ,CAAA;AACE,QAAA;AACA,cAAA;AACA,UAAA,IAAA,MAAA;AACA,iBAAA;AACA,WAAA,KAAA;AACA,WAAA;AACA,kBAAA;AACA,OAAA;;AAEA,CAAA;AACE,aAAA;AACA,SAAA;AACA,kBAAA;AACA,kBAAA;;AAGF,CAAA;AACE,aAAA;AACA,eAAA;AACA,SAAA;;",
+  "names": []
+}
