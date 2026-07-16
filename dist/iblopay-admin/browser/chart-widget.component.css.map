@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/modules/dashboard/widgets/chart-widget/chart-widget.component.scss"],
+  "sourcesContent": [".chart-container {\r\n    flex: 1;\r\n    min-height: 220px;\r\n    position: relative;\r\n    width: 100%;\r\n}\r\n\r\ncanvas {\r\n    width: 100% !important;\r\n    height: 100% !important;\r\n}"],
+  "mappings": ";AAAA,CAAA;AACI,QAAA;AACA,cAAA;AACA,YAAA;AACA,SAAA;;AAGJ;AACI,SAAA;AACA,UAAA;;",
+  "names": []
+}
