@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/modules/cards/pages/card-distribution/card-distribution.component.scss"],
+  "sourcesContent": [".stub-page {\r\n  padding: 24px 32px;\r\n  color: #6f737c;\r\n\r\n  h1 {\r\n    font-size: 20px;\r\n    color: #1c1e26;\r\n    margin-bottom: 8px;\r\n  }\r\n}\r\n"],
+  "mappings": ";AAAA,CAAA;AACE,WAAA,KAAA;AACA,SAAA;;AAEA,CAJF,UAIE;AACE,aAAA;AACA,SAAA;AACA,iBAAA;;",
+  "names": []
+}

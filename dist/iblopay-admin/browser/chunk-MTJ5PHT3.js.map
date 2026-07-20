@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/modules/commissions/commissions-routing.module.ts", "src/app/modules/commissions/commissions.module.ts"],
+  "sourcesContent": ["import { NgModule } from '@angular/core';\r\nimport { RouterModule, Routes } from '@angular/router';\r\n\r\nconst routes: Routes = [];\r\n\r\n@NgModule({\r\n  imports: [RouterModule.forChild(routes)],\r\n  exports: [RouterModule]\r\n})\r\nexport class CommissionsRoutingModule { }\r\n", "import { NgModule } from '@angular/core';\r\nimport { CommonModule } from '@angular/common';\r\n\r\nimport { CommissionsRoutingModule } from './commissions-routing.module';\r\n\r\n\r\n@NgModule({\r\n  declarations: [],\r\n  imports: [\r\n    CommonModule,\r\n    CommissionsRoutingModule\r\n  ]\r\n})\r\nexport class CommissionsModule { }\r\n"],
+  "mappings": ";;;;;;;;AAGA,IAAM,SAAiB,CAAA;AAMjB,IAAO,2BAAP,MAAO,0BAAwB;;;uBAAxB,2BAAwB;IAAA;EAAA;;wEAAxB,0BAAwB,CAAA;EAAA;;4EAHzB,aAAa,SAAS,MAAM,GAC5B,YAAY,EAAA,CAAA;EAAA;;;;ACMlB,IAAO,oBAAP,MAAO,mBAAiB;;;uBAAjB,oBAAiB;IAAA;EAAA;;wEAAjB,mBAAiB,CAAA;EAAA;;;MAJ1B;MACA;IAAwB,EAAA,CAAA;EAAA;;",
+  "names": []
+}

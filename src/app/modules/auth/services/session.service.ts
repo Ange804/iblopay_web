@@ -50,8 +50,8 @@ export class SessionService {
     if (!this.tokenService.hasTokens()) return false;
     if (this.tokenService.isTokenExpired()) return false;
 
-    const elapsed = (Date.now() - this.lastActivity) / 1000;
-    return elapsed < AUTH_CONSTANTS.SESSION_TIMEOUT;
+   // const elapsed = (Date.now() - this.lastActivity) / 1000;
+    return this.getRemainingTime() > 0;
   }
 
   /**

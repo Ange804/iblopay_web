@@ -1,0 +1,101 @@
+// ==========================================================
+// IBLOPAY — THEME GLOBAL (source unique de vérité)
+// ==========================================================
+// Toutes les couleurs de TOUS les modules doivent venir d'ici,
+// via des variables CSS (custom properties), jamais de $variables
+// SCSS locales dupliquées dans chaque composant.
+//
+// Pourquoi : les $variables SCSS sont figées à la compilation.
+// Le bouton "changer de thème" ne peut donc rien changer si un
+// composant définit ses propres $ink / $surface en dur.
+// Les variables CSS (--ink, --surface...), elles, vivent dans le
+// navigateur et peuvent être re-déclarées par la classe
+// `body.light-mode` -> le thème change instantanément, partout.
+//
+// A importer UNE SEULE FOIS dans le fichier styles global
+// (src/styles.scss) :
+//   @import 'styles/theme';
+// ==========================================================
+
+:root {
+    // ---- Surfaces & texte (dark = thème par défaut) ----
+    --ink: #0A0F1C;
+    --surface: #101828;
+    --surface-2: #151F33;
+    --surface-3: #1B2740;
+    --border: #232F4B;
+    --border-soft: #1B2540;
+    --text: #EEF2FA;
+    --text-dim: #8D96AC;
+    --text-faint: #5C6480;
+
+    // ---- Couleurs d'accent (identiques dans les 2 thèmes) ----
+    --sun: #F2B705;
+    --red: #E8542F;
+    --green: #2BC98A;
+    --blue: #4C8DFF;
+    --purple: #9B6BFF;
+
+    // ---- Variantes RGB (nécessaires pour rgba(var(--x-rgb), alpha)) ----
+    --ink-rgb: 10, 15, 28;
+    --surface-rgb: 16, 24, 40;
+    --border-soft-rgb: 27, 37, 64;
+    --sun-rgb: 242, 183, 5;
+    --red-rgb: 232, 84, 47;
+    --green-rgb: 43, 201, 138;
+    --blue-rgb: 76, 141, 255;
+    --purple-rgb: 155, 107, 255;
+
+    // ---- Divers ----
+    --overlay-bg: rgba(6, 9, 16, 0.6);
+    --shadow-color: rgba(0, 0, 0, 0.35);
+    --font-heading: 'Space Grotesk', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --font-body: 'Inter', sans-serif;
+}
+
+// ==========================================================
+// THEME CLAIR — activé en ajoutant la classe .light-mode sur <body>
+// (voir LayoutComponent.toggleTheme()). Toute la palette est
+// redéfinie ici, donc CHAQUE composant qui utilise var(--surface)
+// etc. bascule automatiquement, sans rien recompiler.
+// ==========================================================
+
+body.light-mode {
+    --ink: #F3F5FA;
+    --surface: #FFFFFF;
+    --surface-2: #F3F6FB;
+    --surface-3: #E9EEF6;
+    --border: #DEE5F0;
+    --border-soft: #E8EDF5;
+    --text: #101828;
+    --text-dim: #5C6480;
+    --text-faint: #8D96AC;
+
+    --sun: #C98F04;
+    --red: #D6452A;
+    --green: #1E9F72;
+    --blue: #2C62D6;
+    --purple: #7C4FE0;
+
+    --ink-rgb: 243, 245, 250;
+    --surface-rgb: 255, 255, 255;
+    --border-soft-rgb: 232, 237, 245;
+    --sun-rgb: 201, 143, 4;
+    --red-rgb: 214, 69, 42;
+    --green-rgb: 30, 159, 114;
+    --blue-rgb: 44, 98, 214;
+    --purple-rgb: 124, 79, 224;
+
+    --overlay-bg: rgba(16, 24, 40, 0.35);
+    --shadow-color: rgba(16, 24, 40, 0.10);
+}
+
+// Transition douce lors du changement de thème
+body {
+    transition: background-color 0.2s ease, color 0.2s ease;
+
+    * {
+        transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+}

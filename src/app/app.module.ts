@@ -1,19 +1,18 @@
 // src/app/app.module.ts
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router'; // ← Importer RouterModule
+import { HttpClientModule } from '@angular/common/http';
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { LayoutModule } from './core/layout/layout.module';
 
 @NgModule({
     declarations: [AppComponent],
     imports: [
         BrowserModule,
-        RouterModule.forRoot([ // ← Ajouter RouterModule.forRoot()
-            { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-            { path: 'dashboard', loadChildren: () => import('./modules/dashboard/dashboard.module').then(m => m.DashboardModule) }
-        ]),
-        DashboardModule
+        HttpClientModule,
+        AppRoutingModule,
+        LayoutModule,
     ],
     providers: [],
     bootstrap: [AppComponent]

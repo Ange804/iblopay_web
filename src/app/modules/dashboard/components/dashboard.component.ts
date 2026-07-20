@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy, HostListener, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
-import { Subscription, interval } from 'rxjs';
+import { Component, OnInit, OnDestroy, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -19,29 +20,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   currentTime: string = '';
   currentDay: string = '';
   isRefreshing: boolean = false;
-  isSidebarOpen: boolean = false;
   isDarkMode: boolean = true;
 
   @ViewChild('chartCanvas') chartCanvas!: ElementRef<HTMLCanvasElement>;
   private chartInstance: Chart | null = null;
   private clockSubscription?: Subscription;
-
-  // ============================================================
-  // MENU PRINCIPAL AVEC CARTE
-  // ============================================================
-
-  menuItems = [
-    { icon: 'fa-solid fa-gauge', label: 'Tableau de bord', link: '/dashboard', active: true },
-    { icon: 'fa-solid fa-users', label: 'Utilisateurs', link: '/users' },
-    { icon: 'fa-solid fa-money-bill-transfer', label: 'Transactions', link: '/transactions' },
-    { icon: 'fa-solid fa-coins', label: 'Commissions', link: '/commissions' },
-    { icon: 'fa-solid fa-credit-card', label: 'Cartes', link: '/cards' },
-    { icon: 'fa-solid fa-building-columns', label: 'Services publics', link: '/services-publics', badge: '12' },
-    { icon: 'fa-solid fa-user-tie', label: 'Agents', link: '/agents' },
-    { icon: 'fa-solid fa-clock', label: 'Demandes en attente', link: '/requests', badge: '7' },
-    { icon: 'fa-solid fa-chart-line', label: 'Rapports', link: '/reports' },
-    { icon: 'fa-solid fa-gear', label: 'Paramètres', link: '/settings' }
-  ];
 
   // ============================================================
   // CARTES STATISTIQUES
@@ -190,6 +173,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     { label: 'Paramètres', icon: 'fa-solid fa-gear', link: '/settings', color: 'c-blue' }
   ];
 
+  constructor(
+    private router: Router
+  ) { }
+
   // ============================================================
   // CYCLE DE VIE
   // ============================================================
@@ -221,9 +208,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private initClock(): void {
     this.updateClock();
-    this.clockSubscription = interval(1000).subscribe(() => {
-      this.updateClock();
-    });
+    this.clockSubscription = new Subscription();
   }
 
   private updateClock(): void {
@@ -290,59 +275,15 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   // ============================================================
-  // GESTION DE LA SIDEBAR
-  // ============================================================
-
-  toggleSidebar(): void {
-    this.isSidebarOpen = !this.isSidebarOpen;
-  }
-
-  closeSidebar(): void {
-    this.isSidebarOpen = false;
-  }
-
-  // ============================================================
-  // ICÔNES DYNAMIQUES (sidebar + thème)
-  // ============================================================
-
-  // Icône du bouton menu : hamburger quand fermé, croix quand ouvert
-  get menuToggleIcon(): string {
-    return this.isSidebarOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
-  }
-
-  // Icône du bouton thème : soleil en mode sombre (clic → passer en clair),
-  // lune en mode clair (clic → repasser en sombre)
-  get themeToggleIcon(): string {
-    return this.isDarkMode ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-  }
-
-  // ============================================================
   // THÈME
   // ============================================================
-
-  toggleTheme(): void {
-    this.isDarkMode = !this.isDarkMode;
-    document.body.classList.toggle('light-mode', !this.isDarkMode);
-    localStorage.setItem('iblopay_theme', this.isDarkMode ? 'dark' : 'light');
-
-    // Mettre à jour le graphique
-    if (this.chartInstance) {
-      const ctx = this.chartCanvas.nativeElement.getContext('2d');
-      if (ctx) {
-        this.chartInstance.options.scales!.y!.grid!.color = this.isDarkMode ? '#1B2540' : '#E2E8F0';
-        this.chartInstance.update();
-      }
-    }
-  }
 
   private loadTheme(): void {
     const savedTheme = localStorage.getItem('iblopay_theme');
     if (savedTheme === 'light') {
       this.isDarkMode = false;
-      document.body.classList.add('light-mode');
     } else {
       this.isDarkMode = true;
-      document.body.classList.remove('light-mode');
     }
   }
 
@@ -366,18 +307,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.chartInstance.update();
       }
     }, 1200);
-  }
-
-  @HostListener('window:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent): void {
-    if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
-      event.preventDefault();
-      const searchInput = document.querySelector('.search-input') as HTMLInputElement;
-      if (searchInput) {
-        searchInput.focus();
-        searchInput.select();
-      }
-    }
   }
 
   // ============================================================
