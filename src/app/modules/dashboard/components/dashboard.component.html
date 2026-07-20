@@ -1,7 +1,6 @@
-<!-- Bienvenue -->
+<!-- ===== WELCOME ROW ===== -->
 <div class="welcome-row">
-    <div class="sun-arc"></div>
-    <div class="welcome-left">
+    <div>
         <div class="welcome-title">Bienvenue, Super Admin</div>
         <div class="welcome-sub">Vue d'ensemble de toute la plateforme IBLOPAY</div>
     </div>
@@ -14,26 +13,93 @@
     </div>
 </div>
 
-<!-- Stats -->
+<!-- ===== STAT CARDS - 8 cartes ===== -->
 <div class="stats-row">
-    <div class="stat-card" *ngFor="let stat of stats" [class.highlight]="stat.highlight">
+    <div class="stat-card animate-in animate-in-delay-1">
         <div class="stat-top">
-            <div class="stat-icon" [style.background]="stat.iconBg"><i class="{{ stat.icon }}"></i></div>
-            <div class="stat-label">{{ stat.label }}</div>
+            <div class="stat-icon blue"><i class="fa-solid fa-users"></i></div>
+            <div class="stat-label">Utilisateurs</div>
         </div>
-        <div class="stat-value num">{{ formatNumber(stat.value) }}</div>
-        <div class="stat-change" [ngClass]="getChangeClass(stat.change)">
-            {{ getChangeSymbol(stat.change) }}{{ stat.change }}%
-            <span class="stat-change-sub">{{ stat.changeLabel }}</span>
+        <div class="stat-value" id="statUsers">{{ formatNumber(statsData.users) }}</div>
+        <div class="stat-change positive">+12.5% <span class="stat-change-sub">vs mois</span></div>
+        <div class="stat-footer"><a class="voir-plus" routerLink="/users">Voir plus <i
+                    class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+    <div class="stat-card animate-in animate-in-delay-2">
+        <div class="stat-top">
+            <div class="stat-icon green"><i class="fa-solid fa-user-tie"></i></div>
+            <div class="stat-label">Agents</div>
         </div>
-        <div class="stat-footer">
-            <a class="voir-plus" [routerLink]="stat.link">Voir plus <i class="fa-solid fa-arrow-right"></i></a>
+        <div class="stat-value">{{ formatNumber(statsData.agents) }}</div>
+        <div class="stat-change positive">+8.3% <span class="stat-change-sub">vs mois</span></div>
+        <div class="stat-footer"><a class="voir-plus" routerLink="/agents">Voir plus <i
+                    class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+    <div class="stat-card animate-in animate-in-delay-3">
+        <div class="stat-top">
+            <div class="stat-icon purple"><i class="fa-solid fa-star"></i></div>
+            <div class="stat-label">Super Agents</div>
         </div>
+        <div class="stat-value">{{ formatNumber(statsData.superAgents) }}</div>
+        <div class="stat-change positive">+5.7% <span class="stat-change-sub">vs mois</span></div>
+        <div class="stat-footer"><a class="voir-plus" routerLink="/super-agents">Voir plus <i
+                    class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+    <div class="stat-card animate-in animate-in-delay-4">
+        <div class="stat-top">
+            <div class="stat-icon orange"><i class="fa-solid fa-store"></i></div>
+            <div class="stat-label">Marchands</div>
+        </div>
+        <div class="stat-value">{{ formatNumber(statsData.merchants) }}</div>
+        <div class="stat-change positive">+10.2% <span class="stat-change-sub">vs mois</span></div>
+        <div class="stat-footer"><a class="voir-plus" routerLink="/merchants">Voir plus <i
+                    class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+    <div class="stat-card animate-in animate-in-delay-5">
+        <div class="stat-top">
+            <div class="stat-icon teal"><i class="fa-solid fa-arrows-rotate"></i></div>
+            <div class="stat-label">Transactions (auj.)</div>
+        </div>
+        <div class="stat-value">{{ formatAmount(statsData.transactionsToday) }}</div>
+        <div class="stat-change positive">+14.6% <span class="stat-change-sub">vs hier</span></div>
+        <div class="stat-footer"><a class="voir-plus" routerLink="/transactions">Voir plus <i
+                    class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+    <div class="stat-card highlight">
+        <div class="stat-top">
+            <div class="stat-icon gold"><i class="fa-solid fa-coins"></i></div>
+            <div class="stat-label">Commission État</div>
+        </div>
+        <div class="stat-value">{{ formatAmount(statsData.commissionEtat) }}</div>
+        <div class="stat-change positive">+18.9% <span class="stat-change-sub">vs mois</span></div>
+        <div class="stat-footer"><a class="voir-plus" routerLink="/commissions">Voir plus <i
+                    class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+    <div class="stat-card highlight">
+        <div class="stat-top">
+            <div class="stat-icon gold"><i class="fa-solid fa-building"></i></div>
+            <div class="stat-label">Commission IBLOPAY</div>
+        </div>
+        <div class="stat-value">{{ formatAmount(statsData.commissionIblopay) }}</div>
+        <div class="stat-change positive">+22.3% <span class="stat-change-sub">vs mois</span></div>
+        <div class="stat-footer"><a class="voir-plus" routerLink="/commissions">Voir plus <i
+                    class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+    <div class="stat-card services">
+        <div class="stat-top">
+            <div class="stat-icon pink"><i class="fa-solid fa-building-columns"></i></div>
+            <div class="stat-label">Services Publics</div>
+        </div>
+        <div class="stat-value">{{ formatNumber(statsData.servicesPublics) }}</div>
+        <div class="stat-change positive">+15.2% <span class="stat-change-sub">vs mois</span></div>
+        <div class="stat-footer"><a class="voir-plus pink" routerLink="/services-publics">Voir plus <i
+                    class="fa-solid fa-arrow-right"></i></a></div>
     </div>
 </div>
 
-<!-- Panneaux row 1 -->
+<!-- ===== GRID 1 - PANELS (Dépôts / Transactions / Commissions en parallèle) ===== -->
 <div class="panels-row">
+    <!-- DÉPÔTS PAR PROVINCE -->
     <div class="panel">
         <div class="panel-header">
             <div class="panel-title"><i class="fa-solid fa-arrow-down"></i> Dépôts par province</div>
@@ -41,66 +107,57 @@
                 <option>Aujourd'hui</option>
             </select>
         </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="font-size:13px;color:var(--text-dim);">Total dépôts: <b
+                    style="color:var(--green);font-size:18px;">{{ formatAmount(provinceTotals.depots) }}</b></span>
+            <span style="font-size:11px;color:var(--green);">+12.4%</span>
+        </div>
         <div class="province-list">
-            <div class="list-header">
-                <span class="total-label">Total dépôts</span>
-                <span class="total-value green num">{{ formatAmount(stats[0]!.value) }}</span>
-            </div>
-            <div class="province-items">
-                <div class="province-item" *ngFor="let p of provinceData.depots">
-                    <span class="province-name"><i class="fa-solid fa-location-dot"></i>{{ p.name }}</span>
-                    <span class="province-amount green num">{{ formatAmount(p.amount) }}</span>
-                </div>
+            <div class="province-item" *ngFor="let p of provinceData.depots">
+                <span class="province-name"><i class="fa-solid fa-location-dot"></i> {{ p.name }}</span>
+                <span class="province-amount green">{{ formatAmount(p.amount) }}</span>
             </div>
         </div>
-        <div class="panel-footer">
-            <a class="panel-link" routerLink="/deposits">Voir tous les détails <i
+        <div class="depot-total-row">
+            <span class="total-label">📊 Total général</span>
+            <span class="total-value green">{{ formatAmount(provinceTotals.depots) }}</span>
+        </div>
+        <div style="margin-top:8px;text-align:center;">
+            <a routerLink="/deposits" class="panel-link" style="font-size:11px;">Voir tous les détails <i
                     class="fa-solid fa-arrow-right"></i></a>
         </div>
     </div>
 
+    <!-- TRANSACTIONS PAR PROVINCE -->
     <div class="panel">
         <div class="panel-header">
-            <div class="panel-title"><i class="fa-solid fa-arrows-rotate"></i> Transactions par province
-            </div>
+            <div class="panel-title"><i class="fa-solid fa-arrows-rotate"></i> Transactions par province</div>
             <select class="period-select">
                 <option>Aujourd'hui</option>
             </select>
         </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="font-size:13px;color:var(--text-dim);">Total: <b style="color:var(--blue);font-size:18px;">{{
+                    formatAmount(provinceTotals.transactions) }}</b></span>
+            <span style="font-size:11px;color:var(--green);">+14.6%</span>
+        </div>
         <div class="province-list">
-            <div class="list-header">
-                <span class="total-label">Total</span>
-                <span class="total-value blue num">{{ formatAmount(stats[1]!.value) }}</span>
-            </div>
-            <div class="province-items">
-                <div class="province-item" *ngFor="let p of provinceData.transactions">
-                    <span class="province-name"><i class="fa-solid fa-location-dot"></i>{{ p.name }}</span>
-                    <span class="province-amount blue num">{{ formatAmount(p.amount) }}</span>
-                </div>
+            <div class="province-item" *ngFor="let p of provinceData.transactions">
+                <span class="province-name"><i class="fa-solid fa-location-dot"></i> {{ p.name }}</span>
+                <span class="province-amount blue">{{ formatAmount(p.amount) }}</span>
             </div>
         </div>
-        <div class="panel-footer">
-            <a class="panel-link" routerLink="/transactions">Voir tous les détails <i
+        <div class="tx-total-row">
+            <span class="total-label">📊 Total général</span>
+            <span class="total-value blue">{{ formatAmount(provinceTotals.transactions) }}</span>
+        </div>
+        <div style="margin-top:8px;text-align:center;">
+            <a routerLink="/transactions" class="panel-link" style="font-size:11px;">Voir tous les détails <i
                     class="fa-solid fa-arrow-right"></i></a>
         </div>
     </div>
 
-    <div class="panel chart-panel">
-        <div class="panel-header">
-            <div class="panel-title"><i class="fa-solid fa-chart-line"></i> Évolution des transactions</div>
-            <select class="period-select">
-                <option>7 derniers jours</option>
-                <option>30 derniers jours</option>
-                <option>Cette année</option>
-            </select>
-        </div>
-        <div class="chart-wrap"><canvas #chartCanvas></canvas></div>
-        <div class="panel-footer">
-            <a class="panel-link" routerLink="/transactions">Voir les détails complets <i
-                    class="fa-solid fa-arrow-right"></i></a>
-        </div>
-    </div>
-
+    <!-- COMMISSIONS PAR PROVINCE -->
     <div class="panel">
         <div class="panel-header">
             <div class="panel-title"><i class="fa-solid fa-coins"></i> Commissions par province</div>
@@ -108,42 +165,68 @@
                 <option>Aujourd'hui</option>
             </select>
         </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="font-size:13px;color:var(--text-dim);">Total: <b style="color:var(--purple);font-size:18px;">{{
+                    formatAmount(provinceTotals.commissions) }}</b></span>
+            <span style="font-size:11px;color:var(--green);">+9.8%</span>
+        </div>
         <div class="province-list">
-            <div class="list-header">
-                <span class="total-label">Total</span>
-                <span class="total-value purple num">{{ formatAmount(stats[2]!.value) }}</span>
-            </div>
-            <div class="province-items">
-                <div class="province-item" *ngFor="let p of provinceData.commissions">
-                    <span class="province-name"><i class="fa-solid fa-location-dot"></i>{{ p.name }}</span>
-                    <span class="province-amount purple num">{{ formatAmount(p.amount) }}</span>
-                </div>
+            <div class="province-item" *ngFor="let p of provinceData.commissions">
+                <span class="province-name"><i class="fa-solid fa-location-dot"></i> {{ p.name }}</span>
+                <span class="province-amount purple">{{ formatAmount(p.amount) }}</span>
             </div>
         </div>
-        <div class="panel-footer">
-            <a class="panel-link" routerLink="/commissions">Voir tous les détails <i
+        <div class="comm-total-row">
+            <span class="total-label">📊 Total général</span>
+            <span class="total-value purple">{{ formatAmount(provinceTotals.commissions) }}</span>
+        </div>
+        <div style="margin-top:8px;text-align:center;">
+            <a routerLink="/commissions" class="panel-link" style="font-size:11px;">Voir tous les détails <i
+                    class="fa-solid fa-arrow-right"></i></a>
+        </div>
+    </div>
+
+    <!-- GRAPHIQUE ÉVOLUTION DES TRANSACTIONS (en parallèle avec Commissions) -->
+    <div class="panel chart-panel">
+        <div class="panel-header">
+            <div class="panel-title"><i class="fa-solid fa-chart-line"></i> Évolution des transactions</div>
+            <select class="period-select" id="periodSelect" (change)="updateChartPeriod($event)">
+                <option value="7">1 semaine</option>
+                <option value="14">2 semaines</option>
+                <option value="21">3 semaines</option>
+                <option value="30" selected>30 derniers jours</option>
+                <option value="45">45 jours</option>
+                <option value="60">60 jours</option>
+                <option value="90">90 jours</option>
+            </select>
+        </div>
+        <div class="chart-wrap"><canvas #chartCanvas></canvas></div>
+        <div style="margin-top:8px;text-align:center;">
+            <a routerLink="/reports" class="panel-link" style="font-size:11px;">Voir les détails complets <i
                     class="fa-solid fa-arrow-right"></i></a>
         </div>
     </div>
 </div>
 
-<!-- Services publics -->
+<!-- ===== SERVICES PUBLICS ===== -->
 <div class="public-services-panel">
     <div class="ps-header">
-        <div class="ps-title"><i class="fa-solid fa-building-columns"></i> SERVICES PUBLICS — Aperçu (30
-            derniers jours)</div>
-        <a class="ps-link" routerLink="/services-publics">Voir tout <i class="fa-solid fa-arrow-right"></i></a>
+        <div class="ps-title"><i class="fa-solid fa-building-columns"></i> SERVICES PUBLICS - Aperçu (30 derniers jours)
+        </div>
+        <a class="panel-link" style="color:var(--sun);" routerLink="/services-publics">Voir tout <i
+                class="fa-solid fa-arrow-right"></i></a>
     </div>
     <div class="ps-stats">
-        <div class="ps-stat"><span class="ps-stat-value num" style="color:var(--blue);">128 456</span><span
-                class="ps-stat-label">Demandes totales</span></div>
-        <div class="ps-stat"><span class="ps-stat-value num" style="color:var(--green);">112 345</span><span
-                class="ps-stat-label">Traitées</span></div>
-        <div class="ps-stat"><span class="ps-stat-value num" style="color:var(--sun);">12 453</span><span
-                class="ps-stat-label">En cours</span></div>
-        <div class="ps-stat"><span class="ps-stat-value num" style="color:var(--red);">3 658</span><span
-                class="ps-stat-label">Rejetées</span></div>
+        <div class="ps-stat"><span class="ps-stat-value" style="color:#60a5fa;">{{ formatNumber(servicesStats.total)
+                }}</span><span class="ps-stat-label">Demandes totales</span></div>
+        <div class="ps-stat"><span class="ps-stat-value" style="color:#22c55e;">{{ formatNumber(servicesStats.traitees)
+                }}</span><span class="ps-stat-label">Traitées</span></div>
+        <div class="ps-stat"><span class="ps-stat-value" style="color:#fbbf24;">{{ formatNumber(servicesStats.enCours)
+                }}</span><span class="ps-stat-label">En cours</span></div>
+        <div class="ps-stat"><span class="ps-stat-value" style="color:#ff6b6b;">{{ formatNumber(servicesStats.rejetees)
+                }}</span><span class="ps-stat-label">Rejetées</span></div>
     </div>
+
     <table class="ps-table">
         <thead>
             <tr>
@@ -164,12 +247,14 @@
             </tr>
         </tbody>
     </table>
+
     <a class="ps-footer-link" routerLink="/services-publics">Accéder au portail des services publics <i
             class="fa-solid fa-arrow-right"></i></a>
 </div>
 
-<!-- Mid row -->
+<!-- ===== MID ROW ===== -->
 <div class="mid-row">
+    <!-- Inscriptions récentes -->
     <div class="panel">
         <div class="panel-header">
             <div class="panel-title"><i class="fa-solid fa-user-plus"></i> Inscriptions récentes</div>
@@ -180,12 +265,13 @@
                 <div class="list-avatar"><i class="fa-solid fa-user"></i></div>
                 <div class="list-info">
                     <div class="list-name">{{ r.name }}</div>
-                    <div class="list-sub">{{ r.time }}</div>
+                    <div class="list-sub">{{ r.type }}</div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Demandes en attente -->
     <div class="panel">
         <div class="panel-header">
             <div class="panel-title"><i class="fa-solid fa-clock"></i> Demandes en attente</div>
@@ -199,6 +285,7 @@
         </div>
     </div>
 
+    <!-- Activités des agents -->
     <div class="panel">
         <div class="panel-header">
             <div class="panel-title"><i class="fa-solid fa-user-tie"></i> Activités des agents <span
@@ -207,7 +294,7 @@
         <div class="list-container">
             <div class="activity-row" *ngFor="let a of agentActivities">
                 <span class="activity-label">{{ a.label }}</span>
-                <span class="activity-value num">{{ formatNumber(a.value) }}</span>
+                <span class="activity-value num">{{ a.value }}</span>
             </div>
         </div>
     </div>
@@ -218,21 +305,57 @@
             <div class="panel-title"><i class="fa-solid fa-bolt"></i> Accès rapides</div>
         </div>
         <div class="quick-grid">
-            <a class="quick-btn {{ q.color }}" [routerLink]="q.link" *ngFor="let q of quickAccess">
-                <span class="qicon-wrap"><i class="qicon {{ q.icon }}"></i></span>
-                {{ q.label }}
-            </a>
+            <a class="quick-btn b1" routerLink="/users/create"><span class="qicon">👤</span>Créer un utilisateur</a>
+            <a class="quick-btn b9" routerLink="/agents/create"><span class="qicon">👥</span>Créer un agent</a>
+            <a class="quick-btn b3" routerLink="/merchants/create"><span class="qicon">🛒</span>Créer un marchand</a>
+            <a class="quick-btn b4" routerLink="/super-agents/create"><span class="qicon">⭐</span>Créer un super
+                agent</a>
+            <a class="quick-btn b5" routerLink="/services-publics"><span class="qicon">🏛️</span>Créer un service
+                public</a>
+            <a class="quick-btn b2" routerLink="/intra-agricole"><span class="qicon">🌾</span>Intra Agricole</a>
+            <a class="quick-btn b7" routerLink="/reports"><span class="qicon">📊</span>Rapport global</a>
+            <a class="quick-btn b8" routerLink="/settings"><span class="qicon">⚙️</span>Paramètres système</a>
+            <a class="quick-btn b6" routerLink="/transactions"><span class="qicon">🔄</span>Transactions</a>
         </div>
     </div>
 </div>
 
-<!-- Status bar -->
-<div class="status-bar">
-    <div class="status-pill"><span class="dot-status green"></span>Environnement: <b>Production</b></div>
-    <div class="status-pill"><i class="fa-solid fa-code"></i>Version: <b>v2.5.1</b></div>
-    <div class="status-pill"><i class="fa-solid fa-clock"></i>Uptime: <b>99.98%</b></div>
-    <div class="status-pill"><i class="fa-solid fa-microchip"></i>CPU: <b>23%</b></div>
-    <div class="status-pill"><span class="dot-status green"></span>Base de données: <b>Opérationnelle</b>
+<!-- ===== FOOTER ===== -->
+<footer class="app-footer">
+    <div class="footer-brand">
+        <span class="footer-logo"><i class="fa-solid fa-bolt"></i> IBLOPAY</span>
+        <span class="footer-sep">•</span>
+        <span class="footer-version">v2.5.1</span>
     </div>
-    <div class="status-pill"><span class="dot-status green"></span>Redis: <b>Opérationnel</b></div>
-</div>
+
+    <div class="footer-status">
+        <div class="status-item">
+            <span class="status-dot green"></span>
+            <span class="status-text">Production</span>
+        </div>
+        <span class="status-divider"></span>
+
+        <div class="status-item">
+            <span class="status-badge blue"><i class="fa-solid fa-clock"></i></span>
+            <span class="status-text">Uptime <b>99.98%</b></span>
+        </div>
+        <span class="status-divider"></span>
+
+        <div class="status-item">
+            <span class="status-badge purple"><i class="fa-solid fa-microchip"></i></span>
+            <span class="status-text">CPU <b>23%</b></span>
+        </div>
+        <span class="status-divider"></span>
+
+        <div class="status-item">
+            <span class="status-dot green"></span>
+            <span class="status-text">Base de données</span>
+        </div>
+        <span class="status-divider"></span>
+
+        <div class="status-item">
+            <span class="status-dot green"></span>
+            <span class="status-text">Redis</span>
+        </div>
+    </div>
+</footer>
