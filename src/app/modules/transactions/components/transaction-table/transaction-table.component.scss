@@ -1,21 +1,81 @@
+/* ==========================================================
+   VARIABLES DE THÈME POUR LE TABLEAU
+   ========================================================== */
+:root {
+  /* Mode Lumière (Light) */
+  --tbl-surface: rgba(255, 255, 255, 0.75);
+  --tbl-border: var(--border-light, rgba(0, 0, 0, 0.08));
+  --tbl-border-subtle: rgba(0, 0, 0, 0.05);
+  --tbl-title: #111827;
+  --tbl-text-muted: #6b7280;
+  --tbl-text-main: #374151;
+  --tbl-row-hover: rgba(0, 0, 0, 0.025);
+  --tbl-shadow: rgba(0, 0, 0, 0.06);
+
+  /* Controls & Action Buttons */
+  --tbl-btn-icon-bg: #ffffff;
+  --tbl-btn-icon-border: #e5e7eb;
+  --tbl-btn-icon-hover: #f9fafb;
+  --tbl-btn-export-bg: var(--sun, #2f6fed);
+  --tbl-btn-export-color: #ffffff;
+  --tbl-btn-export-hover: #1d5bd7;
+
+  /* Specific Cells */
+  --tbl-ref-color: var(--sun, #2f6fed);
+  --tbl-amount-color: #111827;
+}
+
+[data-theme='dark'],
+body.dark-theme {
+  /* Mode Sombre (Dark) */
+  --tbl-surface: rgba(18, 26, 47, 0.65);
+  --tbl-border: var(--border-light, rgba(255, 255, 255, 0.12));
+  --tbl-border-subtle: rgba(255, 255, 255, 0.06);
+  --tbl-title: var(--text, #ffffff);
+  --tbl-text-muted: var(--text-dim, rgba(255, 255, 255, 0.5));
+  --tbl-text-main: var(--text, #e2e8f0);
+  --tbl-row-hover: rgba(255, 255, 255, 0.04);
+  --tbl-shadow: rgba(0, 0, 0, 0.35);
+
+  /* Controls & Action Buttons */
+  --tbl-btn-icon-bg: rgba(255, 255, 255, 0.05);
+  --tbl-btn-icon-border: rgba(255, 255, 255, 0.12);
+  --tbl-btn-icon-hover: rgba(255, 255, 255, 0.1);
+  --tbl-btn-export-bg: var(--sun, #3b82f6);
+  --tbl-btn-export-color: #ffffff;
+  --tbl-btn-export-hover: #2563eb;
+
+  /* Specific Cells */
+  --tbl-ref-color: var(--sun, #60a5fa);
+  --tbl-amount-color: var(--text, #ffffff);
+}
+
+
+/* ==========================================================
+   SECTION TABLEAU (.table-section)
+   ========================================================== */
 .table-section {
-  background: #fff;
+  background: var(--tbl-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--tbl-border);
   border-radius: 14px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 16px var(--tbl-shadow);
   overflow: hidden;
+  transition: all 0.3s ease;
 
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 16px 20px 12px;
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid var(--tbl-border);
   }
 
   &__title {
     font-weight: 600;
     font-size: 14px;
-    color: #111827;
+    color: var(--tbl-title);
   }
 
   &__controls {
@@ -24,24 +84,39 @@
   }
 
   &__btn-icon {
-    background: none;
-    border: 1px solid #e5e7eb;
+    background: var(--tbl-btn-icon-bg);
+    border: 1px solid var(--tbl-btn-icon-border);
+    color: var(--tbl-title);
     border-radius: 6px;
     padding: 4px 8px;
     cursor: pointer;
     font-size: 14px;
-    &:hover { background: #f9fafb; }
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--tbl-btn-icon-hover);
+    }
   }
 
   &__btn-export {
-    background: #2f6fed;
-    color: #fff;
+    background: var(--tbl-btn-export-bg);
+    color: var(--tbl-btn-export-color);
     border: none;
     border-radius: 6px;
     padding: 6px 14px;
     font-size: 12px;
+    font-weight: 600;
     cursor: pointer;
-    &:hover { background: #1d5bd7; }
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--tbl-btn-export-hover);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
   }
 
   &__footer {
@@ -49,13 +124,13 @@
     align-items: center;
     justify-content: space-between;
     padding: 12px 20px;
-    border-top: 1px solid #f3f4f6;
+    border-top: 1px solid var(--tbl-border);
     font-size: 12px;
-    color: #6b7280;
+    color: var(--tbl-text-muted);
   }
 
   &__page-size {
-    color: #6b7280;
+    color: var(--tbl-text-muted);
   }
 }
 
@@ -63,6 +138,10 @@
   overflow-x: auto;
 }
 
+
+/* ==========================================================
+   TABLEAU DE TRANSACTIONS (.transaction-table)
+   ========================================================== */
 .transaction-table {
   width: 100%;
   border-collapse: collapse;
@@ -72,31 +151,49 @@
     text-align: left;
     padding: 10px 12px;
     font-weight: 600;
-    color: #6b7280;
+    color: var(--tbl-text-muted);
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid var(--tbl-border);
     white-space: nowrap;
   }
 
   tbody tr {
-    border-bottom: 1px solid #f9fafb;
+    border-bottom: 1px solid var(--tbl-border-subtle);
     cursor: pointer;
-    transition: background 0.1s;
+    transition: background-color 0.2s ease;
 
-    &:hover { background: #f9fafb; }
-    &:last-child { border-bottom: none; }
+    &:hover {
+      background: var(--tbl-row-hover);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
   td {
     padding: 10px 12px;
     white-space: nowrap;
+    color: var(--tbl-text-main);
   }
 
-  &__cell-date { color: #374151; font-size: 12px; }
-  &__cell-ref { color: #2f6fed; font-weight: 500; }
-  &__cell-amount { font-weight: 600; color: #111827; }
+  &__cell-date {
+    color: var(--tbl-text-main);
+    font-size: 12px;
+  }
+
+  &__cell-ref {
+    color: var(--tbl-ref-color);
+    font-weight: 500;
+  }
+
+  &__cell-amount {
+    font-weight: 600;
+    color: var(--tbl-amount-color);
+  }
+
   &__cell-actions {
     display: flex;
     gap: 4px;
@@ -104,15 +201,25 @@
     .action-btn {
       background: none;
       border: none;
+      color: var(--tbl-text-muted);
       cursor: pointer;
       font-size: 16px;
       padding: 2px 4px;
       border-radius: 4px;
-      &:hover { background: #f3f4f6; }
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: var(--tbl-btn-icon-hover);
+        color: var(--tbl-title);
+      }
     }
   }
 }
 
+
+/* ==========================================================
+   BADGES / PILLS (.pill & .channel-icon)
+   ========================================================== */
 .pill {
   display: inline-block;
   padding: 2px 10px;
@@ -126,6 +233,10 @@
   font-size: 18px;
 }
 
+
+/* ==========================================================
+   PAGINATION (.pagination)
+   ========================================================== */
 .pagination {
   display: flex;
   align-items: center;
@@ -134,29 +245,40 @@
   &__btn {
     min-width: 28px;
     height: 28px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--tbl-btn-icon-border);
     border-radius: 6px;
-    background: #fff;
+    background: var(--tbl-btn-icon-bg);
     font-size: 13px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #374151;
+    color: var(--tbl-text-main);
+    transition: all 0.2s ease;
 
-    &:disabled { opacity: 0.4; cursor: default; }
-    &:hover:not(:disabled) { background: #f3f4f6; }
+    &:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    &:hover:not(:disabled) {
+      background: var(--tbl-btn-icon-hover);
+      border-color: var(--tbl-text-muted);
+    }
 
     &--active {
-      background: #2f6fed;
-      color: #fff;
-      border-color: #2f6fed;
-      &:hover { background: #1d5bd7; }
+      background: var(--tbl-btn-export-bg);
+      color: var(--tbl-btn-export-color);
+      border-color: var(--tbl-btn-export-bg);
+
+      &:hover:not(:disabled) {
+        background: var(--tbl-btn-export-hover);
+      }
     }
   }
 
   &__info {
     margin-left: 4px;
-    color: #9ca3af;
+    color: var(--tbl-text-muted);
   }
 }

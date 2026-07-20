@@ -1,97 +1,208 @@
+/* ==========================================================
+   BARRE DE FILTRES (.filter-bar) - FIX CONTRASTE MODE CLAIR
+   ========================================================== */
+
+/* 1. STYLES DE BASE (SOMBRE) */
 .filter-bar {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 18px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border-radius: 16px;
+  border: none !important;
+  box-shadow: 0 10px 30px -10px var(--shadow-color);
+  margin-bottom: 24px;
   flex-wrap: wrap;
 
   &__search {
-    flex: 1 1 240px;
+    flex: 1 1 260px;
     display: flex;
     align-items: center;
-    background: #f3f4f6;
-    border-radius: 8px;
-    padding: 0 10px;
-    min-width: 180px;
+    background: var(--surface-3);
+    border-radius: 10px;
+    padding: 0 14px;
+    min-width: 200px;
 
     input {
-      border: none;
+      border: none !important;
       background: transparent;
-      padding: 8px 6px;
+      padding: 10px 8px;
       font-size: 13px;
+      font-weight: 500;
       width: 100%;
       outline: none;
+      color: var(--text);
+
+      &::placeholder {
+        color: var(--text-dim);
+      }
     }
 
-    &-icon { font-size: 14px; }
+    &-icon {
+      font-size: 15px;
+      color: var(--sun);
+    }
   }
 
   &__dropdowns {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
 
     select {
-      padding: 7px 10px;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
+      appearance: none;
+      -webkit-appearance: none;
+      padding: 9px 34px 9px 14px;
+      border: none !important;
+      border-radius: 10px;
       font-size: 13px;
-      background: #fff;
-      color: #374151;
+      font-weight: 600;
+      background-color: var(--surface-3);
+      color: var(--text);
       cursor: pointer;
       outline: none;
-      &:focus { border-color: #2f6fed; }
+
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%232563eb'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 14px;
+
+      option {
+        background-color: var(--surface-2);
+        color: var(--text);
+      }
     }
   }
 
   &__date-range {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
+    background: var(--surface-3);
+    padding: 3px 8px;
+    border-radius: 10px;
 
     input {
-      width: 90px;
-      padding: 7px 8px;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
+      width: 95px;
+      padding: 7px 4px;
+      border: none !important;
+      border-radius: 6px;
       font-size: 12px;
+      font-weight: 600;
       text-align: center;
       outline: none;
-      &:focus { border-color: #2f6fed; }
+      background: transparent;
+      color: var(--text);
+
+      &::placeholder {
+        color: var(--text-dim);
+      }
     }
 
-    &-sep { color: #9ca3af; }
+    &-sep {
+      color: var(--text-dim);
+      font-size: 12px;
+      font-weight: 700;
+    }
   }
 
   &__actions {
     display: flex;
-    gap: 8px;
+    gap: 10px;
     margin-left: auto;
   }
 
   &__btn-advanced {
-    padding: 7px 14px;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    background: #fff;
-    color: #374151;
+    padding: 9px 16px;
+    border: none !important;
+    border-radius: 10px;
+    background: rgba(168, 85, 247, 0.22);
+    color: #c084fc;
     font-size: 13px;
+    font-weight: 700;
     cursor: pointer;
-    &:hover { background: #f9fafb; }
   }
 
   &__btn-reset {
-    padding: 7px 14px;
-    border: none;
-    border-radius: 8px;
-    background: #2f6fed;
-    color: #fff;
+    padding: 9px 18px;
+    border: none !important;
+    border-radius: 10px;
+    background: rgba(59, 130, 246, 0.22);
+    color: #60a5fa;
     font-size: 13px;
+    font-weight: 800;
     cursor: pointer;
-    &:hover { background: #1d5bd7; }
+  }
+}
+
+/* ==========================================================
+   2. FIX FORCÉ POUR LE MODE CLAIR (body.light-mode)
+   ========================================================== */
+body.light-mode {
+  .filter-bar {
+    background: #ffffff !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+
+    /* FONDS SOFTS LISIBLES POUR LES INPUTS & SELECTS */
+    &__search,
+    &__dropdowns select,
+    &__date-range {
+      background-color: #f1f5f9 !important;
+      /* Gris clair très doux pour matérialiser les champs */
+    }
+
+    /* TEXTES SOMBRES HAUT-CONTRASTE (Visible à 100%) */
+    &__search input,
+    &__date-range input,
+    &__dropdowns select {
+      color: #0f172a !important;
+      /* Slate très sombre / presque noir */
+      font-weight: 600 !important;
+
+      &::placeholder {
+        color: #64748b !important;
+        /* Gris moyen lisible */
+        opacity: 1 !important;
+      }
+    }
+
+    /* FIX DES OPTIONS DÉROULANTES DANS LE MENU DU SELECT */
+    &__dropdowns select option {
+      background-color: #ffffff !important;
+      color: #0f172a !important;
+    }
+
+    /* SEPARATEUR DE DATE & ICONES */
+    &__date-sep {
+      color: #334155 !important;
+    }
+
+    &__search-icon {
+      color: #2563eb !important;
+    }
+
+    /* BOUTONS AVEC TEXTES PLUS SOMBRES ET SATURES */
+    &__btn-advanced {
+      background: rgba(147, 51, 234, 0.12) !important;
+      color: #6b21a8 !important;
+      /* Violet foncé bien lisible */
+
+      &:hover {
+        background: rgba(147, 51, 234, 0.22) !important;
+        color: #581c87 !important;
+      }
+    }
+
+    &__btn-reset {
+      background: rgba(37, 99, 235, 0.15) !important;
+      color: #1d4ed8 !important;
+      /* Bleu foncé bien lisible */
+
+      &:hover {
+        background: rgba(37, 99, 235, 0.25) !important;
+        color: #1e40af !important;
+      }
+    }
   }
 }

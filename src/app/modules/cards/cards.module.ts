@@ -14,6 +14,7 @@ import { CardPreviewComponent } from './components/card-preview/card-preview.com
 import { CardStatusComponent } from './components/card-status/card-status.component';
 import { CardQrScannerComponent } from './components/card-qr-scanner/card-qr-scanner.component';
 import { CardTypeBadgeComponent } from './components/card-type-badge/card-type-badge.component';
+import { CardTableComponent } from './components/card-table/card-table.component';
 
 @NgModule({
   declarations: [
@@ -25,9 +26,10 @@ import { CardTypeBadgeComponent } from './components/card-type-badge/card-type-b
     CardPreviewComponent,
     CardStatusComponent,
     CardQrScannerComponent,
-    CardTypeBadgeComponent
+    CardTypeBadgeComponent,
+    CardTableComponent
   ],
   imports: [CommonModule, FormsModule, CardsRoutingModule]
   // CardService is providedIn: 'root', so it doesn't need to be listed here.
 })
-export class CardsModule {}
+export class CardsModule { }

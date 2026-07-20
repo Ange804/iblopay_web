@@ -1,106 +1,239 @@
+/* ==========================================================
+   VARIABLES DE THÈME - TRANSACTIONS
+   ========================================================== */
+:root {
+  /* Mode Lumière (Light) */
+  --tx-page-bg: #f8fafc;
+  --tx-surface: #ffffff;
+  --tx-surface-soft: #f1f5f9;
+  --tx-text: #0f172a;
+  --tx-text-dim: #64748b;
+  --tx-shadow: rgba(15, 23, 42, 0.05);
+
+  /* Bouton principal (Export) */
+  --tx-btn-bg: rgba(59, 130, 246, 0.12);
+  --tx-btn-color: #1d4ed8;
+  --tx-btn-hover: rgba(59, 130, 246, 0.22);
+}
+
+[data-theme='dark'],
+body.dark-theme,
+body.dark-mode {
+  /* Mode Sombre (Dark) */
+  --tx-page-bg: var(--ink, #0b0f19);
+  --tx-surface: var(--surface-2, #1b2559);
+  --tx-surface-soft: var(--surface-3, rgba(255, 255, 255, 0.06));
+  --tx-text: #f3f4f6;
+  --tx-text-dim: #9ca3af;
+  --tx-shadow: rgba(0, 0, 0, 0.35);
+
+  /* Bouton principal (Export) */
+  --tx-btn-bg: rgba(59, 130, 246, 0.22);
+  --tx-btn-color: #60a5fa;
+  --tx-btn-hover: rgba(59, 130, 246, 0.32);
+}
+
+
+/* ==========================================================
+   PAGE LISTE DE TRANSACTIONS
+   ========================================================== */
 .transaction-list-page {
   padding: 24px 32px;
+  background-color: var(--tx-page-bg);
+  min-height: 100vh;
+  color: var(--tx-text);
+  transition: background-color 0.25s ease, color 0.25s ease;
+
+  @media (max-width: 768px) {
+    padding: 20px 16px;
+  }
 
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 
     h1 {
-      font-size: 22px;
-      font-weight: 600;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
       margin: 0;
+      color: var(--tx-text);
     }
   }
 
   &__layout {
     display: grid;
-    grid-template-columns: 1fr 280px;
+    grid-template-columns: 1fr 300px;
     gap: 24px;
     align-items: start;
+
+    @media (max-width: 992px) {
+      grid-template-columns: 1fr;
+    }
   }
 
+  /* --- SIDEBAR DE GRAPHIQUES ET INFOS --- */
   &__sidebar {
-    background: #fff;
-    border: 1px solid #eef0f3;
-    border-radius: 12px;
-    padding: 18px;
+    background: var(--tx-surface);
+    border: none !important;
+    /* Supression des bordures dures */
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 30px -10px var(--tx-shadow);
+    transition: all 0.25s ease;
 
     h2 {
       font-size: 14px;
-      font-weight: 600;
-      margin: 0 0 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 0 0 16px;
+      color: var(--tx-text-dim);
     }
   }
 }
 
+
+/* ==========================================================
+   BOUTON SANS BORDURES (Style Soft & Lumineux)
+   ========================================================== */
 .btn {
-  border: 1px solid #d7dae0;
-  background: #fff;
-  padding: 8px 16px;
-  border-radius: 8px;
+  border: none !important;
+  background: var(--tx-btn-bg) !important;
+  color: var(--tx-btn-color) !important;
+  padding: 10px 20px;
+  border-radius: 10px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   text-decoration: none;
-  color: #1c1e26;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background: var(--tx-btn-hover) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 }
 
+
+/* ==========================================================
+   MESSAGES D'ÉTAT (Chargement / Erreur / Vide)
+   ========================================================== */
 .state-message {
-  color: #6f737c;
-  padding: 24px 0;
+  color: var(--tx-text-dim);
+  background: var(--tx-surface);
+  border-radius: 12px;
+  padding: 32px 20px;
   text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 20px var(--tx-shadow);
+  margin-top: 16px;
 
   &--error {
-    color: #e14b4b;
+    color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.1) !important;
   }
 
   button {
     margin-left: 12px;
-    border: none;
-    background: #1c1e26;
-    color: #fff;
-    padding: 6px 14px;
-    border-radius: 6px;
+    border: none !important;
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #ef4444 !important;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
     cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.3) !important;
+      transform: translateY(-1px);
+    }
   }
 }
 
+
+/* ==========================================================
+   LISTE ET CARTE DES TRANSACTIONS
+   ========================================================== */
 .transaction-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 
   &__item {
     cursor: pointer;
+    background: var(--tx-surface);
+    border: none !important;
+    border-radius: 14px;
+    padding: 4px;
+    /* Soft padding pour envelopper la carte enfant */
+    box-shadow: 0 4px 16px var(--tx-shadow);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--tx-surface-soft);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px var(--tx-shadow);
+    }
   }
 }
 
+
+/* ==========================================================
+   PAGINATION
+   ========================================================== */
 .pagination {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16px;
-  margin-top: 20px;
+  margin-top: 24px;
   font-size: 13px;
+  font-weight: 600;
+  color: var(--tx-text-dim);
 
   button {
-    border: 1px solid #d7dae0;
-    background: #fff;
-    padding: 6px 14px;
-    border-radius: 6px;
+    border: none !important;
+    background: var(--tx-surface-soft) !important;
+    color: var(--tx-text) !important;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
     cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:not(:disabled):hover {
+      background: rgba(59, 130, 246, 0.18) !important;
+      color: #2563eb !important;
+      transform: translateY(-1px);
+    }
 
     &:disabled {
-      opacity: 0.4;
+      opacity: 0.35;
       cursor: not-allowed;
+      transform: none;
     }
   }
 }
 
-@media (max-width: 900px) {
-  .transaction-list-page__layout {
-    grid-template-columns: 1fr;
+/* ==========================================================
+   AJUSTEMENTS SPÉCIFIQUES MODE CLAIR (body.light-mode)
+   ========================================================== */
+body.light-mode {
+  .pagination button:not(:disabled):hover {
+    color: #1d4ed8 !important;
   }
 }

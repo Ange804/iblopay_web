@@ -233,15 +233,15 @@
         }
 
         .stat-label {
-            color: #f5c842;
-            font-weight: 700;
+            color: rgb(1, 1, 1);
+            font-weight: 70;
             letter-spacing: .4px;
-            font-size: 10px;
+            font-size: 15px;
         }
 
         .stat-value {
             font-size: 20px;
-            color: #fff;
+            color: rgb(56, 52, 52);
         }
     }
 
@@ -255,15 +255,15 @@
         }
 
         .stat-label {
-            color: #ec4899;
-            font-weight: 700;
+            color: rgb(8, 8, 8);
+            font-weight: 70;
             letter-spacing: .4px;
-            font-size: 10px;
+            font-size: 15px;
         }
 
         .stat-value {
             font-size: 20px;
-            color: #fff;
+            color: rgb(56, 52, 52);
         }
     }
 }
@@ -326,16 +326,17 @@
 
 .stat-label {
     font-size: 9px;
-    color: var(--text-dim);
-    font-weight: 600;
+    color: rgb(8, 8, 8);
+    font-weight: 70;
     text-transform: uppercase;
     letter-spacing: .4px;
+    font-size: 15px;
 }
 
 .stat-value {
     font-size: 10px;
     font-weight: 600;
-    color: var(--text, #e8edf7);
+    color: var(--text, rgb(56, 52, 52));
     margin: 2px 0 2px;
     letter-spacing: -.3px;
     line-height: 1.1;
@@ -474,7 +475,7 @@
 .panel-title {
     font-size: 15px;
     font-weight: 700;
-    color: var(--text, #e8edf7);
+    color: var(--text, rgb(41, 38, 38));
     letter-spacing: -.2px;
     display: flex;
     align-items: center;
