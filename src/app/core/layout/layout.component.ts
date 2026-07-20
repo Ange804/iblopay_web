@@ -96,17 +96,23 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     private updateRouteContext(): void {
         let route = this.activatedRoute.root;
-        let title: string | null = null;
         let moduleKey: string | null = null;
 
         while (route.firstChild) {
             route = route.firstChild;
             const data = route.snapshot.data;
-            if (data && data['title']) {
-                title = data['title'];
-            }
             if (data && data['module']) {
                 moduleKey = data['module'];
+            }
+        }
+
+        // Trouver le label du module depuis la route active
+        const currentUrl = this.router.url?.split('?')[0] ?? '';
+        let title: string | null = null;
+        for (const item of this.menuItems) {
+            if (currentUrl.startsWith(item.link)) {
+                title = item.label;
+                break;
             }
         }
 
