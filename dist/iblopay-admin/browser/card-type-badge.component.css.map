@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/modules/cards/components/card-type-badge/card-type-badge.component.scss"],
-  "sourcesContent": [".type-badge {\r\n  display: inline-flex;\r\n  align-items: center;\r\n  gap: 4px;\r\n  padding: 3px 8px;\r\n  border-radius: 6px;\r\n  font-size: 12px;\r\n  font-weight: 500;\r\n  color: #4a4f57;\r\n  background: #eef0f3;\r\n}\r\n\r\n.type-icon {\r\n  font-size: 12px;\r\n}\r\n"],
-  "mappings": ";AAAA,CAAA;AACE,WAAA;AACA,eAAA;AACA,OAAA;AACA,WAAA,IAAA;AACA,iBAAA;AACA,aAAA;AACA,eAAA;AACA,SAAA;AACA,cAAA;;AAGF,CAAA;AACE,aAAA;;",
-  "names": []
-}

@@ -1,0 +1,83 @@
+<div class="hub-page">
+  <!-- Page Header -->
+  <div class="hub-page__header">
+    <div class="hub-page__brand">
+      <div class="hub-page__logo">IBLOPAY</div>
+    </div>
+    <div class="hub-page__title-block">
+      <h1 class="hub-page__title">Gestion des Transactions</h1>
+      <p class="hub-page__subtitle">Suivez, contrôlez et analysez toutes les opérations financières en temps réel</p>
+    </div>
+    <div class="hub-page__topbar">
+      <span class="hub-page__datetime">📅 18 juin 2024 / 10:45:32</span>
+      <span class="hub-page__notif">🔔 <span class="hub-page__notif-badge">12</span></span>
+      <div class="hub-page__profile">
+        <span class="hub-page__avatar">AI</span>
+        <div class="hub-page__profile-info">
+          <span class="hub-page__profile-name">Admin Iblopay</span>
+          <span class="hub-page__profile-role">Administrateur</span>
+        </div>
+        <span class="hub-page__chevron">▼</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <app-kpi-cards [cards]="kpiCards"></app-kpi-cards>
+
+  <!-- Quick Actions -->
+  <app-quick-actions [actions]="quickActions"></app-quick-actions>
+
+  <!-- Filter Bar -->
+  <app-filter-bar (filterChange)="onPageChange(1)"></app-filter-bar>
+
+  <!-- Main Content: Table + Detail Panel -->
+  <div class="hub-page__main">
+    <div class="hub-page__table-area">
+      <app-transaction-table
+        [rows]="transactions"
+        [total]="totalTransactions"
+        [currentPage]="currentPage"
+        (pageChange)="onPageChange($event)"
+        (rowClick)="onRowClick($event)">
+      </app-transaction-table>
+    </div>
+
+    <div class="hub-page__detail-area">
+      <app-detail-panel
+        [detail]="selectedDetail"
+        [visible]="detailVisible"
+        (close)="closeDetail()">
+      </app-detail-panel>
+    </div>
+  </div>
+
+  <!-- Analytics Row (4 panels) -->
+  <div class="hub-page__analytics">
+    <div class="hub-page__analytics-item hub-page__analytics-item--wide">
+      <app-traceability-timeline [data]="traceability"></app-traceability-timeline>
+    </div>
+    <div class="hub-page__analytics-item">
+      <app-volume-chart [labels]="chartLabels" [values]="chartValues"></app-volume-chart>
+    </div>
+  </div>
+
+  <div class="hub-page__analytics">
+    <div class="hub-page__analytics-item">
+      <app-top-actors [actors]="topActors"></app-top-actors>
+    </div>
+    <div class="hub-page__analytics-item">
+      <app-operation-types-donut [types]="operationTypes"></app-operation-types-donut>
+    </div>
+  </div>
+
+  <!-- Bottom Row -->
+  <div class="hub-page__analytics">
+    <div class="hub-page__analytics-item">
+      <app-alerts-list [alerts]="alerts"></app-alerts-list>
+    </div>
+    <div class="hub-page__analytics-item">
+      <app-system-activities [activities]="systemActivities"></app-system-activities>
+    </div>
+  </div>
+</div>

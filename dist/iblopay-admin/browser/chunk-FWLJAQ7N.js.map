@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/modules/reports/reports-routing.module.ts", "src/app/modules/reports/reports.module.ts"],
-  "sourcesContent": ["import { NgModule } from '@angular/core';\r\nimport { RouterModule, Routes } from '@angular/router';\r\n\r\nconst routes: Routes = [];\r\n\r\n@NgModule({\r\n  imports: [RouterModule.forChild(routes)],\r\n  exports: [RouterModule]\r\n})\r\nexport class ReportsRoutingModule { }\r\n", "import { NgModule } from '@angular/core';\r\nimport { CommonModule } from '@angular/common';\r\n\r\nimport { ReportsRoutingModule } from './reports-routing.module';\r\n\r\n\r\n@NgModule({\r\n  declarations: [],\r\n  imports: [\r\n    CommonModule,\r\n    ReportsRoutingModule\r\n  ]\r\n})\r\nexport class ReportsModule { }\r\n"],
-  "mappings": ";;;;;;;;AAGA,IAAM,SAAiB,CAAA;AAMjB,IAAO,uBAAP,MAAO,sBAAoB;;;uBAApB,uBAAoB;IAAA;EAAA;;wEAApB,sBAAoB,CAAA;EAAA;;4EAHrB,aAAa,SAAS,MAAM,GAC5B,YAAY,EAAA,CAAA;EAAA;;;;ACMlB,IAAO,gBAAP,MAAO,eAAa;;;uBAAb,gBAAa;IAAA;EAAA;;wEAAb,eAAa,CAAA;EAAA;;;MAJtB;MACA;IAAoB,EAAA,CAAA;EAAA;;",
-  "names": []
-}

@@ -27,7 +27,7 @@
 
     &:hover {
         transform: translateY(-4px) scale(1.02);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 25px var(--shadow-color);
     }
 
     .qicon {
@@ -37,19 +37,19 @@
     }
 
     &.b1 {
-        background: linear-gradient(135deg, #1d4ed8, #1e40af);
+        background: linear-gradient(135deg, var(--blue), #1e40af);
     }
 
     &.b2 {
-        background: linear-gradient(135deg, #15803d, #166534);
+        background: linear-gradient(135deg, var(--green), #166534);
     }
 
     &.b3 {
-        background: linear-gradient(135deg, #a16207, #854d0e);
+        background: linear-gradient(135deg, var(--sun), #854d0e);
     }
 
     &.b4 {
-        background: linear-gradient(135deg, #7e22ce, #6b21a8);
+        background: linear-gradient(135deg, var(--purple), #6b21a8);
     }
 
     &.b5 {
@@ -57,7 +57,7 @@
     }
 
     &.b6 {
-        background: linear-gradient(135deg, #b91c1c, #991b1b);
+        background: linear-gradient(135deg, var(--red), #991b1b);
     }
 
     &.b7 {

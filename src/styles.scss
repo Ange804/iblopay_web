@@ -1,6 +1,7 @@
 // src/styles.scss
-//@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import 'styles/theme';
+
+// ─── Initialisation Globale ───────────────────────────
 * {
   margin: 0;
   padding: 0;
@@ -8,103 +9,260 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f0f2f5;
-  color: #1a1a2e;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-darkest, #070d19); // Fond ultra-sombre de l'application
+  color: var(--text-primary, #ffffff);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-// Scrollbar
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+// ─── Scrollbar Épurée (Style Dashboard Capturé) ───────
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
 
-// Classes utilitaires
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
-.mt-1 { margin-top: 4px; }
-.mt-2 { margin-top: 8px; }
-.mt-3 { margin-top: 12px; }
-.mt-4 { margin-top: 16px; }
-.mb-1 { margin-bottom: 4px; }
-.mb-2 { margin-bottom: 8px; }
-.mb-3 { margin-bottom: 12px; }
-.mb-4 { margin-bottom: 16px; }
-.mb-6 { margin-bottom: 24px; }
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.gap-2 { gap: 8px; }
-.gap-3 { gap: 12px; }
-.gap-4 { gap: 16px; }
-.w-full { width: 100%; }
-.relative { position: relative; }
-.absolute { position: absolute; }
-.text-sm { font-size: 14px; }
-.text-xs { font-size: 12px; }
-.text-lg { font-size: 18px; }
-.text-xl { font-size: 20px; }
-.text-2xl { font-size: 24px; }
-.font-bold { font-weight: 700; }
-.font-semibold { font-weight: 600; }
-.font-medium { font-weight: 500; }
-.rounded-lg { border-radius: 12px; }
-.rounded-xl { border-radius: 16px; }
-.rounded-full { border-radius: 9999px; }
-.shadow-sm { box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-.shadow-md { box-shadow: 0 4px 6px rgba(0,0,0,0.07); }
-.shadow-lg { box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
-.transition { transition: all 0.2s ease; }
-.overflow-hidden { overflow: hidden; }
-.overflow-x-auto { overflow-x: auto; }
+::-webkit-scrollbar-track {
+  background: var(--bg-darkest, #070d19);
+}
 
-// Couleurs
-.text-gray-400 { color: #94a3b8; }
-.text-gray-500 { color: #64748b; }
-.text-gray-600 { color: #475569; }
-.text-gray-700 { color: #334155; }
-.text-gray-900 { color: #0f172a; }
-.text-indigo-500 { color: #4f46e5; }
-.text-indigo-600 { color: #4338ca; }
-.text-green-500 { color: #16a34a; }
-.text-red-500 { color: #dc2626; }
-.text-yellow-500 { color: #f59e0b; }
-.text-white { color: #ffffff; }
+::-webkit-scrollbar-thumb {
+  background: var(--border-light, rgba(255, 255, 255, 0.1));
+  border-radius: 20px;
 
-.bg-white { background: #ffffff; }
-.bg-gray-50 { background: #f8fafc; }
-.bg-gray-100 { background: #f1f5f9; }
-.bg-indigo-50 { background: #eef2ff; }
-.bg-indigo-500 { background: #4f46e5; }
-.bg-green-50 { background: #dcfce7; }
-.bg-red-50 { background: #fee2e2; }
-.bg-yellow-50 { background: #fef3c7; }
+  &:hover {
+    background: var(--text-muted, #64748b);
+  }
+}
 
-.border { border: 1px solid #e8ecf1; }
-.border-gray-200 { border-color: #e2e8f0; }
-.border-gray-300 { border-color: #cbd5e1; }
+// ─── Classes Utilitaires Professionnelles ─────────────
+.text-center {
+  text-align: center;
+}
 
-// Animations
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+// Marges standardisées sur une grille de 4px
+.mt-1 {
+  margin-top: 4px;
+}
+
+.mt-2 {
+  margin-top: 8px;
+}
+
+.mt-3 {
+  margin-top: 12px;
+}
+
+.mt-4 {
+  margin-top: 16px;
+}
+
+.mt-6 {
+  margin-top: 24px;
+}
+
+.mb-1 {
+  margin-bottom: 4px;
+}
+
+.mb-2 {
+  margin-bottom: 8px;
+}
+
+.mb-3 {
+  margin-bottom: 12px;
+}
+
+.mb-4 {
+  margin-bottom: 16px;
+}
+
+.mb-6 {
+  margin-bottom: 24px;
+}
+
+// Flexbox & Layout helpers
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.gap-1 {
+  gap: 4px;
+}
+
+.gap-2 {
+  gap: 8px;
+}
+
+.gap-3 {
+  gap: 12px;
+}
+
+.gap-4 {
+  gap: 16px;
+}
+
+.gap-6 {
+  gap: 24px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+// Typographies et Tailles proportionnelles
+.text-xs {
+  font-size: 11px;
+}
+
+.text-sm {
+  font-size: 13px;
+}
+
+.text-base {
+  font-size: 14px;
+}
+
+.text-lg {
+  font-size: 16px;
+}
+
+.text-xl {
+  font-size: 18px;
+}
+
+.text-2xl {
+  font-size: 22px;
+  letter-spacing: -0.5px;
+}
+
+// Ajusté pour les montants/titres de ton image
+
+.font-normal {
+  font-weight: 400;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+// Arrondis élégants (Border-radius ajustés à la capture)
+.rounded-sm {
+  border-radius: 4px;
+}
+
+.rounded-md {
+  border-radius: 8px;
+}
+
+.rounded-lg {
+  border-radius: 12px;
+}
+
+// Idéal pour les cartes intérieures
+.rounded-xl {
+  border-radius: 16px;
+}
+
+// Idéal pour les grands conteneurs de widgets
+.rounded-full {
+  border-radius: 9999px;
+}
+
+// Ombres fluides (Évite l'effet "sale" sur fond sombre)
+.shadow-sm {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.shadow-lg {
+  box-shadow: 0 12px 32px var(--shadow-color, rgba(0, 0, 0, 0.4));
+}
+
+// États et transitions
+.transition {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
+// ─── Animations Fluides ───────────────────────────────
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
+
 .animate-spin {
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.7s linear infinite;
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.fade-in-up {
-  animation: fadeInUp 0.4s ease forwards;
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-// Thème clair/sombre
-body.light-mode {
-  background: #f0f2f5;
+.fade-in-up {
+  animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

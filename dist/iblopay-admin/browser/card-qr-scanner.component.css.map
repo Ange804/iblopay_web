@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/modules/cards/components/card-qr-scanner/card-qr-scanner.component.scss"],
-  "sourcesContent": [".qr-placeholder {\r\n  border: 1px dashed #c7cad1;\r\n  border-radius: 12px;\r\n  padding: 32px;\r\n  text-align: center;\r\n  color: #6f737c;\r\n\r\n  &__hint {\r\n    font-size: 12px;\r\n    margin-top: 6px;\r\n  }\r\n}\r\n"],
-  "mappings": ";AAAA,CAAA;AACE,UAAA,IAAA,OAAA;AACA,iBAAA;AACA,WAAA;AACA,cAAA;AACA,SAAA;;AAEA,CAAA;AACE,aAAA;AACA,cAAA;;",
-  "names": []
-}

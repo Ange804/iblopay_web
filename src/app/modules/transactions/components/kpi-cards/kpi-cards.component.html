@@ -1,0 +1,19 @@
+<div class="kpi-grid">
+  <div class="kpi-card" *ngFor="let card of cards">
+    <div class="kpi-card__label">{{ card.label }}</div>
+    <div class="kpi-card__value">{{ card.value }}</div>
+    <div class="kpi-card__footer">
+      <span class="kpi-card__delta" [class.kpi-card__delta--increase]="card.deltaType === 'increase'"
+            [class.kpi-card__delta--decrease]="card.deltaType === 'decrease'"
+            [class.kpi-card__delta--neutral]="card.deltaType === 'neutral'">
+        {{ card.delta }}
+      </span>
+      <span class="kpi-card__extra" *ngIf="card.extra">{{ card.extra }}</span>
+      <a class="kpi-card__link" *ngIf="card.link" href="#">{{ card.link }}</a>
+    </div>
+    <div class="kpi-card__sparkline" *ngIf="card.sparkline">
+      <span class="mini-bar" *ngFor="let v of card.sparkline"
+            [style.height.%]="(v / maxSparkline) * 60"></span>
+    </div>
+  </div>
+</div>

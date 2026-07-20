@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/modules/services-publics/services-publics-routing.module.ts", "src/app/modules/services-publics/services-publics.module.ts"],
-  "sourcesContent": ["import { NgModule } from '@angular/core';\r\nimport { RouterModule, Routes } from '@angular/router';\r\n\r\nconst routes: Routes = [];\r\n\r\n@NgModule({\r\n  imports: [RouterModule.forChild(routes)],\r\n  exports: [RouterModule]\r\n})\r\nexport class ServicesPublicsRoutingModule { }\r\n", "import { NgModule } from '@angular/core';\r\nimport { CommonModule } from '@angular/common';\r\n\r\nimport { ServicesPublicsRoutingModule } from './services-publics-routing.module';\r\n\r\n\r\n@NgModule({\r\n  declarations: [],\r\n  imports: [\r\n    CommonModule,\r\n    ServicesPublicsRoutingModule\r\n  ]\r\n})\r\nexport class ServicesPublicsModule { }\r\n"],
-  "mappings": ";;;;;;;;AAGA,IAAM,SAAiB,CAAA;AAMjB,IAAO,+BAAP,MAAO,8BAA4B;;;uBAA5B,+BAA4B;IAAA;EAAA;;wEAA5B,8BAA4B,CAAA;EAAA;;4EAH7B,aAAa,SAAS,MAAM,GAC5B,YAAY,EAAA,CAAA;EAAA;;;;ACMlB,IAAO,wBAAP,MAAO,uBAAqB;;;uBAArB,wBAAqB;IAAA;EAAA;;wEAArB,uBAAqB,CAAA;EAAA;;;MAJ9B;MACA;IAA4B,EAAA,CAAA;EAAA;;",
-  "names": []
-}

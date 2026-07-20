@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["angular:styles/component:css;e29febce4b98d7758345abd7841afc68f72817fc7a6e75e76b935496f821afb3;C:/iblo_web-main/iblopay_web/src/app/modules/agents/components/agent-stats/agent-stats.component.ts"],
-  "sourcesContent": ["\n    .stats-container {\n      display: grid;\n      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));\n      gap: 16px;\n      margin-bottom: 24px;\n    }\n    .stat-card {\n      background: white;\n      padding: 16px;\n      border-radius: 8px;\n      box-shadow: 0 2px 4px rgba(0,0,0,0.1);\n      text-align: center;\n      \n      .stat-number {\n        font-size: 28px;\n        font-weight: bold;\n        color: #1a237e;\n      }\n      \n      .stat-label {\n        font-size: 14px;\n        color: #666;\n        margin-top: 4px;\n      }\n    }\n  "],
-  "mappings": ";AACI,CAAC;AACC,WAAS;AACT,yBAAuB,OAAO,QAAQ,EAAE,OAAO,KAAK,EAAE;AACtD,OAAK;AACL,iBAAe;AACjB;AACA,CAAC;AACC,cAAY;AACZ,WAAS;AACT,iBAAe;AACf,cAAY,EAAE,IAAI,IAAI,KAAK,CAAC,EAAC,CAAC,EAAC,CAAC,EAAC;AACjC,cAAY;AAEZ,GAAC;AACC,eAAW;AACX,iBAAa;AACb,WAAO;AACT;AAEA,GAAC;AACC,eAAW;AACX,WAAO;AACP,gBAAY;AACd;AACF;",
-  "names": []
-}

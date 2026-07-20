@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["angular:styles/component:css;d43effbc4d71bf7e7874d20f87a4c4ad013d5e86d5da381221153233e6894d7e;C:/iblo_web-main/iblopay_web/src/app/modules/agents/dialogs/agent-delete-dialog/agent-delete-dialog.component.ts"],
-  "sourcesContent": ["\n    .dialog-container {\n      padding: 24px;\n      max-width: 400px;\n      \n      h2 {\n        margin-top: 0;\n        color: #c62828;\n      }\n      \n      .warning {\n        color: #c62828;\n        font-weight: 500;\n        margin: 16px 0;\n      }\n      \n      .dialog-actions {\n        display: flex;\n        justify-content: flex-end;\n        gap: 12px;\n        margin-top: 24px;\n      }\n      \n      .btn-secondary {\n        padding: 8px 16px;\n        background: #666;\n        color: white;\n        border: none;\n        border-radius: 4px;\n        cursor: pointer;\n      }\n      \n      .btn-danger {\n        padding: 8px 16px;\n        background: #c62828;\n        color: white;\n        border: none;\n        border-radius: 4px;\n        cursor: pointer;\n        \n        &:hover {\n          background: #b71c1c;\n        }\n      }\n    }\n  "],
-  "mappings": ";AACI,CAAC;AACC,WAAS;AACT,aAAW;AAEX;AACE,gBAAY;AACZ,WAAO;AACT;AAEA,GAAC;AACC,WAAO;AACP,iBAAa;AACb,YAAQ,KAAK;AACf;AAEA,GAAC;AACC,aAAS;AACT,qBAAiB;AACjB,SAAK;AACL,gBAAY;AACd;AAEA,GAAC;AACC,aAAS,IAAI;AACb,gBAAY;AACZ,WAAO;AACP,YAAQ;AACR,mBAAe;AACf,YAAQ;AACV;AAEA,GAAC;AACC,aAAS,IAAI;AACb,gBAAY;AACZ,WAAO;AACP,YAAQ;AACR,mBAAe;AACf,YAAQ;AAER,KAAC;AACC,kBAAY;AACd;AACF;AACF;",
-  "names": []
-}
