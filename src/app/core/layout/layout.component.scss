@@ -4,6 +4,8 @@
 // IBLOPAY — Responsive Layout Shared Styles
 // ==========================================================
 
+@use '../../../styles/variables' as *;
+
 $sidebar-w: 260px;
 $breakpoint-tablet: 1024px;
 $breakpoint-mobile: 480px;
@@ -15,14 +17,20 @@ $breakpoint-mobile: 480px;
 .layout-container {
     display: flex;
     min-height: 100vh;
+<<<<<<< HEAD
     background-color: var(--ink, #0a0f1e);
     color: var(--text, #e2e8f0);
     font-family: var(--font-body, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+=======
+    background-color: var(--ink);
+    color: var(--text);
+    font-family: var(--font-body);
+>>>>>>> 9cea066a8a5c8ca178bb195f6743a243eb43e627
     overflow-x: hidden;
 }
 
 // ==========================================================
-// OVERLAY (Actif uniquement sur tablettes et mobiles)
+// OVERLAY
 // ==========================================================
 .overlay {
     display: none;
@@ -43,7 +51,7 @@ $breakpoint-mobile: 480px;
 }
 
 // ==========================================================
-// SIDEBAR (Adaptative & Fluide)
+// SIDEBAR
 // ==========================================================
 .sidebar {
     width: $sidebar-w;
@@ -290,9 +298,13 @@ $breakpoint-mobile: 480px;
     }
 }
 
+<<<<<<< HEAD
 // ==========================================================
 // SEARCH
 // ==========================================================
+=======
+// ---------------- SEARCH ----------------
+>>>>>>> 9cea066a8a5c8ca178bb195f6743a243eb43e627
 .search-box {
     position: relative;
     display: flex;
@@ -328,6 +340,7 @@ $breakpoint-mobile: 480px;
     }
 }
 
+<<<<<<< HEAD
 .search-results {
     position: absolute;
     top: calc(100% + 8px);
@@ -380,6 +393,9 @@ $breakpoint-mobile: 480px;
 // ==========================================================
 // TOPBAR ACTIONS
 // ==========================================================
+=======
+// ---------------- RIGHT ACTIONS ----------------
+>>>>>>> 9cea066a8a5c8ca178bb195f6743a243eb43e627
 .topbar-right {
     display: flex;
     align-items: center;
@@ -435,6 +451,7 @@ $breakpoint-mobile: 480px;
     border: 2px solid var(--surface, #111c44);
 }
 
+<<<<<<< HEAD
 // ==========================================================
 // NOTIFICATIONS PANEL - TRANSPARENT AVEC FLOU
 // ==========================================================
@@ -818,6 +835,8 @@ $breakpoint-mobile: 480px;
 // ==========================================================
 // PROFIL
 // ==========================================================
+=======
+>>>>>>> 9cea066a8a5c8ca178bb195f6743a243eb43e627
 .profile-box {
     display: flex;
     align-items: center;
