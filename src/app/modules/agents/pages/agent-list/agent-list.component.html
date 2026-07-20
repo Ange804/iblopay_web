@@ -159,7 +159,7 @@
               <th style="min-width:110px;text-align:center;">Électroniques</th>
               <th style="min-width:70px;text-align:center;">Agents</th>
               <th style="min-width:100px;">Statut</th>
-              <th style="min-width:90px;text-align:center;">Actions</th>
+              <th style="min-width:120px;text-align:center;">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -214,6 +214,9 @@
                 <div class="action-buttons">
                   <button class="action-btn view" (click)="viewAgent(agent)" title="Voir">
                     <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="action-btn fund" (click)="openFundModal(agent)" title="Approvisionner">
+                    <i class="fas fa-coins"></i>
                   </button>
                   <button class="action-btn block" (click)="openBlockOtpModal(agent)" 
                           [class.unblock]="agent.status === 'BLOCKED'"
@@ -307,6 +310,200 @@
         <button *ngIf="otpCanResend" (click)="resendOtp()" class="otp-resend-btn" [disabled]="otpLoading">
           <i class="fas fa-redo"></i> Renvoyer le code
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL APPROVISIONNEMENT ================= -->
+  <div class="fund-modal-overlay" *ngIf="showFundModal" (click)="closeFundModal()">
+    <div class="fund-modal" (click)="$event.stopPropagation()">
+      <button class="fund-modal-close" (click)="closeFundModal()">&times;</button>
+
+      <div class="fund-modal-header">
+        <div class="fund-modal-icon">
+          <i class="fas fa-money-bill-wave"></i>
+        </div>
+        <h3>Approvisionnement e-Money</h3>
+        <p class="fund-modal-subtitle">Valider un dépôt bancaire et créditer le Super Agent</p>
+      </div>
+
+      <!-- Information du Super Agent -->
+      <div class="fund-agent-info" *ngIf="agentToFund">
+        <div class="fund-agent-avatar" [style.background]="'hsl(' + (agentToFund.id * 45 + 200) + ', 70%, 50%)'">
+          {{ getInitials(agentToFund.firstName, agentToFund.lastName) }}
+        </div>
+        <div class="fund-agent-details">
+          <div class="fund-agent-name">{{ agentToFund.firstName }} {{ agentToFund.lastName }}</div>
+          <div class="fund-agent-code">Code: {{ agentToFund.code }}</div>
+          <div class="fund-agent-balance">Solde actuel: <strong>{{ getTotalElectronicsAmount(agentToFund) | number:'1.0-0' }} Fbu</strong></div>
+        </div>
+      </div>
+
+      <!-- Message d'erreur -->
+      <div class="fund-error" *ngIf="fundError">
+        <i class="fas fa-exclamation-circle"></i> {{ fundError }}
+      </div>
+
+      <!-- Message de succès -->
+      <div class="fund-success" *ngIf="fundSuccess">
+        <i class="fas fa-check-circle"></i> {{ fundSuccess }}
+      </div>
+
+      <!-- Formulaire -->
+      <form #fundForm="ngForm" (ngSubmit)="submitFund()" class="fund-form">
+        <!-- Référence du bordereau -->
+        <div class="fund-form-group">
+          <label for="receiptReference">
+            <i class="fas fa-receipt"></i> Référence du bordereau *
+          </label>
+          <input
+            id="receiptReference"
+            type="text"
+            name="receiptReference"
+            [(ngModel)]="fundData.receiptReference"
+            required
+            placeholder="Ex: DEP-2026-07-16-001"
+            class="fund-input"
+          />
+          <small>Numéro de référence figurant sur le bordereau bancaire</small>
+        </div>
+
+        <!-- Montant -->
+        <div class="fund-form-group">
+          <label for="amount">
+            <i class="fas fa-coins"></i> Montant à créditer (Fbu) *
+          </label>
+          <input
+            id="amount"
+            type="number"
+            name="amount"
+            [(ngModel)]="fundData.amount"
+            required
+            min="1"
+            step="100"
+            placeholder="0"
+            class="fund-input"
+          />
+          <small>Montant du dépôt en espèces sur le Trust Account</small>
+        </div>
+
+        <!-- Banque et agence -->
+        <div class="fund-row">
+          <div class="fund-form-group half">
+            <label for="bank">
+              <i class="fas fa-university"></i> Banque *
+            </label>
+            <select
+              id="bank"
+              name="bank"
+              [(ngModel)]="fundData.bank"
+              required
+              class="fund-input"
+            >
+              <option value="">Sélectionner une banque</option>
+              <option value="BCDC">BCDC</option>
+              <option value="BCC">BCC</option>
+              <option value="BANCO">BANCO</option>
+              <option value="ECOBANK">ECOBANK</option>
+              <option value="UBA">UBA</option>
+              <option value="OTHER">Autre</option>
+            </select>
+          </div>
+
+          <div class="fund-form-group half">
+            <label for="branch">
+              <i class="fas fa-map-marker-alt"></i> Agence *
+            </label>
+            <input
+              id="branch"
+              type="text"
+              name="branch"
+              [(ngModel)]="fundData.branch"
+              required
+              placeholder="Nom de l'agence"
+              class="fund-input"
+            />
+          </div>
+        </div>
+
+        <!-- Date du dépôt -->
+        <div class="fund-form-group">
+          <label for="depositDate">
+            <i class="fas fa-calendar-alt"></i> Date et heure du dépôt *
+          </label>
+          <input
+            id="depositDate"
+            type="datetime-local"
+            name="depositDate"
+            [(ngModel)]="fundData.depositDate"
+            required
+            class="fund-input"
+          />
+        </div>
+
+        <!-- Validation du Trust Account -->
+        <div class="fund-checkbox-group">
+          <label class="fund-checkbox">
+            <input
+              type="checkbox"
+              name="trustAccountVerified"
+              [(ngModel)]="fundData.trustAccountVerified"
+              required
+            />
+            <span class="fund-checkbox-label">
+              <i class="fas fa-check-circle"></i>
+              Je confirme que le dépôt a été vérifié sur le Trust Account et que les informations du bordereau sont conformes
+            </span>
+          </label>
+        </div>
+
+        <!-- Admin note -->
+        <div class="fund-form-group">
+          <label for="adminNote">
+            <i class="fas fa-sticky-note"></i> Note interne (optionnelle)
+          </label>
+          <textarea
+            id="adminNote"
+            name="adminNote"
+            [(ngModel)]="fundData.adminNote"
+            rows="2"
+            placeholder="Observations supplémentaires..."
+            class="fund-input fund-textarea"
+          ></textarea>
+        </div>
+
+        <!-- Boutons -->
+        <div class="fund-actions">
+          <button type="button" class="fund-btn-cancel" (click)="closeFundModal()" [disabled]="fundLoading">
+            Annuler
+          </button>
+          <button type="submit" class="fund-btn-confirm" [disabled]="fundLoading || !fundForm.valid || !fundData.trustAccountVerified">
+            <span *ngIf="!fundLoading">
+              <i class="fas fa-check"></i> Valider et créditer
+            </span>
+            <span *ngIf="fundLoading" class="fund-btn-loader">
+              <span class="fund-spinner"></span> Traitement...
+            </span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Résumé des opérations récentes -->
+      <div class="fund-recent" *ngIf="recentFunds.length > 0">
+        <div class="fund-recent-header">
+          <span><i class="fas fa-history"></i> Approvisionnements récents</span>
+        </div>
+        <div class="fund-recent-list">
+          <div class="fund-recent-item" *ngFor="let fund of recentFunds.slice(0, 3)">
+            <div class="fund-recent-info">
+              <span class="fund-recent-agent">{{ fund.agentName }}</span>
+              <span class="fund-recent-ref">{{ fund.receiptReference }}</span>
+            </div>
+            <div class="fund-recent-amount">
+              {{ fund.amount | number:'1.0-0' }} Fbu
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
