@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/modules/cards/components/card-preview/card-preview.component.scss"],
-  "sourcesContent": [".card-preview {\r\n  border-radius: 16px;\r\n  padding: 20px;\r\n  background: linear-gradient(135deg, #1c1e26 0%, #2c2f3a 100%);\r\n  color: #fff;\r\n  min-width: 280px;\r\n  max-width: 340px;\r\n  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);\r\n  transition: opacity 0.2s ease;\r\n\r\n  &.dimmed {\r\n    opacity: 0.55;\r\n    filter: grayscale(40%);\r\n  }\r\n\r\n  &__top {\r\n    display: flex;\r\n    justify-content: space-between;\r\n    align-items: center;\r\n  }\r\n\r\n  &__brand {\r\n    font-weight: 700;\r\n    letter-spacing: 0.05em;\r\n    font-size: 13px;\r\n  }\r\n\r\n  &__pan {\r\n    margin-top: 28px;\r\n    font-size: 18px;\r\n    letter-spacing: 0.08em;\r\n    font-variant-numeric: tabular-nums;\r\n  }\r\n\r\n  &__bottom {\r\n    margin-top: 22px;\r\n    display: flex;\r\n    justify-content: space-between;\r\n    align-items: center;\r\n  }\r\n\r\n  &__holder {\r\n    font-size: 13px;\r\n    opacity: 0.85;\r\n  }\r\n}\r\n"],
-  "mappings": ";AAAA,CAAA;AACE,iBAAA;AACA,WAAA;AACA;IAAA;MAAA,MAAA;MAAA,QAAA,EAAA;MAAA,QAAA;AACA,SAAA;AACA,aAAA;AACA,aAAA;AACA,cAAA,EAAA,IAAA,KAAA,KAAA,CAAA,EAAA,CAAA,EAAA,CAAA,EAAA;AACA,cAAA,QAAA,KAAA;;AAEA,CAVF,YAUE,CAAA;AACE,WAAA;AACA,UAAA,UAAA;;AAGF,CAAA;AACE,WAAA;AACA,mBAAA;AACA,eAAA;;AAGF,CAAA;AACE,eAAA;AACA,kBAAA;AACA,aAAA;;AAGF,CAAA;AACE,cAAA;AACA,aAAA;AACA,kBAAA;AACA,wBAAA;;AAGF,CAAA;AACE,cAAA;AACA,WAAA;AACA,mBAAA;AACA,eAAA;;AAGF,CAAA;AACE,aAAA;AACA,WAAA;;",
-  "names": []
-}

@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/modules/intra-agricole/intra-agricole-routing.module.ts", "src/app/modules/intra-agricole/intra-agricole.module.ts"],
-  "sourcesContent": ["import { NgModule } from '@angular/core';\r\nimport { RouterModule, Routes } from '@angular/router';\r\n\r\nconst routes: Routes = [];\r\n\r\n@NgModule({\r\n  imports: [RouterModule.forChild(routes)],\r\n  exports: [RouterModule]\r\n})\r\nexport class IntraAgricoleRoutingModule { }\r\n", "import { NgModule } from '@angular/core';\r\nimport { CommonModule } from '@angular/common';\r\n\r\nimport { IntraAgricoleRoutingModule } from './intra-agricole-routing.module';\r\n\r\n\r\n@NgModule({\r\n  declarations: [],\r\n  imports: [\r\n    CommonModule,\r\n    IntraAgricoleRoutingModule\r\n  ]\r\n})\r\nexport class IntraAgricoleModule { }\r\n"],
-  "mappings": ";;;;;;;;AAGA,IAAM,SAAiB,CAAA;AAMjB,IAAO,6BAAP,MAAO,4BAA0B;;;uBAA1B,6BAA0B;IAAA;EAAA;;wEAA1B,4BAA0B,CAAA;EAAA;;4EAH3B,aAAa,SAAS,MAAM,GAC5B,YAAY,EAAA,CAAA;EAAA;;;;ACMlB,IAAO,sBAAP,MAAO,qBAAmB;;;uBAAnB,sBAAmB;IAAA;EAAA;;wEAAnB,qBAAmB,CAAA;EAAA;;;MAJ5B;MACA;IAA0B,EAAA,CAAA;EAAA;;",
-  "names": []
-}

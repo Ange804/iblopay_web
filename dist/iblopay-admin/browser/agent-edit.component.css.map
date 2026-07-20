@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["angular:styles/component:css;bc71ea0d830419259667b40abab3d64abf4671b6e7683ab4258a2967aa6f1b9a;C:/iblo_web-main/iblopay_web/src/app/modules/agents/pages/agent-edit/agent-edit.component.ts"],
-  "sourcesContent": ["\n    .edit-container {\n      padding: 20px;\n      max-width: 800px;\n      margin: 0 auto;\n    }\n    .form-card {\n      background: white;\n      padding: 20px;\n      border-radius: 8px;\n      box-shadow: 0 2px 4px rgba(0,0,0,0.1);\n      margin: 20px 0;\n      text-align: center;\n      padding: 60px 20px;\n    }\n    .btn-secondary {\n      background: #666;\n      color: white;\n      border: none;\n      padding: 10px 20px;\n      border-radius: 4px;\n      cursor: pointer;\n    }\n  "],
-  "mappings": ";AACI,CAAC;AACC,WAAS;AACT,aAAW;AACX,UAAQ,EAAE;AACZ;AACA,CAAC;AACC,cAAY;AACZ,WAAS;AACT,iBAAe;AACf,cAAY,EAAE,IAAI,IAAI,KAAK,CAAC,EAAC,CAAC,EAAC,CAAC,EAAC;AACjC,UAAQ,KAAK;AACb,cAAY;AACZ,WAAS,KAAK;AAChB;AACA,CAAC;AACC,cAAY;AACZ,SAAO;AACP,UAAQ;AACR,WAAS,KAAK;AACd,iBAAe;AACf,UAAQ;AACV;",
-  "names": []
-}

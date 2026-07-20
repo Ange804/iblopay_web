@@ -6,6 +6,8 @@
 // définissent aucune couleur en dur.
 // ==========================================================
 
+@use '../../../styles/variables' as *;
+
 $sidebar-w: 272px;
 
 :host {
