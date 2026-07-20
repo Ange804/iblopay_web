@@ -2,6 +2,8 @@
 // IBLOPAY — Responsive Layout Shared Styles
 // ==========================================================
 
+@use '../../../styles/variables' as *;
+
 $sidebar-w: 260px;
 $breakpoint-tablet: 1024px;
 $breakpoint-mobile: 480px;
@@ -13,14 +15,14 @@ $breakpoint-mobile: 480px;
 .layout-container {
     display: flex;
     min-height: 100vh;
-    background-color: var(--ink); // Suit dynamiquement la variable globale
+    background-color: var(--ink);
     color: var(--text);
     font-family: var(--font-body);
     overflow-x: hidden;
 }
 
 // ==========================================================
-// OVERLAY (Actif uniquement sur tablettes et mobiles)
+// OVERLAY
 // ==========================================================
 .overlay {
     display: none;
@@ -41,7 +43,7 @@ $breakpoint-mobile: 480px;
 }
 
 // ==========================================================
-// SIDEBAR (Adaptative & Fluide)
+// SIDEBAR
 // ==========================================================
 .sidebar {
     width: $sidebar-w;
@@ -55,11 +57,11 @@ $breakpoint-mobile: 480px;
     left: 0;
     height: 100vh;
     z-index: 50;
-    transform: translateX(-100%); // Caché par défaut pour l'animation de toggle
+    transform: translateX(-100%);
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
     &.open {
-        transform: translateX(0); // S'ouvre au clic du bouton menu
+        transform: translateX(0);
     }
 
     &::-webkit-scrollbar {
@@ -217,7 +219,7 @@ $breakpoint-mobile: 480px;
 }
 
 // ==========================================================
-// MAIN CONTENT & TOPBAR (Gestion du comportement responsive)
+// MAIN CONTENT & TOPBAR
 // ==========================================================
 .main-content {
     flex: 1;
@@ -227,7 +229,6 @@ $breakpoint-mobile: 480px;
     margin-left: 0;
     transition: margin-left 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 
-    // Sur grand écran, décale le contenu si la barre est ouverte
     &.sidebar-open {
         @media (min-width: calc(#{$breakpoint-tablet} + 1px)) {
             margin-left: $sidebar-w;
@@ -287,18 +288,18 @@ $breakpoint-mobile: 480px;
     text-overflow: ellipsis;
 
     @media (max-width: $breakpoint-mobile) {
-        font-size: 15px; // Raccourcit le texte sur les petits téléphones
+        font-size: 15px;
     }
 }
 
-// ---------------- SEARCH RESPONSIVE ----------------
+// ---------------- SEARCH ----------------
 .search-box {
     position: relative;
     display: flex;
     align-items: center;
 
     @media (max-width: $breakpoint-tablet) {
-        display: none; // Masqué sur tablette/mobile pour économiser l'espace
+        display: none;
     }
 }
 
@@ -327,7 +328,7 @@ $breakpoint-mobile: 480px;
     }
 }
 
-// ---------------- ACTIONS DROITE RESPONSIVE ----------------
+// ---------------- RIGHT ACTIONS ----------------
 .topbar-right {
     display: flex;
     align-items: center;
@@ -355,7 +356,7 @@ $breakpoint-mobile: 480px;
 
     @media (max-width: $breakpoint-mobile) {
         width: 34px;
-        height: 34px; // Légère réduction sur mobile
+        height: 34px;
     }
 }
 
@@ -370,7 +371,6 @@ $breakpoint-mobile: 480px;
     border: 2px solid var(--surface, #111c44);
 }
 
-// Profil utilisateur adaptatif
 .profile-box {
     display: flex;
     align-items: center;
@@ -382,7 +382,7 @@ $breakpoint-mobile: 480px;
     cursor: pointer;
 
     @media (max-width: $breakpoint-mobile) {
-        padding: 4px; // Ne garde que l'avatar sur très petit écran
+        padding: 4px;
     }
 }
 
@@ -404,7 +404,7 @@ $breakpoint-mobile: 480px;
     flex-direction: column;
 
     @media (max-width: $breakpoint-mobile) {
-        display: none; // Cache le texte du profil sur mobile pour éviter les chevauchements
+        display: none;
     }
 }
 
@@ -420,7 +420,7 @@ $breakpoint-mobile: 480px;
 }
 
 // ==========================================================
-// ZONE DE CONTENU PRINCIPALE
+// CONTENT
 // ==========================================================
 .content {
     padding: 32px;
@@ -434,7 +434,7 @@ $breakpoint-mobile: 480px;
 }
 
 // ==========================================================
-// FOOTER GLOBAL DU LAYOUT
+// FOOTER
 // ==========================================================
 .footer {
     display: flex;
