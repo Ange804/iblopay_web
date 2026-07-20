@@ -1,3 +1,4 @@
+// src/app/core/layout/layout.component.ts
 import { Component, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Observable, Subscription, interval } from 'rxjs';
@@ -20,12 +21,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
     isDarkMode: boolean = true;
     private clockSubscription?: Subscription;
     private routerSubscription?: Subscription;
+    private cleanupSubscription?: Subscription;
 
-    // ============================================================
-    // TITRE DYNAMIQUE : "IBLOPAY — Administration [— Module]"
-    // Le nom du module vient de `data: { title: '...', module: '...' }`
-    // déclaré sur la route active (voir *-routing.module.ts).
-    // ============================================================
     readonly baseTitle = 'IBLOPAY — Administration';
     moduleTitle: string | null = null;
     currentModuleKey: string | null = null;
@@ -34,16 +31,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
         return this.moduleTitle ? `${this.baseTitle} — ${this.moduleTitle}` : this.baseTitle;
     }
 
-    // ============================================================
-    // RECHERCHE (spécifique au module actif)
-    // ============================================================
     searchQuery: string = '';
     isSearchOpen: boolean = false;
     searchResults$: Observable<SearchResult[]> = this.searchService.results$;
 
-    // ============================================================
-    // NOTIFICATIONS (spécifiques au module actif + globales)
-    // ============================================================
+    // Notifications
     isNotifOpen: boolean = false;
     notifications$: Observable<AppNotification[]> = this.notificationService.getForModule(null);
     unreadCount$: Observable<number> = this.notificationService.unreadCountForModule(null);
@@ -68,17 +60,30 @@ export class LayoutComponent implements OnInit, OnDestroy {
         private searchService: SearchService,
         private notificationService: NotificationService,
         private elementRef: ElementRef
-    ) { }
+    ) {
+        this.generateMockNotifications();
+    }
 
     ngOnInit(): void {
         this.initClock();
         this.loadTheme();
-
-        // Titre + notifications/recherche se recalculent à chaque navigation
         this.updateRouteContext();
+        
         this.routerSubscription = this.router.events
             .pipe(filter((e) => e instanceof NavigationEnd))
             .subscribe(() => this.updateRouteContext());
+
+        // Nettoyage auto toutes les 5 minutes
+        this.cleanupSubscription = interval(300000).subscribe(() => {
+            const now = new Date();
+            const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+            this.notificationService.cleanup(twentyFourHoursAgo);
+        });
+
+        // Log pour vérifier les notifications
+        this.notifications$.subscribe(notifs => {
+            console.log('📊 Notifications dans le composant:', notifs.length);
+        });
     }
 
     ngOnDestroy(): void {
@@ -88,11 +93,119 @@ export class LayoutComponent implements OnInit, OnDestroy {
         if (this.routerSubscription) {
             this.routerSubscription.unsubscribe();
         }
+        if (this.cleanupSubscription) {
+            this.cleanupSubscription.unsubscribe();
+        }
     }
 
-    // ============================================================
-    // ROUTE CONTEXT (titre + module courant)
-    // ============================================================
+    private generateMockNotifications(): void {
+        setTimeout(() => {
+            const now = new Date();
+
+            const notifications: AppNotification[] = [
+                {
+                    id: 'notif-1',
+                    title: '💰 Transaction importante',
+                    message: 'Super Agent Jean Ndayishimiye a effectué un transfert de 15 000 000 Fbu',
+                    type: 'transaction',
+                    icon: 'fa-solid fa-money-bill-wave',
+                    date: new Date(now.getTime() - 5 * 60000),
+                    read: false,
+                    link: ['/transactions', 'txn-001'],
+                    module: 'transactions',
+                    priority: 'high'
+                },
+                {
+                    id: 'notif-2',
+                    title: '👤 Nouveau client enregistré',
+                    message: 'L\'agent Pierre Niyonzima a ouvert un compte pour Claire Mukiza',
+                    type: 'user',
+                    icon: 'fa-solid fa-user-plus',
+                    date: new Date(now.getTime() - 15 * 60000),
+                    read: false,
+                    link: ['/users', 'user-123'],
+                    module: 'users',
+                    priority: 'medium'
+                },
+                {
+                    id: 'notif-3',
+                    title: '📊 Commission reçue',
+                    message: 'Super Agent Marie Uwimana a reçu 450 000 Fbu de commission',
+                    type: 'commission',
+                    icon: 'fa-solid fa-percent',
+                    date: new Date(now.getTime() - 45 * 60000),
+                    read: false,
+                    link: ['/commissions', 'com-045'],
+                    module: 'commissions',
+                    priority: 'medium'
+                },
+                {
+                    id: 'notif-4',
+                    title: '🏦 Dépôt en espèces',
+                    message: 'L\'agent Alain Niyonzima a effectué un dépôt de 8 500 000 Fbu',
+                    type: 'deposit',
+                    icon: 'fa-solid fa-arrow-down',
+                    date: new Date(now.getTime() - 2 * 3600000),
+                    read: false,
+                    link: ['/transactions', 'dep-045'],
+                    module: 'transactions',
+                    priority: 'high'
+                },
+                {
+                    id: 'notif-5',
+                    title: '🔄 Approvisionnement e-Money',
+                    message: 'Wallet de Jean Ndayishimiye approvisionné de 10 000 000 Fbu',
+                    type: 'fund',
+                    icon: 'fa-solid fa-coins',
+                    date: new Date(now.getTime() - 3 * 3600000),
+                    read: false,
+                    link: ['/users', 'user-001', 'fund'],
+                    module: 'users',
+                    priority: 'medium'
+                },
+                {
+                    id: 'notif-6',
+                    title: '⚠️ Alerte de sécurité',
+                    message: 'Tentative de connexion suspecte détectée',
+                    type: 'alert',
+                    icon: 'fa-solid fa-shield-alt',
+                    date: new Date(now.getTime() - 5 * 3600000),
+                    read: false,
+                    link: ['/settings', 'security'],
+                    module: 'settings',
+                    priority: 'high'
+                },
+                {
+                    id: 'notif-7',
+                    title: '🌟 Nouveau Super Agent',
+                    message: 'David Niyongabo promu Super Agent',
+                    type: 'user',
+                    icon: 'fa-solid fa-user-cog',
+                    date: new Date(now.getTime() - 6 * 3600000),
+                    read: false,
+                    link: ['/users', 'user-045'],
+                    module: 'users',
+                    priority: 'medium'
+                },
+                {
+                    id: 'notif-8',
+                    title: '🔄 Transfert inter-agents',
+                    message: 'Claire Mukiza a transféré 2 500 000 Fbu',
+                    type: 'transaction',
+                    icon: 'fa-solid fa-exchange-alt',
+                    date: new Date(now.getTime() - 8 * 3600000),
+                    read: false,
+                    link: ['/transactions', 'txn-056'],
+                    module: 'transactions',
+                    priority: 'medium'
+                }
+            ];
+
+            notifications.forEach(n => {
+                this.notificationService.add(n);
+            });
+        }, 1000);
+    }
 
     private updateRouteContext(): void {
         let route = this.activatedRoute.root;
@@ -106,7 +219,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
             }
         }
 
-        // Trouver le label du module depuis la route active
         const currentUrl = this.router.url?.split('?')[0] ?? '';
         let title: string | null = null;
         for (const item of this.menuItems) {
@@ -119,16 +231,11 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.moduleTitle = title;
         this.currentModuleKey = moduleKey;
 
-        // Recherche et notifications se re-scopent sur le nouveau module
         this.searchQuery = '';
         this.searchService.clear();
         this.notifications$ = this.notificationService.getForModule(moduleKey);
         this.unreadCount$ = this.notificationService.unreadCountForModule(moduleKey);
     }
-
-    // ============================================================
-    // HORLOGE
-    // ============================================================
 
     private initClock(): void {
         this.updateClock();
@@ -145,10 +252,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.currentDay = `${days[this.currentDate.getDay()]} ${this.currentDate.getDate()} ${months[this.currentDate.getMonth()]} ${this.currentDate.getFullYear()}`;
         this.currentTime = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     }
-
-    // ============================================================
-    // SIDEBAR
-    // ============================================================
 
     toggleSidebar(): void {
         this.isSidebarOpen = !this.isSidebarOpen;
@@ -172,10 +275,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
         return this.isSidebarOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
     }
 
-    // ============================================================
-    // THEME (partagé par tous les modules via body.light-mode)
-    // ============================================================
-
     get themeToggleIcon(): string {
         return this.isDarkMode ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     }
@@ -197,10 +296,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
         }
     }
 
-    // ============================================================
-    // RECHERCHE
-    // ============================================================
-
     onSearchInput(): void {
         this.isSearchOpen = true;
         this.searchService.search(this.currentModuleKey || 'global', this.searchQuery);
@@ -217,16 +312,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.router.navigate(Array.isArray(result.link) ? result.link : [result.link]);
     }
 
-    // ============================================================
-    // NOTIFICATIONS
-    // ============================================================
-
     toggleNotifications(): void {
         this.isNotifOpen = !this.isNotifOpen;
         this.isSearchOpen = false;
+        console.log('🔔 Toggle notifications:', this.isNotifOpen);
     }
 
     openNotification(notification: AppNotification): void {
+        console.log('📌 Ouvrir notification:', notification.title);
         this.notificationService.markAsRead(notification.id);
         this.isNotifOpen = false;
         if (notification.link) {
@@ -235,12 +328,26 @@ export class LayoutComponent implements OnInit, OnDestroy {
         }
     }
 
+    // ✅ Marquer toutes les notifications comme lues
     markAllNotificationsRead(event: Event): void {
         event.stopPropagation();
-        this.notificationService.markAllAsReadForModule(this.currentModuleKey);
+        console.log('🔔 Marquer tout comme lu - Module:', this.currentModuleKey);
+        this.notificationService.markAllAsRead();
+        // Supprimer les notifications lues après un petit délai
+        setTimeout(() => {
+            this.notificationService.removeAllRead();
+            console.log('✅ Notifications lues supprimées');
+        }, 300);
     }
 
-    // Ferme les dropdowns (recherche / notifications) au clic extérieur
+    // ✅ Supprimer toutes les notifications
+    clearAllNotifications(event: Event): void {
+        event.stopPropagation();
+        console.log('🗑️ Supprimer toutes les notifications');
+        this.notificationService.clear();
+        this.isNotifOpen = false;
+    }
+
     @HostListener('document:click', ['$event'])
     handleDocumentClick(event: MouseEvent): void {
         if (!this.elementRef.nativeElement.contains(event.target)) {

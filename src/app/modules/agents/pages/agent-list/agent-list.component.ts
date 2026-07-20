@@ -13,23 +13,6 @@ interface Notification {
   read: boolean;
 }
 
-interface FundData {
-  receiptReference: string;
-  amount: number;
-  bank: string;
-  branch: string;
-  depositDate: string;
-  trustAccountVerified: boolean;
-  adminNote: string;
-}
-
-interface RecentFund {
-  agentName: string;
-  receiptReference: string;
-  amount: number;
-  date: Date;
-}
-
 @Component({
   selector: 'app-agent-list',
   templateUrl: './agent-list.component.html',
@@ -54,24 +37,6 @@ export class AgentListComponent implements OnInit {
   private otpTimerInterval: any;
   agentToBlock: Agent | null = null;
   blockAction: 'bloquer' | 'débloquer' = 'bloquer';
-
-  // ─── Modal Approvisionnement ────────────────
-  showFundModal = false;
-  fundLoading = false;
-  fundError = '';
-  fundSuccess = '';
-  agentToFund: Agent | null = null;
-  recentFunds: RecentFund[] = [];
-  
-  fundData: FundData = {
-    receiptReference: '',
-    amount: 0,
-    bank: '',
-    branch: '',
-    depositDate: '',
-    trustAccountVerified: false,
-    adminNote: ''
-  };
 
   notifications: Notification[] = [
     {
@@ -141,7 +106,6 @@ export class AgentListComponent implements OnInit {
   ngOnInit(): void {
     this.loadAgents();
     this.loadTheme();
-    this.loadRecentFunds();
   }
 
   ngOnDestroy(): void {
@@ -207,30 +171,6 @@ export class AgentListComponent implements OnInit {
     });
   }
 
-  loadRecentFunds(): void {
-    // Simuler le chargement des approvisionnements récents
-    this.recentFunds = [
-      {
-        agentName: 'Jean Mukiza',
-        receiptReference: 'DEP-2026-07-16-001',
-        amount: 5000000,
-        date: new Date()
-      },
-      {
-        agentName: 'Marie Uwimana',
-        receiptReference: 'DEP-2026-07-15-003',
-        amount: 2500000,
-        date: new Date(Date.now() - 3600000)
-      },
-      {
-        agentName: 'Pierre Niyonzima',
-        receiptReference: 'DEP-2026-07-15-001',
-        amount: 10000000,
-        date: new Date(Date.now() - 7200000)
-      }
-    ];
-  }
-
   applyFilters(): void {
     this.filteredAgents = this.agents.filter(agent => {
       const searchLower = this.searchTerm.toLowerCase().trim();
@@ -271,6 +211,16 @@ export class AgentListComponent implements OnInit {
 
   createAgent(): void {
     this.router.navigate(['/agents/create']);
+  }
+
+  // ─── Approvisionnement - Redirection vers page dédiée ───────
+
+  /**
+   * Ouvre la page d'approvisionnement pour un agent spécifique
+   * @param agent L'agent à approvisionner
+   */
+  openFunding(agent: Agent): void {
+    this.router.navigate(['/agents', agent.id, 'approvisionnement']);
   }
 
   // ─── OTP Modal pour blocage/déblocage ───────
@@ -373,177 +323,6 @@ export class AgentListComponent implements OnInit {
         this.otpError = 'Erreur lors du blocage/déblocage';
       }
     });
-  }
-
-  // ─── Modal Approvisionnement ────────────────
-
-  openFundModal(agent: Agent): void {
-    this.agentToFund = agent;
-    this.fundError = '';
-    this.fundSuccess = '';
-    this.fundData = {
-      receiptReference: '',
-      amount: 0,
-      bank: '',
-      branch: '',
-      depositDate: this.getDefaultDateTime(),
-      trustAccountVerified: false,
-      adminNote: ''
-    };
-    this.showFundModal = true;
-  }
-
-  closeFundModal(): void {
-    this.showFundModal = false;
-    this.agentToFund = null;
-    this.fundLoading = false;
-    this.fundError = '';
-    this.fundSuccess = '';
-  }
-
-  private getDefaultDateTime(): string {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  }
-
-  submitFund(): void {
-    if (!this.agentToFund) {
-      this.fundError = 'Aucun agent sélectionné';
-      return;
-    }
-
-    if (!this.fundData.receiptReference) {
-      this.fundError = 'La référence du bordereau est obligatoire';
-      return;
-    }
-
-    if (!this.fundData.amount || this.fundData.amount <= 0) {
-      this.fundError = 'Le montant doit être supérieur à 0';
-      return;
-    }
-
-    if (!this.fundData.bank) {
-      this.fundError = 'Veuillez sélectionner une banque';
-      return;
-    }
-
-    if (!this.fundData.branch) {
-      this.fundError = 'Veuillez saisir le nom de l\'agence';
-      return;
-    }
-
-    if (!this.fundData.depositDate) {
-      this.fundError = 'Veuillez saisir la date du dépôt';
-      return;
-    }
-
-    if (!this.fundData.trustAccountVerified) {
-      this.fundError = 'Vous devez confirmer la vérification sur le Trust Account';
-      return;
-    }
-
-    this.fundLoading = true;
-    this.fundError = '';
-    this.fundSuccess = '';
-
-    // Simuler l'appel API
-    setTimeout(() => {
-      // Créer la transaction d'approvisionnement
-      const transaction = {
-        id: Date.now(),
-        agentId: this.agentToFund!.id,
-        agentName: `${this.agentToFund!.firstName} ${this.agentToFund!.lastName}`,
-        amount: this.fundData.amount,
-        receiptReference: this.fundData.receiptReference,
-        bank: this.fundData.bank,
-        branch: this.fundData.branch,
-        depositDate: this.fundData.depositDate,
-        adminNote: this.fundData.adminNote,
-        status: 'COMPLETED',
-        createdAt: new Date()
-      };
-
-      // Ajouter aux approvisionnements récents
-      this.recentFunds.unshift({
-        agentName: transaction.agentName,
-        receiptReference: transaction.receiptReference,
-        amount: transaction.amount,
-        date: transaction.createdAt
-      });
-
-      // Mettre à jour le solde de l'agent
-      const agent = this.agentToFund!;
-      
-      // S'assurer que le tableau electronics existe
-      if (!agent.electronics) {
-        agent.electronics = [];
-      }
-      
-      // Trouver un electronic actif existant
-      const existingElectronic = agent.electronics.find(e => e.status === 'ACTIVE');
-      
-      if (existingElectronic) {
-        // Mettre à jour l'electronic existant
-        existingElectronic.amountInCirculation = (existingElectronic.amountInCirculation || 0) + this.fundData.amount;
-      } else {
-        // Créer un nouvel electronic
-        // Récupérer un template depuis le premier electronic s'il existe
-        const template = agent.electronics.length > 0 ? agent.electronics[0] : null;
-        
-        // Construction de l'objet avec toutes les propriétés requises
-        const newElectronic: any = {
-          id: Date.now().toString(),
-          amountInCirculation: this.fundData.amount,
-          status: 'ACTIVE',
-          type: template?.type || 'e-money',
-          brand: template?.brand || 'IBLOPAY',
-          model: template?.model || 'Standard',
-          serialNumber: template?.serialNumber || `EM-${Date.now()}`
-        };
-        
-        // Ajouter d'autres propriétés si elles existent dans le template
-        if (template) {
-          // Copier toutes les propriétés existantes du template
-          Object.keys(template).forEach(key => {
-            if (!(key in newElectronic)) {
-              newElectronic[key] = (template as any)[key];
-            }
-          });
-        }
-        
-        agent.electronics.push(newElectronic);
-      }
-
-      // Mettre à jour les stats
-      this.stats.totalElectronicsAmount += this.fundData.amount;
-
-      // Notification
-      this.notifications.unshift({
-        id: Date.now(),
-        title: 'Approvisionnement e-Money',
-        message: `${agent.firstName} ${agent.lastName} a été crédité de ${this.fundData.amount.toLocaleString()} Fbu`,
-        type: 'success',
-        time: 'À l\'instant',
-        read: false
-      });
-
-      this.fundLoading = false;
-      this.fundSuccess = `Approvisionnement de ${this.fundData.amount.toLocaleString()} Fbu effectué avec succès !`;
-
-      // Fermer le modal après 2 secondes
-      setTimeout(() => {
-        this.closeFundModal();
-        // Rafraîchir la liste
-        this.loadAgents();
-      }, 2000);
-
-      console.log('[SIMULATION] Approvisionnement effectué:', transaction);
-    }, 2000);
   }
 
   getTotalElectronicsAmount(agent: Agent): number {

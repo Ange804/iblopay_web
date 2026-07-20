@@ -1,23 +1,27 @@
-﻿import { NgModule } from '@angular/core';
+﻿// src/app/modules/agents/agents.module.ts
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // 👈 Ajoutez ReactiveFormsModule
 import { RouterModule } from '@angular/router';
-import { AgentsRoutingModule } from './agents-routing.module';
 
-// IMPORTEZ TOUS VOS COMPOSANTS
-import { AgentCreateComponent } from './pages/agent-create/agent-create.component';
 import { AgentListComponent } from './pages/agent-list/agent-list.component';
 import { AgentDetailComponent } from './pages/agent-detail/agent-detail.component';
+import { AgentCreateComponent } from './pages/agent-create/agent-create.component';
+import { AgentApprovisionnementComponent } from './pages/agent-approvisionnement/agent-approvisionnement.component';
+
+import { AgentsRoutingModule } from './agents-routing.module';
 
 @NgModule({
   declarations: [
-    AgentCreateComponent,
     AgentListComponent,
-    AgentDetailComponent  // ← AJOUTEZ CECI
+    AgentDetailComponent,
+    AgentCreateComponent,
+    AgentApprovisionnementComponent
   ],
   imports: [
-    CommonModule,          // ← ESSENTIEL pour *ngIf, *ngFor, pipes
-    ReactiveFormsModule,   // ← ESSENTIEL pour formGroup
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule, // 👈 AJOUTEZ CETTE LIGNE
     RouterModule,
     AgentsRoutingModule
   ]
