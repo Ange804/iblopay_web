@@ -21,6 +21,7 @@ export interface Card {
   cardType?: CardType;
   maskedPan?: string;
   holderName?: string;
+  balance?: number;             // owner's wallet balance (UI display only)
 }
 
 // Payload shape for creating a card (server generates cardId/cardUid).

@@ -19,13 +19,7 @@
     No cards match this filter.
   </div>
 
-  <div class="card-grid" *ngIf="!isLoading && !errorMessage">
-    <div
-      class="card-grid__item"
-      *ngFor="let card of filteredCards"
-      (click)="openCard(card)"
-    >
-      <app-card-preview [card]="card"></app-card-preview>
-    </div>
-  </div>
+  <app-card-table *ngIf="!isLoading && !errorMessage && filteredCards.length > 0" [cards]="filteredCards"
+    (actionCompleted)="loadCards()">
+  </app-card-table>
 </div>

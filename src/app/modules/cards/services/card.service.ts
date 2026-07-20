@@ -81,6 +81,19 @@ export class CardService {
     return of({ ...card }).pipe(delay(this.simDelay));
   }
 
+  /** Marks a card as closed. Terminal state — a closed card cannot be reactivated. */
+  // Le service reste le même, mais voici la méthode closeCard améliorée
+  closeCard(cardId: string): Observable<Card> {
+    const card = this.cards.find((c) => c.cardId === cardId);
+    if (!card) {
+      return throwError(() => new Error('Card not found')).pipe(delay(this.simDelay));
+    }
+    // On change le statut mais on garde toutes les autres propriétés
+    card.status = CardStatus.CLOSED;
+    // On garde toutes les autres données (activatedAt, blockedAt, etc.)
+    return of({ ...card }).pipe(delay(this.simDelay));
+  }
+
   replaceCard(cardId: string): Observable<Card> {
     const card = this.cards.find((c) => c.cardId === cardId);
     if (!card) {

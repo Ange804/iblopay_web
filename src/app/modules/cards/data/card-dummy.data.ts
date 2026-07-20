@@ -19,7 +19,8 @@ export const DUMMY_CARDS: Card[] = [
     oldCardId: null,
     cardType: CardType.PHYSICAL,
     maskedPan: '5399 •••• •••• 1024',
-    holderName: 'Aline Ndayizeye'
+    holderName: 'Aline Ndayizeye',
+    balance: 245000
   },
   {
     cardId: 'card-002',
@@ -35,7 +36,8 @@ export const DUMMY_CARDS: Card[] = [
     oldCardId: null,
     cardType: CardType.VIRTUAL,
     maskedPan: '5399 •••• •••• 2381',
-    holderName: 'Eric Manirakiza'
+    holderName: 'Eric Manirakiza',
+    balance: 87500
   },
   {
     cardId: 'card-003',
@@ -51,7 +53,8 @@ export const DUMMY_CARDS: Card[] = [
     oldCardId: null,
     cardType: CardType.PHYSICAL,
     maskedPan: '5399 •••• •••• 3417',
-    holderName: 'Unassigned card'
+    holderName: 'Unassigned card',
+    balance: 0
   },
   {
     cardId: 'card-004',
@@ -67,7 +70,8 @@ export const DUMMY_CARDS: Card[] = [
     oldCardId: null,
     cardType: CardType.PHYSICAL,
     maskedPan: '5399 •••• •••• 4650',
-    holderName: 'Diane Irakoze'
+    holderName: 'Diane Irakoze',
+    balance: 132000
   },
   {
     cardId: 'card-005',
@@ -83,7 +87,8 @@ export const DUMMY_CARDS: Card[] = [
     oldCardId: null,
     cardType: CardType.PHYSICAL,
     maskedPan: '5399 •••• •••• 5793',
-    holderName: 'Patrick Nkurunziza'
+    holderName: 'Patrick Nkurunziza',
+    balance: 310000
   },
   {
     cardId: 'card-006',
@@ -99,7 +104,8 @@ export const DUMMY_CARDS: Card[] = [
     oldCardId: 'card-005',
     cardType: CardType.PHYSICAL,
     maskedPan: '5399 •••• •••• 6826',
-    holderName: 'Patrick Nkurunziza'
+    holderName: 'Patrick Nkurunziza',
+    balance: 310000
   },
   {
     cardId: 'card-007',
@@ -115,7 +121,8 @@ export const DUMMY_CARDS: Card[] = [
     oldCardId: null,
     cardType: CardType.VIRTUAL,
     maskedPan: '5399 •••• •••• 7149',
-    holderName: 'Claude Hakizimana'
+    holderName: 'Claude Hakizimana',
+    balance: 4200
   }
 ];
 

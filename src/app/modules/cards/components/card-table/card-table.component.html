@@ -1,0 +1,92 @@
+<table class="card-table">
+    <thead>
+        <tr>
+            <th>Propriétaire</th>
+            <th>Numéro de carte</th>
+            <th>Statut</th>
+            <th>Actions</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let card of cards">
+            <!-- Propriétaire -->
+            <td>{{ card.holderName || 'Cardholder' }}</td>
+
+            <!-- Numéro de carte (affiché en intégralité) -->
+            <td class="card-table__pan">{{ card.cardUid }}</td>
+
+            <!-- Statut -->
+            <td>
+                <app-card-status [status]="card.status"></app-card-status>
+            </td>
+
+            <!-- Actions : TOUTES les icônes restent VISIBLES tout le temps -->
+            <td class="card-table__actions">
+                <!-- Activer -->
+                <button type="button" class="card-table__action card-table__action--activate" (click)="activer(card)"
+                    title="Activer la carte">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 5v14M5 12h14" />
+                    </svg>
+                </button>
+
+                <!-- Bloquer -->
+                <button type="button" class="card-table__action card-table__action--block" (click)="bloquer(card)"
+                    title="Bloquer la carte">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0110 0v4" />
+                    </svg>
+                </button>
+
+                <!-- Remplacer -->
+                <button type="button" class="card-table__action card-table__action--replace" (click)="remplacer(card)"
+                    title="Remplacer la carte">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 2v6h-6M3 12a9 9 0 0115-6.7L21 8M3 22v-6h6M21 12a9 9 0 01-15 6.7L3 16" />
+                    </svg>
+                </button>
+
+                <!-- Clôturer -->
+                <button type="button" class="card-table__action card-table__action--danger card-table__action--close"
+                    (click)="cloturer(card)" title="Clôturer la carte">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </td>
+
+            <!-- Voir carte -->
+            <td>
+                <button type="button" class="card-table__link" (click)="voirCarte(card)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    Voir
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- Overlay : affiche l'aperçu de la carte sélectionnée -->
+<div class="card-table__overlay" *ngIf="selectedCard" (click)="fermerCarte()">
+    <div class="card-table__overlay-content" (click)="$event.stopPropagation()">
+        <button type="button" class="card-table__close" (click)="fermerCarte()" aria-label="Fermer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <app-card-preview [card]="selectedCard"></app-card-preview>
+    </div>
+</div>
