@@ -1,0 +1,51 @@
+.commission-page { padding: 24px; min-height: 100vh; background: var(--ink); }
+.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;
+  &__left { flex: 1; }
+  &__title { font-size: 24px; font-weight: 700; color: var(--text); margin: 0 0 4px; }
+  &__subtitle { font-size: 14px; color: var(--text-dim); margin: 0; }
+  &__right { display: flex; align-items: center; gap: 12px; }
+}
+.view-toggle { display: flex; background: var(--surface-2); border-radius: 8px; padding: 3px; border: 1px solid var(--border);
+  &__btn { padding: 8px 16px; border: none; background: transparent; color: var(--text-dim); font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+    i { font-size: 14px; }
+    &:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+    &--active { background: var(--sun); color: #fff; &:hover { opacity: 0.9; } }
+  }
+}
+.tabs { display: flex; gap: 4px; margin-bottom: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px; display: inline-flex; }
+.tab-btn { padding: 10px 20px; border: none; background: transparent; color: var(--text-dim); font-size: 13px; font-weight: 500; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+  &:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  &--active { background: var(--sun); color: #fff; i { color: #fff; } }
+}
+.loading-state { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 60px; color: var(--text-dim); font-size: 14px;
+  .spinner { width: 24px; height: 24px; border: 3px solid var(--border); border-top-color: var(--sun); border-radius: 50%; animation: spin 0.8s linear infinite; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.leaderboard { display: flex; flex-direction: column; gap: 16px;
+  &__card { display: flex; align-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: all 0.2s;
+    &--top { &:hover { border-color: var(--border-soft); background: var(--surface-2); } }
+  }
+  &__rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; font-size: 14px; font-weight: 700;
+    &.rank-gold { background: linear-gradient(135deg, #f5c842, #eab308); color: #000; }
+    &.rank-silver { background: linear-gradient(135deg, #94a3b8, #64748b); color: #fff; }
+    &.rank-bronze { background: linear-gradient(135deg, #cd7f32, #a0522d); color: #fff; }
+  }
+  &__avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--sun), #a855f7); display: flex; align-items: center; justify-content: center;
+    &-text { font-size: 16px; font-weight: 600; color: #fff; }
+  }
+  &__info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  &__name { font-size: 15px; font-weight: 600; color: var(--text); }
+  &__stats { font-size: 12px; color: var(--text-faint); }
+  &__amount { text-align: right; display: flex; flex-direction: column; gap: 4px; }
+  &__value { font-size: 18px; font-weight: 700; color: var(--green); white-space: nowrap; }
+  &__trend { font-size: 12px; display: flex; align-items: center; gap: 4px; justify-content: flex-end; i { font-size: 14px; } }
+  &__table { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  &__table-header { display: grid; grid-template-columns: 60px 1fr 100px 100px 150px 80px; padding: 12px 20px; background: var(--surface-2); border-bottom: 1px solid var(--border); font-size: 11px; color: var(--text-dim); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  &__row { display: grid; grid-template-columns: 60px 1fr 100px 100px 150px 80px; padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text); align-items: center; transition: background 0.15s;
+    &:hover { background: var(--surface-2); }
+    &:last-child { border-bottom: none; }
+  }
+  &__row-name { font-weight: 500; }
+  &__col-amount { font-weight: 600; color: var(--green); }
+}
+.empty-state { text-align: center; padding: 60px; color: var(--text-faint); i { font-size: 48px; display: block; margin-bottom: 16px; } p { font-size: 14px; } }
