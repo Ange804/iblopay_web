@@ -47,7 +47,7 @@
         <span class="leaderboard__value">{{ formatBif(entry.totalCommissions) }}</span>
         <span class="leaderboard__trend" [style.color]="getTrendColor(entry.trend)">
           <i class="bi" [class]="getTrendIcon(entry.trend)"></i>
-          {{ entry.trend === 'up' ? '+' : '' }}{{ entry.trend === 'stable' ? '' : Math.round((entry.totalCommissions - entry.previousPeriodTotal) / (entry.previousPeriodTotal || 1) * 100) }}%
+          {{ entry.trend === 'up' ? '+' : '' }}{{ entry.trend === 'stable' ? '' : math.round((entry.totalCommissions - entry.previousPeriodTotal) / (entry.previousPeriodTotal || 1) * 100) }}%
         </span>
       </div>
     </div>

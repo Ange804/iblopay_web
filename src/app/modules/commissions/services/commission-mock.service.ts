@@ -200,6 +200,10 @@ export class CommissionMockService {
     return of([...MOCK_SUPER_AGENTS]).pipe(delay(this.simDelay));
   }
 
+  getChartData(days: number): Observable<{ labels: string[]; agentValues: number[]; superAgentValues: number[] }> {
+    return this.getCommissionTrend(days);
+  }
+
   private formatBif(amount: number): string {
     return `${amount.toLocaleString('fr-FR')} BIF`;
   }

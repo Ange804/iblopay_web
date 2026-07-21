@@ -26,6 +26,7 @@ export interface QuickAction {
   type: 'primary' | 'outline-green' | 'plain';
   badge?: number;
   action: string;
+  icon?: string;
 }
 
 export interface TransactionTableRow {
@@ -41,6 +42,7 @@ export interface TransactionTableRow {
   statusPillColor: string;
   channel: string;
   location: string;
+  category?: 'mobile_money' | 'card' | 'agent' | 'super_agent' | 'all';
 }
 
 export interface SenderRecipientInfo {
@@ -125,3 +127,6 @@ export interface SystemActivity {
   actor: string;
   time: string;
 }
+
+export type UserRole = 'regular' | 'agent' | 'super_agent' | 'admin';
+export type TransactionFilter = 'all' | 'mobile_money' | 'card' | 'agent_network';
