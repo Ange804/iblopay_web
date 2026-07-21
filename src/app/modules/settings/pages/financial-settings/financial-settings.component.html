@@ -1,0 +1,57 @@
+<div class="settings-page">
+  <header class="page-header">
+    <button type="button" class="back-btn" routerLink="/settings">‹ Retour aux paramètres</button>
+    <div class="page-header__title">
+      <span class="icon">🏦</span>
+      <div>
+        <h1>Gestion Financière</h1>
+        <p>Trust Account, liquidité et comptabilité.</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="section-list">
+    <details class="section-card" *ngFor="let section of sections" [open]="sections.length === 1">
+      <summary>
+        <span class="section-card__icon">{{ section.icon }}</span>
+        <span class="section-card__title">{{ section.title }}</span>
+        <span class="section-card__chevron">⌄</span>
+      </summary>
+
+      <div class="section-card__body">
+        <p class="section-card__desc" *ngIf="section.description">{{ section.description }}</p>
+
+        <!-- Actions directes -->
+        <div class="actions-grid" *ngIf="section.actions?.length">
+          <button
+            type="button"
+            class="action-chip"
+            [class.action-chip--danger]="action.danger"
+            *ngFor="let action of section.actions"
+            (click)="onAction(section, action)"
+          >
+            <span *ngIf="action.icon">{{ action.icon }}</span>
+            {{ action.label }}
+          </button>
+        </div>
+
+        <!-- Sous-groupes -->
+        <div class="subgroup" *ngFor="let group of section.groups">
+          <h3>{{ group.title }}</h3>
+          <div class="actions-grid">
+            <button
+              type="button"
+              class="action-chip"
+              [class.action-chip--danger]="action.danger"
+              *ngFor="let action of group.actions"
+              (click)="onAction(section, action, group)"
+            >
+              <span *ngIf="action.icon">{{ action.icon }}</span>
+              {{ action.label }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </details>
+  </section>
+</div>

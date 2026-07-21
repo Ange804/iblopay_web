@@ -1,7 +1,11 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
-const routes: Routes = [
+/**
+ * Routes du module Paramètres Administrateur IBLOPAY.
+ * À importer dans app.routes.ts, ex:
+ *   { path: 'settings', loadChildren: () => import('./modules/settings/settings.routes').then(m => m.SETTINGS_ROUTES) }
+ */
+export const SETTINGS_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
@@ -63,9 +67,3 @@ const routes: Routes = [
       import('./pages/partners-settings/partners-settings.component').then(m => m.PartnersSettingsComponent)
   }
 ];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class SettingsRoutingModule { }

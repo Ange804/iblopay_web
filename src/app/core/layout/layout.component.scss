@@ -4,8 +4,6 @@
 // IBLOPAY — Responsive Layout Shared Styles
 // ==========================================================
 
-@use '../../../styles/variables' as *;
-
 $sidebar-w: 260px;
 $breakpoint-tablet: 1024px;
 $breakpoint-mobile: 480px;
@@ -17,20 +15,14 @@ $breakpoint-mobile: 480px;
 .layout-container {
     display: flex;
     min-height: 100vh;
-<<<<<<< HEAD
     background-color: var(--ink, #0a0f1e);
     color: var(--text, #e2e8f0);
     font-family: var(--font-body, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
-=======
-    background-color: var(--ink);
-    color: var(--text);
-    font-family: var(--font-body);
->>>>>>> 9cea066a8a5c8ca178bb195f6743a243eb43e627
     overflow-x: hidden;
 }
 
 // ==========================================================
-// OVERLAY
+// OVERLAY (Actif uniquement sur tablettes et mobiles)
 // ==========================================================
 .overlay {
     display: none;
@@ -51,7 +43,7 @@ $breakpoint-mobile: 480px;
 }
 
 // ==========================================================
-// SIDEBAR
+// SIDEBAR (Adaptative & Fluide)
 // ==========================================================
 .sidebar {
     width: $sidebar-w;
@@ -298,13 +290,9 @@ $breakpoint-mobile: 480px;
     }
 }
 
-<<<<<<< HEAD
 // ==========================================================
 // SEARCH
 // ==========================================================
-=======
-// ---------------- SEARCH ----------------
->>>>>>> 9cea066a8a5c8ca178bb195f6743a243eb43e627
 .search-box {
     position: relative;
     display: flex;
@@ -340,7 +328,6 @@ $breakpoint-mobile: 480px;
     }
 }
 
-<<<<<<< HEAD
 .search-results {
     position: absolute;
     top: calc(100% + 8px);
@@ -393,9 +380,6 @@ $breakpoint-mobile: 480px;
 // ==========================================================
 // TOPBAR ACTIONS
 // ==========================================================
-=======
-// ---------------- RIGHT ACTIONS ----------------
->>>>>>> 9cea066a8a5c8ca178bb195f6743a243eb43e627
 .topbar-right {
     display: flex;
     align-items: center;
@@ -451,9 +435,8 @@ $breakpoint-mobile: 480px;
     border: 2px solid var(--surface, #111c44);
 }
 
-<<<<<<< HEAD
 // ==========================================================
-// NOTIFICATIONS PANEL - TRANSPARENT AVEC FLOU
+// NOTIFICATIONS PANEL
 // ==========================================================
 .icon-btn-wrap {
     position: relative;
@@ -526,6 +509,8 @@ $breakpoint-mobile: 480px;
     padding: 14px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: 8px;
 
     span {
         font-size: 15px;
@@ -533,6 +518,12 @@ $breakpoint-mobile: 480px;
         color: #ffffff;
         letter-spacing: 0.3px;
     }
+}
+
+.notif-panel-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 
 .notif-panel-mark-all {
@@ -545,10 +536,33 @@ $breakpoint-mobile: 480px;
     padding: 4px 12px;
     border-radius: 6px;
     background: rgba(59, 130, 246, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 4px;
 
     &:hover {
         background: rgba(59, 130, 246, 0.2);
         color: #60a5fa;
+    }
+}
+
+.notif-panel-clear {
+    font-size: 12px;
+    color: #ef4444;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 4px 12px;
+    border-radius: 6px;
+    background: rgba(239, 68, 68, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    &:hover {
+        background: rgba(239, 68, 68, 0.2);
+        color: #f87171;
     }
 }
 
@@ -575,6 +589,12 @@ $breakpoint-mobile: 480px;
     font-size: 12px;
     color: rgba(255, 255, 255, 0.5);
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.notif-unread-count {
+    font-size: 11px;
+    color: #3b82f6;
+    font-weight: 500;
 }
 
 .notif-item {
@@ -659,102 +679,7 @@ $breakpoint-mobile: 480px;
     gap: 6px;
     flex-wrap: wrap;
 }
-// Ajoutez ces styles dans la section des notifications
 
-.notif-panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    flex-shrink: 0;
-    flex-wrap: wrap;
-    gap: 8px;
-
-    span {
-        font-size: 15px;
-        font-weight: 600;
-        color: #ffffff;
-        letter-spacing: 0.3px;
-    }
-}
-
-.notif-panel-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-.notif-panel-mark-all {
-    font-size: 12px;
-    color: #3b82f6;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    padding: 4px 12px;
-    border-radius: 6px;
-    background: rgba(59, 130, 246, 0.1);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-
-    &:hover {
-        background: rgba(59, 130, 246, 0.2);
-        color: #60a5fa;
-    }
-}
-
-.notif-panel-clear {
-    font-size: 12px;
-    color: #ef4444;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    padding: 4px 12px;
-    border-radius: 6px;
-    background: rgba(239, 68, 68, 0.1);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-
-    &:hover {
-        background: rgba(239, 68, 68, 0.2);
-        color: #f87171;
-    }
-}
-
-.notif-unread-count {
-    font-size: 11px;
-    color: #3b82f6;
-    font-weight: 500;
-}
-
-// Mode clair
-:host-context(.light-mode) {
-    .notif-panel-mark-all {
-        color: #2563eb;
-        background: rgba(37, 99, 235, 0.08);
-
-        &:hover {
-            background: rgba(37, 99, 235, 0.15);
-        }
-    }
-
-    .notif-panel-clear {
-        color: #dc2626;
-        background: rgba(239, 68, 68, 0.08);
-
-        &:hover {
-            background: rgba(239, 68, 68, 0.15);
-        }
-    }
-
-    .notif-unread-count {
-        color: #2563eb;
-    }
-}
 .priority-badge {
     font-size: 9px;
     font-weight: 700;
@@ -803,11 +728,11 @@ $breakpoint-mobile: 480px;
     font-size: 10px;
     padding: 1px 6px;
     border-radius: 8px;
-    
+
     &.unread {
         color: #3b82f6;
     }
-    
+
     &:not(.unread) {
         color: rgba(255, 255, 255, 0.3);
     }
@@ -835,8 +760,6 @@ $breakpoint-mobile: 480px;
 // ==========================================================
 // PROFIL
 // ==========================================================
-=======
->>>>>>> 9cea066a8a5c8ca178bb195f6743a243eb43e627
 .profile-box {
     display: flex;
     align-items: center;
@@ -1134,6 +1057,15 @@ $breakpoint-mobile: 480px;
         }
     }
 
+    .notif-panel-clear {
+        color: #dc2626;
+        background: rgba(239, 68, 68, 0.08);
+
+        &:hover {
+            background: rgba(239, 68, 68, 0.15);
+        }
+    }
+
     .notif-item {
         border-bottom-color: rgba(0, 0, 0, 0.04);
 
@@ -1175,6 +1107,10 @@ $breakpoint-mobile: 480px;
     .notif-count {
         color: rgba(0, 0, 0, 0.4);
         border-bottom-color: rgba(0, 0, 0, 0.06);
+    }
+
+    .notif-unread-count {
+        color: #2563eb;
     }
 
     .notif-icon {
