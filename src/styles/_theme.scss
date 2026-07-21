@@ -12,6 +12,8 @@
     /* Éléments de survol, inputs, sous-badges */
     --surface-3: #24306e;
     /* Contrastes tertiaires ou états actifs */
+    --surface-card: #16204a;
+    /* Fond spécifique pour les cartes statistiques */
 
     // ---- Bordures Épurées ----
     --border: rgba(255, 255, 255, 0.08);
@@ -29,7 +31,7 @@
     --blue: #06b6d4;
     --purple: #7c3aed;
 
-    // ---- Variantes RGB ----
+    // ---- Variantes RGB (TOUTES les couleurs) ----
     --ink-rgb: 7, 13, 25;
     --surface-rgb: 17, 28, 68;
     --surface-2-rgb: 27, 37, 89;
@@ -38,6 +40,8 @@
     --red-rgb: 239, 68, 68;
     --green-rgb: 34, 197, 94;
     --blue-rgb: 6, 182, 212;
+    --purple-rgb: 124, 58, 237; // <-- AJOUTÉ
+    --orange-rgb: 249, 115, 22; // <-- AJOUTÉ
 
     --overlay-bg: rgba(7, 13, 25, 0.6);
     --shadow-color: rgba(0, 0, 0, 0.4);
@@ -49,17 +53,21 @@
 // THEME CLAIR — TOUT BLANC (Correction stricte)
 // ==========================================================
 body.light-mode {
-    --ink: #ffffff;
-    /* FOND DE PAGE BLANC PUR */
+    --ink: #f1f5f9;
+    /* FOND DE PAGE GRIS TRÈS CLAIR */
     --surface: #ffffff;
-    /* CARTES ET MODALES BLANCHES BLENDÉES */
+    /* CARTES ET MODALES BLANCHES */
     --surface-2: #f8fafc;
     /* Gris très clair (Slate 50) pour les survol/inputs */
     --surface-3: #f1f5f9;
     /* Slate 100 pour les contrastes */
+    --surface-card: #ffffff;
+    /* Fond des cartes statistiques */
 
-    --border: #e2e8f0;
-    --border-soft: #f1f5f9;
+    --border: transparent;
+    /* SUPPRESSION DES BORDURES EN MODE CLAIR */
+    --border-soft: transparent;
+    /* SUPPRESSION DES BORDURES EN MODE CLAIR */
 
     --text: #0f172a;
     /* Texte ultra-sombre pour lisibilité sur blanc */
@@ -72,13 +80,19 @@ body.light-mode {
     --blue: #0891b2;
     --purple: #6d28d9;
 
-    --ink-rgb: 255, 255, 255;
+    --ink-rgb: 241, 245, 249;
     --surface-rgb: 255, 255, 255;
     --surface-2-rgb: 248, 250, 252;
     --surface-3-rgb: 241, 245, 249;
+    --sun-rgb: 37, 99, 235;
+    --red-rgb: 220, 38, 38;
+    --green-rgb: 22, 163, 74;
+    --blue-rgb: 8, 145, 178;
+    --purple-rgb: 109, 40, 217;
+    --orange-rgb: 249, 115, 22;
 
     --overlay-bg: rgba(15, 23, 42, 0.3);
-    --shadow-color: rgba(15, 23, 42, 0.05);
+    --shadow-color: rgba(15, 23, 42, 0.08);
 }
 
 // ==========================================================

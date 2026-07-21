@@ -233,7 +233,7 @@
         }
 
         .stat-label {
-            color: rgb(1, 1, 1);
+            color: var(--text);
             font-weight: 70;
             letter-spacing: .4px;
             font-size: 15px;
@@ -241,7 +241,7 @@
 
         .stat-value {
             font-size: 20px;
-            color: rgb(56, 52, 52);
+            color: var(--text);
         }
     }
 
@@ -255,7 +255,7 @@
         }
 
         .stat-label {
-            color: rgb(8, 8, 8);
+            color: var(--text);
             font-weight: 70;
             letter-spacing: .4px;
             font-size: 15px;
@@ -263,7 +263,7 @@
 
         .stat-value {
             font-size: 20px;
-            color: rgb(56, 52, 52);
+            color: var(--text);
         }
     }
 }
@@ -326,7 +326,7 @@
 
 .stat-label {
     font-size: 9px;
-    color: rgb(8, 8, 8);
+    color: var(--text);
     font-weight: 70;
     text-transform: uppercase;
     letter-spacing: .4px;
@@ -336,7 +336,7 @@
 .stat-value {
     font-size: 10px;
     font-weight: 600;
-    color: var(--text, rgb(56, 52, 52));
+    color: var(--text);
     margin: 2px 0 2px;
     letter-spacing: -.3px;
     line-height: 1.1;
@@ -475,7 +475,7 @@
 .panel-title {
     font-size: 15px;
     font-weight: 700;
-    color: var(--text, rgb(41, 38, 38));
+    color: var(--text);
     letter-spacing: -.2px;
     display: flex;
     align-items: center;
@@ -712,7 +712,7 @@
 .ps-title {
     font-size: 16px;
     font-weight: 800;
-    color: #f5c842;
+    color: var(--text);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -772,13 +772,13 @@
     font-weight: 800;
     display: block;
     margin-bottom: 4px;
-    color: #fff;
+    color: var(--text);
     font-family: var(--font-mono);
 }
 
 .ps-stat-label {
     font-size: 11px;
-    color: rgba(255, 255, 255, .7);
+    color: var(--text);
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;

@@ -14,11 +14,9 @@
                 <div class="logo-text-sub">Super Admin Dashboard</div>
             </div>
         </div>
-
-        <div class="sidebar-section-label">Menu principal</div>
         <ul class="nav-list">
             <li class="nav-item" *ngFor="let item of menuItems">
-                <a class="nav-link" [routerLink]="item.link" routerLinkActive="active" (click)="closeSidebar()">
+                <a class="nav-link" [routerLink]="item.link" routerLinkActive="active"><!--(click)="closeSidebar()" sur menu-->
                     <i class="nav-icon {{ item.icon }}"></i>
                     <span class="nav-label">{{ item.label }}</span>
                     <span class="nav-badge" *ngIf="item.badge">{{ item.badge }}</span>
