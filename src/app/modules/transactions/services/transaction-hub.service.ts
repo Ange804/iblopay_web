@@ -14,7 +14,7 @@ import {
   MOCK_ALERTS,
   MOCK_SYSTEM_ACTIVITIES
 } from '../data/transaction-hub-data';
-import { KpiData, QuickAction, TransactionTableRow, TransactionDetail, TraceabilityData, TopActor, OperationTypeStats, AlertNotification, SystemActivity } from '../models/transaction-hub.model';
+import { KpiData, QuickAction, TransactionTableRow, TransactionDetail, TraceabilityData, TopActor, OperationTypeStats, AlertNotification, SystemActivity, UserRole, TransactionFilter } from '../models/transaction-hub.model';
 
 @Injectable({ providedIn: 'root' })
 export class TransactionHubService {
@@ -32,6 +32,122 @@ export class TransactionHubService {
     const start = (page - 1) * pageSize;
     const items = MOCK_TRANSACTIONS_TABLE.slice(start, start + pageSize);
     return of({ items, total: MOCK_TRANSACTIONS_TABLE.length }).pipe(delay(this.simDelay));
+  }
+
+  /**
+   * Filter transactions by user role.
+   * - regular: Mobile Money + Card transactions
+   * - agent: Agent + regular user transactions
+   * - super_agent: Super Agent network + Agent + regular user
+   * - admin: All transactions
+   */
+  getTransactionsByRole(role: UserRole, page = 1, pageSize = 20): Observable<{ items: TransactionTableRow[]; total: number }> {
+    let filtered = [...MOCK_TRANSACTIONS_TABLE];
+
+    switch (role) {
+      case 'regular':
+        // Regular user only sees mobile_money and card transactions
+        filtered = filtered.filter(t => t.category === 'mobile_money' || t.category === 'card');
+        break;
+      case 'agent':
+        // Agent sees mobile_money, card, and agent network transactions
+        filtered = filtered.filter(t => 
+          t.category === 'mobile_money' || t.category === 'card' || t.category === 'agent'
+        );
+        break;
+      case 'super_agent':
+        // Super agent sees everything except admin-only super_agent provisioning
+        filtered = filtered.filter(t => 
+          t.category === 'mobile_money' || t.category === 'card' || t.category === 'agent' || 
+          t.category === 'super_agent'
+        );
+        break;
+      case 'admin':
+        // Admin sees everything
+        filtered = [...MOCK_TRANSACTIONS_TABLE];
+        break;
+    }
+
+    const start = (page - 1) * pageSize;
+    const items = filtered.slice(start, start + pageSize);
+    return of({ items, total: filtered.length }).pipe(delay(this.simDelay));
+  }
+
+  /**
+   * Filter transactions by type/category
+   * - all: All transactions
+   * - mobile_money: Mobile Money transactions
+   * - card: Carte NFC transactions
+   * - agent_network: Réseau Agent transactions
+   */
+  getTransactionsByCategory(filter: TransactionFilter, page = 1, pageSize = 20): Observable<{ items: TransactionTableRow[]; total: number }> {
+    let filtered = [...MOCK_TRANSACTIONS_TABLE];
+
+    switch (filter) {
+      case 'all':
+        // All transactions
+        break;
+      case 'mobile_money':
+        filtered = filtered.filter(t => t.category === 'mobile_money');
+        break;
+      case 'card':
+        filtered = filtered.filter(t => t.category === 'card');
+        break;
+      case 'agent_network':
+        // Agent network includes both agent and super_agent transactions
+        filtered = filtered.filter(t => t.category === 'agent' || t.category === 'super_agent');
+        break;
+    }
+
+    const start = (page - 1) * pageSize;
+    const items = filtered.slice(start, start + pageSize);
+    return of({ items, total: filtered.length }).pipe(delay(this.simDelay));
+  }
+
+  /**
+   * Filter transactions by both role AND category
+   */
+  getFilteredTransactions(role: UserRole, category: TransactionFilter, page = 1, pageSize = 20): Observable<{ items: TransactionTableRow[]; total: number }> {
+    // First filter by role
+    let filtered = [...MOCK_TRANSACTIONS_TABLE];
+
+    switch (role) {
+      case 'regular':
+        filtered = filtered.filter(t => t.category === 'mobile_money' || t.category === 'card');
+        break;
+      case 'agent':
+        filtered = filtered.filter(t => 
+          t.category === 'mobile_money' || t.category === 'card' || t.category === 'agent'
+        );
+        break;
+      case 'super_agent':
+        filtered = filtered.filter(t => 
+          t.category !== undefined // All role-accessible categories
+        );
+        break;
+      case 'admin':
+        // All transactions already set
+        break;
+    }
+
+    // Then filter by category
+    if (category !== 'all') {
+      switch (category) {
+        case 'mobile_money':
+          filtered = filtered.filter(t => t.category === 'mobile_money');
+          break;
+        case 'card':
+          filtered = filtered.filter(t => t.category === 'card');
+          break;
+        case 'agent_network':
+          filtered = filtered.filter(t => t.category === 'agent' || t.category === 'super_agent');
+          break;
+      }
+    }
+
+    const start = (page - 1) * pageSize;
+    const items = filtered.slice(start, start + pageSize);
+    return of({ items, total: filtered.length }).pipe(delay(this.simDelay));
   }
 
   getTransactionDetail(id: string): Observable<TransactionDetail> {

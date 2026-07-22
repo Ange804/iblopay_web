@@ -1,0 +1,205 @@
+<div class="commission-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-header__left">
+      <h1 class="page-header__title">Tableau de Bord Commissions</h1>
+      <p class="page-header__subtitle">Suivi des commissions des agents et super agents</p>
+    </div>
+    <div class="page-header__right">
+      <div class="view-toggle">
+        <button
+          class="view-toggle__btn"
+          [class.view-toggle__btn--active]="activeView === 'agent'"
+          (click)="onViewChange('agent')"
+        >
+          <i class="bi bi-person"></i>
+          Agent
+        </button>
+        <button
+          class="view-toggle__btn"
+          [class.view-toggle__btn--active]="activeView === 'super_agent'"
+          (click)="onViewChange('super_agent')"
+        >
+          <i class="bi bi-people"></i>
+          Super Agent
+        </button>
+        <button
+          class="view-toggle__btn"
+          [class.view-toggle__btn--active]="activeView === 'admin'"
+          (click)="onViewChange('admin')"
+        >
+          <i class="bi bi-shield"></i>
+          Admin
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <span>Chargement des données...</span>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid" *ngIf="!isLoading">
+    <div class="kpi-card" *ngFor="let card of kpiCards">
+      <div class="kpi-card__icon" [style.background-color]="card.color + '20'" [style.color]="card.color">
+        <i [class]="card.icon"></i>
+      </div>
+      <div class="kpi-card__content">
+        <div class="kpi-card__label">{{ card.label }}</div>
+        <div class="kpi-card__value">{{ card.value }}</div>
+        <div class="kpi-card__delta" [class.kpi-card__delta--up]="card.deltaType === 'increase'"
+          [class.kpi-card__delta--down]="card.deltaType === 'decrease'"
+          [class.kpi-card__delta--neutral]="card.deltaType === 'neutral'">
+          <i class="bi" [class.bi-arrow-up-short]="card.deltaType === 'increase'"
+            [class.bi-arrow-down-short]="card.deltaType === 'decrease'"
+            [class.bi-dash]="card.deltaType === 'neutral'"></i>
+          {{ card.delta }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="charts-row" *ngIf="!isLoading">
+    <!-- Trend Chart -->
+    <div class="chart-card chart-card--wide">
+      <div class="chart-card__header">
+        <h3 class="chart-card__title">Évolution des Commissions</h3>
+        <div class="chart-card__controls">
+          <button class="period-btn" [class.period-btn--active]="trendPeriod === 7" (click)="onTrendPeriodChange(7)">7J</button>
+          <button class="period-btn" [class.period-btn--active]="trendPeriod === 30" (click)="onTrendPeriodChange(30)">30J</button>
+          <button class="period-btn" [class.period-btn--active]="trendPeriod === 90" (click)="onTrendPeriodChange(90)">90J</button>
+        </div>
+      </div>
+      <div class="chart-card__body">
+        <div class="bar-chart">
+          <div class="bar-chart__y-axis">
+            <span class="bar-chart__y-label">{{ formatBif(trendMaxValue) }}</span>
+            <span class="bar-chart__y-label">{{ formatBif(math.round(trendMaxValue / 2)) }}</span>
+            <span class="bar-chart__y-label">0 BIF</span>
+          </div>
+          <div class="bar-chart__container">
+            <div class="bar-chart__bars">
+              <div class="bar-chart__group" *ngFor="let label of trendLabels; let i = index">
+                <div class="bar-chart__bar" [style.height]="((agentTrendValues[i] ?? 0) / trendMaxValue) * 100 + '%'"
+                  [style.background-color]="'#3b82f6'" [title]="'Agent: ' + formatBif(agentTrendValues[i] ?? 0)">
+                </div>
+                <div class="bar-chart__bar" [style.height]="((superAgentTrendValues[i] ?? 0) / trendMaxValue) * 100 + '%'"
+                  [style.background-color]="'#a855f7'" [title]="'Super Agent: ' + formatBif(superAgentTrendValues[i] ?? 0)">
+                </div>
+              </div>
+            </div>
+            <div class="bar-chart__x-axis">
+              <span class="bar-chart__x-label" *ngFor="let label of getEveryNthLabel(7)">{{ label }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="chart-legend">
+          <div class="chart-legend__item">
+            <span class="chart-legend__dot" style="background-color: #3b82f6;"></span>
+            <span>Commissions Agents</span>
+          </div>
+          <div class="chart-legend__item">
+            <span class="chart-legend__dot" style="background-color: #a855f7;"></span>
+            <span>Commissions Super Agents</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Type Breakdown Donut -->
+    <div class="chart-card">
+      <div class="chart-card__header">
+        <h3 class="chart-card__title">Par Type</h3>
+      </div>
+      <div class="chart-card__body chart-card__body--center">
+        <div class="donut-chart">
+          <svg viewBox="0 0 100 100" class="donut-chart__svg">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="var(--border)" stroke-width="12"/>
+            <circle *ngFor="let seg of getTypeSegments()" cx="50" cy="50" r="40" fill="none"
+              [attr.stroke]="seg.color" stroke-width="12"
+              [attr.stroke-dasharray]="seg.dasharray"
+              [attr.stroke-dashoffset]="seg.dashoffset"
+              transform="rotate(-90 50 50)" class="donut-chart__segment"/>
+          </svg>
+          <div class="donut-chart__center">
+            <span class="donut-chart__total">{{ totalCommissionCount }}</span>
+            <span class="donut-chart__label">Total</span>
+          </div>
+        </div>
+        <div class="donut-legend">
+          <div class="donut-legend__item" *ngFor="let seg of getTypeSegments()">
+            <span class="donut-legend__dot" [style.background-color]="seg.color"></span>
+            <div class="donut-legend__info">
+              <span class="donut-legend__name">{{ seg.label }}</span>
+              <span class="donut-legend__value">{{ formatBif(seg.amount) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Second Row -->
+  <div class="charts-row" *ngIf="!isLoading">
+    <!-- Status Breakdown -->
+    <div class="chart-card">
+      <div class="chart-card__header">
+        <h3 class="chart-card__title">Par Statut</h3>
+      </div>
+      <div class="chart-card__body chart-card__body--center">
+        <div class="donut-chart">
+          <svg viewBox="0 0 100 100" class="donut-chart__svg">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="var(--border)" stroke-width="12"/>
+            <circle *ngFor="let seg of getStatusSegments()" cx="50" cy="50" r="40" fill="none"
+              [attr.stroke]="seg.color" stroke-width="12"
+              [attr.stroke-dasharray]="seg.dasharray"
+              [attr.stroke-dashoffset]="seg.dashoffset"
+              transform="rotate(-90 50 50)" class="donut-chart__segment"/>
+          </svg>
+          <div class="donut-chart__center">
+            <span class="donut-chart__total">{{ totalCommissionCount }}</span>
+            <span class="donut-chart__label">Total</span>
+          </div>
+        </div>
+        <div class="donut-legend">
+          <div class="donut-legend__item" *ngFor="let seg of getStatusSegments()">
+            <span class="donut-legend__dot" [style.background-color]="seg.color"></span>
+            <div class="donut-legend__info">
+              <span class="donut-legend__name">{{ seg.label }}</span>
+              <span class="donut-legend__value">{{ formatBif(seg.amount) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Stats Card -->
+    <div class="chart-card chart-card--wide">
+      <div class="chart-card__header">
+        <h3 class="chart-card__title">Résumé des Commissions</h3>
+      </div>
+      <div class="chart-card__body">
+        <div class="summary-grid">
+          <div class="summary-item" *ngFor="let seg of getTypeSegments()">
+            <div class="summary-item__header">
+              <span class="summary-item__dot" [style.background-color]="seg.color"></span>
+              <span class="summary-item__label">{{ seg.label }}</span>
+            </div>
+            <div class="summary-item__value">{{ formatBif(seg.amount) }}</div>
+            <div class="summary-item__count">{{ seg.count }} transactions</div>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-item summary-item--total">
+            <div class="summary-item__label">Total Général</div>
+            <div class="summary-item__value">{{ formatBif(typeTotal) }}</div>
+            <div class="summary-item__count">{{ totalCommissionCount }} transactions</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

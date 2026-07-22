@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { CommissionsRoutingModule } from './commissions-routing.module';
 
-
 @NgModule({
   declarations: [],
   imports: [

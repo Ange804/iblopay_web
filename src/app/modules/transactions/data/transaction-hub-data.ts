@@ -1,4 +1,4 @@
-import { KpiData, QuickAction, TransactionTableRow, TransactionDetail, TraceabilityData, TopActor, OperationTypeStats, AlertNotification, SystemActivity } from '../models/transaction-hub.model';
+import { KpiData, QuickAction, TransactionTableRow, TransactionDetail, TraceabilityData, TopActor, OperationTypeStats, AlertNotification, SystemActivity, UserRole, TransactionFilter } from '../models/transaction-hub.model';
 
 export const MOCK_KPI_DATA: KpiData = {
   volumeTotal: {
@@ -62,35 +62,41 @@ export const MOCK_KPI_DATA: KpiData = {
 };
 
 export const MOCK_QUICK_ACTIONS: QuickAction[] = [
-  { label: 'Attribuer e-Money (Bordereau)', subtitle: 'Approvisionner un Super Agent', type: 'primary', action: 'attribuer' },
-  { label: 'Réattribuer e-Money', subtitle: 'Corriger une transaction', type: 'outline-green', action: 'reattribuer' },
-  { label: 'Demandes d\'approvisionnement', subtitle: 'À valider', type: 'plain', badge: 15, action: 'demandes' },
-  { label: 'Relevés bancaires', subtitle: '', type: 'plain', action: 'releves' },
-  { label: 'Rapports et exports', subtitle: '', type: 'plain', action: 'rapports' },
-  { label: 'Journal d\'audit', subtitle: '', type: 'plain', action: 'audit' }
+  { label: 'Attribuer e-Money (Bordereau)', subtitle: 'Approvisionner un Super Agent', type: 'primary', action: 'attribuer', icon: 'bi-wallet2' },
+  { label: 'Réattribuer e-Money', subtitle: 'Corriger une transaction', type: 'outline-green', action: 'reattribuer', icon: 'bi-arrow-repeat' },
+  { label: 'Demandes d\'approvisionnement', subtitle: 'À valider', type: 'plain', badge: 15, action: 'demandes', icon: 'bi-inbox' },
+  { label: 'Relevés bancaires', subtitle: '', type: 'plain', action: 'releves', icon: 'bi-file-earmark-text' },
+  { label: 'Rapports et exports', subtitle: '', type: 'plain', action: 'rapports', icon: 'bi-bar-chart' },
+  { label: 'Journal d\'audit', subtitle: '', type: 'plain', action: 'audit', icon: 'bi-journal-text' }
 ];
 
 export const MOCK_TRANSACTIONS_TABLE: TransactionTableRow[] = [
-  { dateTime: '18/06/2024 10:45', transactionNo: 'TX-2024-06-001', type: 'Transfert', typePillColor: '#2f6fed', sender: 'Jean Baptiste M', recipient: 'Alice Niyonzima', amount: '250 000 BIF', fee: '2 500 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'mobile', location: 'Bujumbura' },
-  { dateTime: '18/06/2024 10:30', transactionNo: 'TX-2024-06-002', type: 'Cash In', typePillColor: '#7c3aed', sender: '—', recipient: 'Pierre Havugimana', amount: '500 000 BIF', fee: '0 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'agent', location: 'Gitega' },
-  { dateTime: '18/06/2024 10:15', transactionNo: 'TX-2024-06-003', type: 'Cash Out', typePillColor: '#ea580c', sender: 'David Manirakiza', recipient: '—', amount: '100 000 BIF', fee: '2 000 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'agent', location: 'Ngozi' },
-  { dateTime: '18/06/2024 10:00', transactionNo: 'TX-2024-06-004', type: 'Paiement', typePillColor: '#0d9488', sender: 'Christine Uwimana', recipient: 'Marchant A', amount: '45 000 BIF', fee: '450 BIF', status: 'En attente', statusPillColor: '#e0932c', channel: 'mobile', location: 'Ruyigi' },
-  { dateTime: '18/06/2024 09:45', transactionNo: 'TX-2024-06-005', type: 'Appro. SA', typePillColor: '#7c3aed', sender: 'Admin Iblopay', recipient: 'SA Jean Bosco', amount: '2 000 000 BIF', fee: '0 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'web', location: 'Bujumbura' },
-  { dateTime: '18/06/2024 09:30', transactionNo: 'TX-2024-06-006', type: 'Paiement facture', typePillColor: '#0d9488', sender: 'Emmanuel Ndayizeye', recipient: 'REGIDESO SA', amount: '35 000 BIF', fee: '350 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'mobile', location: 'Kirundo' },
-  { dateTime: '18/06/2024 09:15', transactionNo: 'TX-2024-06-007', type: 'Transfert', typePillColor: '#2f6fed', sender: 'Fatima Baziyaremye', recipient: 'Gratien Niyongabo', amount: '75 000 BIF', fee: '750 BIF', status: 'Échouée', statusPillColor: '#e14b4b', channel: 'mobile', location: 'Muyinga' },
-  { dateTime: '18/06/2024 09:00', transactionNo: 'TX-2024-06-008', type: 'Cash In', typePillColor: '#7c3aed', sender: '—', recipient: 'Hélène Bukuru', amount: '150 000 BIF', fee: '0 BIF', status: 'En attente', statusPillColor: '#e0932c', channel: 'agent', location: 'Rumonge' },
-  { dateTime: '18/06/2024 08:45', transactionNo: 'TX-2024-06-009', type: 'Cash Out', typePillColor: '#ea580c', sender: 'Innocent Mugisha', recipient: '—', amount: '80 000 BIF', fee: '1 600 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'agent', location: 'Kayanza' },
-  { dateTime: '18/06/2024 08:30', transactionNo: 'TX-2024-06-010', type: 'Paiement', typePillColor: '#0d9488', sender: 'Jacqueline Ndayizeye', recipient: 'Marchant B', amount: '22 500 BIF', fee: '225 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'nfc', location: 'Bujumbura' },
-  { dateTime: '18/06/2024 08:15', transactionNo: 'TX-2024-06-011', type: 'Transfert', typePillColor: '#2f6fed', sender: 'Karangwa Eric', recipient: 'Laurent Ntahonsigaye', amount: '320 000 BIF', fee: '3 200 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'ussd', location: 'Makamba' },
-  { dateTime: '18/06/2024 08:00', transactionNo: 'TX-2024-06-012', type: 'Cash In', typePillColor: '#7c3aed', sender: '—', recipient: 'Marie Goretti N.', amount: '1 000 000 BIF', fee: '0 BIF', status: 'En attente', statusPillColor: '#e0932c', channel: 'web', location: 'Bujumbura' },
-  { dateTime: '18/06/2024 07:45', transactionNo: 'TX-2024-06-013', type: 'Cash Out', typePillColor: '#ea580c', sender: 'Noël Bigirimana', recipient: '—', amount: '200 000 BIF', fee: '4 000 BIF', status: 'Échouée', statusPillColor: '#e14b4b', channel: 'agent', location: 'Bururi' },
-  { dateTime: '18/06/2024 07:30', transactionNo: 'TX-2024-06-014', type: 'Paiement facture', typePillColor: '#0d9488', sender: 'Odette Mbonimpa', recipient: 'ONATEL', amount: '50 000 BIF', fee: '500 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'mobile', location: 'Cibitoke' },
-  { dateTime: '18/06/2024 07:15', transactionNo: 'TX-2024-06-015', type: 'Transfert', typePillColor: '#2f6fed', sender: 'Pascal Niyonzima', recipient: 'Quitterie Ntahobari', amount: '45 000 BIF', fee: '450 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'mobile', location: 'Muramvya' },
-  { dateTime: '18/06/2024 07:00', transactionNo: 'TX-2024-06-016', type: 'Appro. SA', typePillColor: '#7c3aed', sender: 'Admin Iblopay', recipient: 'SA Eric Nkundwa', amount: '3 000 000 BIF', fee: '0 BIF', status: 'En attente', statusPillColor: '#e0932c', channel: 'web', location: 'Bujumbura' },
-  { dateTime: '18/06/2024 06:45', transactionNo: 'TX-2024-06-017', type: 'Paiement', typePillColor: '#0d9488', sender: 'Rose Nduwimana', recipient: 'Marchant C', amount: '12 000 BIF', fee: '120 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'nfc', location: 'Gitega' },
-  { dateTime: '18/06/2024 06:30', transactionNo: 'TX-2024-06-018', type: 'Cash In', typePillColor: '#7c3aed', sender: '—', recipient: 'Salvatore Hakizimana', amount: '75 000 BIF', fee: '0 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'agent', location: 'Rutana' },
-  { dateTime: '18/06/2024 06:15', transactionNo: 'TX-2024-06-019', type: 'Cash Out', typePillColor: '#ea580c', sender: 'Théophile Ntirandekura', recipient: '—', amount: '150 000 BIF', fee: '3 000 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'agent', location: 'Karusi' },
-  { dateTime: '18/06/2024 06:00', transactionNo: 'TX-2024-06-020', type: 'Transfert', typePillColor: '#2f6fed', sender: 'Ursule Niyonsaba', recipient: 'Valentin Miburo', amount: '95 000 BIF', fee: '950 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'ussd', location: 'Bubanza' }
+  { dateTime: '18/06/2024 10:45', transactionNo: 'TX-2024-06-001', type: 'Transfert', typePillColor: '#2f6fed', sender: 'Jean Baptiste M', recipient: 'Alice Niyonzima', amount: '250 000 BIF', fee: '2 500 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'mobile', location: 'Bujumbura', category: 'mobile_money' },
+  { dateTime: '18/06/2024 10:30', transactionNo: 'TX-2024-06-002', type: 'Cash In', typePillColor: '#7c3aed', sender: '—', recipient: 'Pierre Havugimana', amount: '500 000 BIF', fee: '0 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'agent', location: 'Gitega', category: 'agent' },
+  { dateTime: '18/06/2024 10:15', transactionNo: 'TX-2024-06-003', type: 'Cash Out', typePillColor: '#ea580c', sender: 'David Manirakiza', recipient: '—', amount: '100 000 BIF', fee: '2 000 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'agent', location: 'Ngozi', category: 'agent' },
+  { dateTime: '18/06/2024 10:00', transactionNo: 'TX-2024-06-004', type: 'Paiement NFC', typePillColor: '#0d9488', sender: 'Christine Uwimana', recipient: 'Marchant A', amount: '45 000 BIF', fee: '450 BIF', status: 'En attente', statusPillColor: '#e0932c', channel: 'nfc', location: 'Ruyigi', category: 'card' },
+  { dateTime: '18/06/2024 09:45', transactionNo: 'TX-2024-06-005', type: 'Appro. SA', typePillColor: '#7c3aed', sender: 'Admin Iblopay', recipient: 'SA Jean Bosco', amount: '2 000 000 BIF', fee: '0 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'web', location: 'Bujumbura', category: 'super_agent' },
+  { dateTime: '18/06/2024 09:30', transactionNo: 'TX-2024-06-006', type: 'Paiement facture', typePillColor: '#0d9488', sender: 'Emmanuel Ndayizeye', recipient: 'REGIDESO SA', amount: '35 000 BIF', fee: '350 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'mobile', location: 'Kirundo', category: 'mobile_money' },
+  { dateTime: '18/06/2024 09:15', transactionNo: 'TX-2024-06-007', type: 'Transfert', typePillColor: '#2f6fed', sender: 'Fatima Baziyaremye', recipient: 'Gratien Niyongabo', amount: '75 000 BIF', fee: '750 BIF', status: 'Échouée', statusPillColor: '#e14b4b', channel: 'mobile', location: 'Muyinga', category: 'mobile_money' },
+  { dateTime: '18/06/2024 09:00', transactionNo: 'TX-2024-06-008', type: 'Cash In', typePillColor: '#7c3aed', sender: '—', recipient: 'Hélène Bukuru', amount: '150 000 BIF', fee: '0 BIF', status: 'En attente', statusPillColor: '#e0932c', channel: 'agent', location: 'Rumonge', category: 'agent' },
+  { dateTime: '18/06/2024 08:45', transactionNo: 'TX-2024-06-009', type: 'Cash Out', typePillColor: '#ea580c', sender: 'Innocent Mugisha', recipient: '—', amount: '80 000 BIF', fee: '1 600 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'agent', location: 'Kayanza', category: 'agent' },
+  { dateTime: '18/06/2024 08:30', transactionNo: 'TX-2024-06-010', type: 'Paiement NFC', typePillColor: '#0d9488', sender: 'Jacqueline Ndayizeye', recipient: 'Marchant B', amount: '22 500 BIF', fee: '225 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'nfc', location: 'Bujumbura', category: 'card' },
+  { dateTime: '18/06/2024 08:15', transactionNo: 'TX-2024-06-011', type: 'Transfert', typePillColor: '#2f6fed', sender: 'Karangwa Eric', recipient: 'Laurent Ntahonsigaye', amount: '320 000 BIF', fee: '3 200 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'ussd', location: 'Makamba', category: 'mobile_money' },
+  { dateTime: '18/06/2024 08:00', transactionNo: 'TX-2024-06-012', type: 'Cash In', typePillColor: '#7c3aed', sender: '—', recipient: 'Marie Goretti N.', amount: '1 000 000 BIF', fee: '0 BIF', status: 'En attente', statusPillColor: '#e0932c', channel: 'web', location: 'Bujumbura', category: 'agent' },
+  { dateTime: '18/06/2024 07:45', transactionNo: 'TX-2024-06-013', type: 'Cash Out', typePillColor: '#ea580c', sender: 'Noël Bigirimana', recipient: '—', amount: '200 000 BIF', fee: '4 000 BIF', status: 'Échouée', statusPillColor: '#e14b4b', channel: 'agent', location: 'Bururi', category: 'agent' },
+  { dateTime: '18/06/2024 07:30', transactionNo: 'TX-2024-06-014', type: 'Paiement facture', typePillColor: '#0d9488', sender: 'Odette Mbonimpa', recipient: 'ONATEL', amount: '50 000 BIF', fee: '500 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'mobile', location: 'Cibitoke', category: 'mobile_money' },
+  { dateTime: '18/06/2024 07:15', transactionNo: 'TX-2024-06-015', type: 'Transfert', typePillColor: '#2f6fed', sender: 'Pascal Niyonzima', recipient: 'Quitterie Ntahobari', amount: '45 000 BIF', fee: '450 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'mobile', location: 'Muramvya', category: 'mobile_money' },
+  { dateTime: '18/06/2024 07:00', transactionNo: 'TX-2024-06-016', type: 'Appro. SA', typePillColor: '#7c3aed', sender: 'Admin Iblopay', recipient: 'SA Eric Nkundwa', amount: '3 000 000 BIF', fee: '0 BIF', status: 'En attente', statusPillColor: '#e0932c', channel: 'web', location: 'Bujumbura', category: 'super_agent' },
+  { dateTime: '18/06/2024 06:45', transactionNo: 'TX-2024-06-017', type: 'Paiement NFC', typePillColor: '#0d9488', sender: 'Rose Nduwimana', recipient: 'Marchant C', amount: '12 000 BIF', fee: '120 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'nfc', location: 'Gitega', category: 'card' },
+  { dateTime: '18/06/2024 06:30', transactionNo: 'TX-2024-06-018', type: 'Cash In', typePillColor: '#7c3aed', sender: '—', recipient: 'Salvatore Hakizimana', amount: '75 000 BIF', fee: '0 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'agent', location: 'Rutana', category: 'agent' },
+  { dateTime: '18/06/2024 06:15', transactionNo: 'TX-2024-06-019', type: 'Cash Out', typePillColor: '#ea580c', sender: 'Théophile Ntirandekura', recipient: '—', amount: '150 000 BIF', fee: '3 000 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'agent', location: 'Karusi', category: 'agent' },
+  { dateTime: '18/06/2024 06:00', transactionNo: 'TX-2024-06-020', type: 'Transfert', typePillColor: '#2f6fed', sender: 'Ursule Niyonsaba', recipient: 'Valentin Miburo', amount: '95 000 BIF', fee: '950 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'ussd', location: 'Bubanza', category: 'mobile_money' },
+  // Additional transactions
+  { dateTime: '17/06/2024 16:30', transactionNo: 'TX-2024-06-021', type: 'Paiement NFC', typePillColor: '#0d9488', sender: 'Alain Manzi', recipient: 'Super Marché Central', amount: '155 000 BIF', fee: '0 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'nfc', location: 'Bujumbura', category: 'card' },
+  { dateTime: '17/06/2024 15:00', transactionNo: 'TX-2024-06-022', type: 'Transfert Agent→SA', typePillColor: '#7c3aed', sender: 'Agent Jean-Pierre', recipient: 'SA Alphonse', amount: '850 000 BIF', fee: '4 250 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'web', location: 'Bujumbura', category: 'super_agent' },
+  { dateTime: '17/06/2024 14:20', transactionNo: 'TX-2024-06-023', type: 'Paiement Mobile', typePillColor: '#2f6fed', sender: 'Béatrice N.', recipient: 'Marchant D', amount: '65 000 BIF', fee: '650 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'mobile', location: 'Gitega', category: 'mobile_money' },
+  { dateTime: '17/06/2024 11:45', transactionNo: 'TX-2024-06-024', type: 'Cash In Agent', typePillColor: '#7c3aed', sender: '—', recipient: 'Fabien N.', amount: '300 000 BIF', fee: '0 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'agent', location: 'Ngozi', category: 'agent' },
+  { dateTime: '17/06/2024 10:10', transactionNo: 'TX-2024-06-025', type: 'Paiement NFC', typePillColor: '#0d9488', sender: 'Gérard M.', recipient: 'Station Total', amount: '78 500 BIF', fee: '0 BIF', status: 'Réussie', statusPillColor: '#1fae5b', channel: 'nfc', location: 'Bujumbura', category: 'card' },
 ];
 
 export const MOCK_TRANSACTION_DETAIL: TransactionDetail = {
@@ -180,7 +186,7 @@ export const MOCK_OPERATION_TYPES: OperationTypeStats[] = [
   { type: 'Cash In', color: '#7c3aed', count: 385, percentage: 30.7 },
   { type: 'Transfert', color: '#2f6fed', count: 320, percentage: 25.5 },
   { type: 'Cash Out', color: '#ea580c', count: 215, percentage: 17.1 },
-  { type: 'Paiement', color: '#0d9488', count: 180, percentage: 14.3 },
+  { type: 'Paiement NFC', color: '#0d9488', count: 180, percentage: 14.3 },
   { type: 'Autres', color: '#6b7280', count: 156, percentage: 12.4 }
 ];
 
