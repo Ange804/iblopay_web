@@ -89,6 +89,12 @@ export class TransactionHubComponent implements OnInit {
     });
   }
 
+  onReverseClick(transactionNo: string): void {
+    // Placeholder for reverse transaction logic
+    console.log('Reverse transaction:', transactionNo);
+    // In production, this would call a service to reverse the transaction
+  }
+
   closeDetail(): void {
     this.detailVisible = false;
     this.selectedDetail = null;

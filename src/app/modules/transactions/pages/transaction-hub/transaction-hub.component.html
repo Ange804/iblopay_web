@@ -3,6 +3,7 @@
   <div class="hub-page__header">
     <div class="hub-page__title-block">
       <h1 class="hub-page__title">Gestion des Transactions</h1>
+      <p class="hub-page__subtitle">Suivi et gestion des transactions IBLOPay Service Wallet</p>
     </div>
   </div>
 
@@ -15,25 +16,16 @@
   <!-- Filter Bar -->
   <app-filter-bar (filterChange)="onPageChange(1)"></app-filter-bar>
 
-  <!-- Main Content: Table + Detail Panel -->
-  <div class="hub-page__main">
-    <div class="hub-page__table-area">
-      <app-transaction-table
-        [rows]="transactions"
-        [total]="totalTransactions"
-        [currentPage]="currentPage"
-        (pageChange)="onPageChange($event)"
-        (rowClick)="onRowClick($event)">
-      </app-transaction-table>
-    </div>
-
-    <div class="hub-page__detail-area">
-      <app-detail-panel
-        [detail]="selectedDetail"
-        [visible]="detailVisible"
-        (close)="closeDetail()">
-      </app-detail-panel>
-    </div>
+  <!-- Full-width Transaction Table (no detail panel) -->
+  <div class="hub-page__table-area">
+    <app-transaction-table
+      [rows]="transactions"
+      [total]="totalTransactions"
+      [currentPage]="currentPage"
+      (pageChange)="onPageChange($event)"
+      (rowClick)="onRowClick($event)"
+      (reverseClick)="onReverseClick($event)">
+    </app-transaction-table>
   </div>
 
   <!-- Analytics Row (4 panels) -->

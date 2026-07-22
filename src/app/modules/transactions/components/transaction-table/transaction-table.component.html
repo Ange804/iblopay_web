@@ -2,8 +2,6 @@
   <div class="table-section__header">
     <span class="table-section__title">Liste des transactions ({{ total.toLocaleString() }} résultats)</span>
     <div class="table-section__controls">
-      <button class="table-section__btn-icon" title="Vue par carte">🔲</button>
-      <button class="table-section__btn-icon" title="Colonnes">⚙️</button>
       <button class="table-section__btn-export">Exporter</button>
     </div>
   </div>
@@ -35,11 +33,12 @@
           <td class="transaction-table__cell-amount">{{ row.amount }}</td>
           <td>{{ row.fee }}</td>
           <td><span class="pill pill--status" [style.background]="row.statusPillColor + '18'" [style.color]="row.statusPillColor">{{ row.status }}</span></td>
-          <td><span class="channel-icon" title="{{ row.channel }}">{{ getChannelIcon(row.channel) }}</span></td>
+          <td><span class="canal-label" [class.canal-wallet]="row.channel === 'wallet'" [class.canal-card]="row.channel === 'card'" [class.canal-attribue]="row.channel === 'attribué'">{{ getCanalLabel(row.channel) }}</span></td>
           <td>{{ row.location }}</td>
           <td class="transaction-table__cell-actions">
-            <button class="action-btn" title="Voir détail">👁️</button>
-            <button class="action-btn" title="Plus">⋮</button>
+            <button class="action-btn action-btn--reverse" title="Réverser la transaction" (click)="onReverseClick($event, row.transactionNo)">
+              <i class="fas fa-undo-alt"></i>
+            </button>
           </td>
         </tr>
       </tbody>
