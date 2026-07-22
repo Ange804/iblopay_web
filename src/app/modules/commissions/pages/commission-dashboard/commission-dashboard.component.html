@@ -1,205 +1,254 @@
 <div class="commission-page">
-  <!-- Page Header -->
-  <div class="page-header">
+  <!-- ═══ PAGE HEADER ═══ -->
+  <header class="page-header">
     <div class="page-header__left">
-      <h1 class="page-header__title">Tableau de Bord Commissions</h1>
-      <p class="page-header__subtitle">Suivi des commissions des agents et super agents</p>
+      <h1 class="page-header__title">Suivi des Commissions</h1>
+      <p class="page-header__subtitle">Tableau de bord — Agents & Super-Agents · IBLOPay Service Wallet</p>
     </div>
     <div class="page-header__right">
-      <div class="view-toggle">
-        <button
-          class="view-toggle__btn"
-          [class.view-toggle__btn--active]="activeView === 'agent'"
-          (click)="onViewChange('agent')"
-        >
-          <i class="bi bi-person"></i>
-          Agent
-        </button>
-        <button
-          class="view-toggle__btn"
-          [class.view-toggle__btn--active]="activeView === 'super_agent'"
-          (click)="onViewChange('super_agent')"
-        >
-          <i class="bi bi-people"></i>
-          Super Agent
-        </button>
-        <button
-          class="view-toggle__btn"
-          [class.view-toggle__btn--active]="activeView === 'admin'"
-          (click)="onViewChange('admin')"
-        >
-          <i class="bi bi-shield"></i>
-          Admin
+      <div class="search-bar">
+        <i class="fas fa-search search-bar__icon"></i>
+        <input
+          class="search-bar__input"
+          type="text"
+          placeholder="Rechercher par nom, wallet ou contact…"
+          [(ngModel)]="searchQuery"
+          (input)="onSearch()"
+        />
+        <button *ngIf="searchQuery" class="search-bar__clear" (click)="searchQuery = ''; onSearch()">
+          <i class="fas fa-times"></i>
         </button>
       </div>
     </div>
-  </div>
+  </header>
 
-  <!-- Loading State -->
-  <div class="loading-state" *ngIf="isLoading">
-    <div class="spinner"></div>
-    <span>Chargement des données...</span>
-  </div>
-
-  <!-- KPI Cards -->
-  <div class="kpi-grid" *ngIf="!isLoading">
-    <div class="kpi-card" *ngFor="let card of kpiCards">
-      <div class="kpi-card__icon" [style.background-color]="card.color + '20'" [style.color]="card.color">
-        <i [class]="card.icon"></i>
-      </div>
-      <div class="kpi-card__content">
-        <div class="kpi-card__label">{{ card.label }}</div>
-        <div class="kpi-card__value">{{ card.value }}</div>
-        <div class="kpi-card__delta" [class.kpi-card__delta--up]="card.deltaType === 'increase'"
-          [class.kpi-card__delta--down]="card.deltaType === 'decrease'"
-          [class.kpi-card__delta--neutral]="card.deltaType === 'neutral'">
-          <i class="bi" [class.bi-arrow-up-short]="card.deltaType === 'increase'"
-            [class.bi-arrow-down-short]="card.deltaType === 'decrease'"
-            [class.bi-dash]="card.deltaType === 'neutral'"></i>
-          {{ card.delta }}
-        </div>
+  <!-- ═══ KPI CARDS ═══ -->
+  <section class="kpi-grid">
+    <div class="kpi-card kpi-card--etat">
+      <div class="kpi-card__icon"><i class="fas fa-landmark"></i></div>
+      <div class="kpi-card__body">
+        <span class="kpi-card__label">Commission État</span>
+        <span class="kpi-card__value">{{ formatBif(totalCommissionEtat) }}</span>
+        <span class="kpi-card__pct">{{ percentageEtatGlobale | number:'1.1-1':'fr-FR' }} %</span>
       </div>
     </div>
+    <div class="kpi-card kpi-card--iblopay">
+      <div class="kpi-card__icon"><i class="fas fa-building"></i></div>
+      <div class="kpi-card__body">
+        <span class="kpi-card__label">Commission IBLOPay</span>
+        <span class="kpi-card__value">{{ formatBif(totalCommissionIblopay) }}</span>
+        <span class="kpi-card__pct">{{ percentageIblopayGlobale | number:'1.1-1':'fr-FR' }} %</span>
+      </div>
+    </div>
+    <div class="kpi-card kpi-card--tierce">
+      <div class="kpi-card__icon"><i class="fas fa-handshake"></i></div>
+      <div class="kpi-card__body">
+        <span class="kpi-card__label" *ngIf="activeTab === 'agent'">Commission Super-Agent</span>
+        <span class="kpi-card__label" *ngIf="activeTab === 'super_agent'">Commission Réseau</span>
+        <span class="kpi-card__value">{{ formatBif(totalCommissionTierce) }}</span>
+        <span class="kpi-card__pct">{{ percentageTierceGlobale | number:'1.1-1':'fr-FR' }} %</span>
+      </div>
+    </div>
+    <div class="kpi-card kpi-card--personnelle">
+      <div class="kpi-card__icon"><i class="fas fa-wallet"></i></div>
+      <div class="kpi-card__body">
+        <span class="kpi-card__label">Commission Personnelle</span>
+        <span class="kpi-card__value">{{ formatBif(totalCommissionPersonnelle) }}</span>
+        <span class="kpi-card__pct">{{ percentagePersonnelleGlobale | number:'1.1-1':'fr-FR' }} %</span>
+      </div>
+    </div>
+    <div class="kpi-card kpi-card--total">
+      <div class="kpi-card__icon"><i class="fas fa-calculator"></i></div>
+      <div class="kpi-card__body">
+        <span class="kpi-card__label">Total Toutes Commissions</span>
+        <span class="kpi-card__value kpi-card__value--xl">{{ formatBif(totalToutesCommissions) }}</span>
+        <span class="kpi-card__pct">100 %</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TABS ═══ -->
+  <div class="tabs-bar">
+    <button class="tab-btn" [class.tab-btn--active]="activeTab === 'agent'" (click)="switchTab('agent')">
+      <i class="fas fa-user-tie"></i> Agents
+      <span class="tab-btn__count">{{ agents.length }}</span>
+    </button>
+    <button class="tab-btn" [class.tab-btn--active]="activeTab === 'super_agent'" (click)="switchTab('super_agent')">
+      <i class="fas fa-users"></i> Super-Agents
+      <span class="tab-btn__count">{{ superAgents.length }}</span>
+    </button>
   </div>
 
-  <!-- Charts Row -->
-  <div class="charts-row" *ngIf="!isLoading">
-    <!-- Trend Chart -->
-    <div class="chart-card chart-card--wide">
-      <div class="chart-card__header">
-        <h3 class="chart-card__title">Évolution des Commissions</h3>
-        <div class="chart-card__controls">
-          <button class="period-btn" [class.period-btn--active]="trendPeriod === 7" (click)="onTrendPeriodChange(7)">7J</button>
-          <button class="period-btn" [class.period-btn--active]="trendPeriod === 30" (click)="onTrendPeriodChange(30)">30J</button>
-          <button class="period-btn" [class.period-btn--active]="trendPeriod === 90" (click)="onTrendPeriodChange(90)">90J</button>
-        </div>
-      </div>
-      <div class="chart-card__body">
-        <div class="bar-chart">
-          <div class="bar-chart__y-axis">
-            <span class="bar-chart__y-label">{{ formatBif(trendMaxValue) }}</span>
-            <span class="bar-chart__y-label">{{ formatBif(math.round(trendMaxValue / 2)) }}</span>
-            <span class="bar-chart__y-label">0 BIF</span>
-          </div>
-          <div class="bar-chart__container">
-            <div class="bar-chart__bars">
-              <div class="bar-chart__group" *ngFor="let label of trendLabels; let i = index">
-                <div class="bar-chart__bar" [style.height]="((agentTrendValues[i] ?? 0) / trendMaxValue) * 100 + '%'"
-                  [style.background-color]="'#3b82f6'" [title]="'Agent: ' + formatBif(agentTrendValues[i] ?? 0)">
-                </div>
-                <div class="bar-chart__bar" [style.height]="((superAgentTrendValues[i] ?? 0) / trendMaxValue) * 100 + '%'"
-                  [style.background-color]="'#a855f7'" [title]="'Super Agent: ' + formatBif(superAgentTrendValues[i] ?? 0)">
-                </div>
+  <!-- ═══ TABLEAU ═══ -->
+  <div class="table-card">
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="col-avatar"></th>
+            <th class="col-name">Nom & Prénom</th>
+            <th class="col-wallet">N° Wallet</th>
+            <th class="col-contact">Contact</th>
+            <th class="col-commission">Comm. État</th>
+            <th class="col-commission">Comm. IBLOPay</th>
+            <th class="col-commission" *ngIf="activeTab === 'agent'">Comm. Super-Agent</th>
+            <th class="col-commission" *ngIf="activeTab === 'super_agent'">Comm. Réseau</th>
+            <th class="col-commission">Comm. Personnelle</th>
+            <th class="col-minibar"></th>
+            <th class="col-action">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Totals row -->
+          <tr class="data-row data-row--totals">
+            <td class="col-avatar"></td>
+            <td class="col-name" colspan="2"><strong>TOTAUX GÉNÉRAUX</strong></td>
+            <td class="col-contact"></td>
+            <td class="col-commission"><span class="amount amount--etat">{{ formatBif(totals.etat) }}</span></td>
+            <td class="col-commission"><span class="amount amount--iblopay">{{ formatBif(totals.iblopay) }}</span></td>
+            <td class="col-commission"><span class="amount amount--tierce">{{ formatBif(totals.tierce) }}</span></td>
+            <td class="col-commission"><span class="amount amount--personnelle">{{ formatBif(totals.personnelle) }}</span></td>
+            <td class="col-minibar"></td>
+            <td class="col-action"></td>
+          </tr>
+
+          <!-- Data rows -->
+          <tr class="data-row" *ngFor="let row of currentRows">
+            <td class="col-avatar">
+              <span class="avatar" [style.background-color]="getAvatarColor(row.initials)">{{ row.initials }}</span>
+            </td>
+            <td class="col-name">
+              <span class="person-name">{{ row.person.prenom }} {{ row.person.nom }}</span>
+              <span class="person-sub" *ngIf="row.person.superAgentNom">{{ row.person.superAgentNom }}</span>
+            </td>
+            <td class="col-wallet"><code class="wallet-code">{{ row.person.wallet }}</code></td>
+            <td class="col-contact">{{ row.person.contact }}</td>
+            <td class="col-commission"><span class="amount amount--etat">{{ formatBif(row.totalCommissionEtat) }}</span></td>
+            <td class="col-commission"><span class="amount amount--iblopay">{{ formatBif(row.totalCommissionIblopay) }}</span></td>
+            <td class="col-commission"><span class="amount amount--tierce">{{ formatBif(row.totalCommissionTierce) }}</span></td>
+            <td class="col-commission"><span class="amount amount--personnelle">{{ formatBif(row.totalCommissionPersonnelle) }}</span></td>
+            <td class="col-minibar">
+              <div class="mini-bar" [title]="getMiniBarTitle(getBarPercentagesFromTotals(row))">
+                <span class="mini-bar__seg mini-bar__seg--etat" [style.width.%]="getBarPercentagesFromTotals(row).etat"></span>
+                <span class="mini-bar__seg mini-bar__seg--iblopay" [style.width.%]="getBarPercentagesFromTotals(row).iblopay"></span>
+                <span class="mini-bar__seg mini-bar__seg--tierce" [style.width.%]="getBarPercentagesFromTotals(row).tierce"></span>
+                <span class="mini-bar__seg mini-bar__seg--personnelle" [style.width.%]="getBarPercentagesFromTotals(row).personnelle"></span>
               </div>
-            </div>
-            <div class="bar-chart__x-axis">
-              <span class="bar-chart__x-label" *ngFor="let label of getEveryNthLabel(7)">{{ label }}</span>
-            </div>
-          </div>
-        </div>
-        <div class="chart-legend">
-          <div class="chart-legend__item">
-            <span class="chart-legend__dot" style="background-color: #3b82f6;"></span>
-            <span>Commissions Agents</span>
-          </div>
-          <div class="chart-legend__item">
-            <span class="chart-legend__dot" style="background-color: #a855f7;"></span>
-            <span>Commissions Super Agents</span>
-          </div>
-        </div>
+            </td>
+            <td class="col-action">
+              <button class="btn-detail" (click)="openDetail(row.person)">
+                <i class="fas fa-eye"></i> Détails
+              </button>
+            </td>
+          </tr>
+
+          <!-- Empty -->
+          <tr *ngIf="currentRows.length === 0">
+            <td colspan="11" class="empty-state">
+              <i class="fas fa-inbox"></i>
+              <span>Aucun résultat trouvé</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL ═══ -->
+<div class="modal-overlay" [class.modal-overlay--open]="isModalOpen" (click)="closeModal()"></div>
+<div class="modal" [class.modal--open]="isModalOpen" *ngIf="selectedPerson">
+  <div class="modal__header">
+    <div class="modal__header-left">
+      <span class="avatar avatar--lg" [style.background-color]="getAvatarColor(getInitials(selectedPerson.nom, selectedPerson.prenom))">
+        {{ getInitials(selectedPerson.nom, selectedPerson.prenom) }}
+      </span>
+      <div>
+        <h2 class="modal__title">{{ selectedPerson.prenom }} {{ selectedPerson.nom }}</h2>
+        <p class="modal__subtitle">
+          {{ selectedPerson.wallet }} · {{ selectedPerson.contact }}
+          <span *ngIf="selectedPerson.superAgentNom"> · {{ selectedPerson.superAgentNom }}</span>
+        </p>
       </div>
     </div>
-
-    <!-- Type Breakdown Donut -->
-    <div class="chart-card">
-      <div class="chart-card__header">
-        <h3 class="chart-card__title">Par Type</h3>
-      </div>
-      <div class="chart-card__body chart-card__body--center">
-        <div class="donut-chart">
-          <svg viewBox="0 0 100 100" class="donut-chart__svg">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="var(--border)" stroke-width="12"/>
-            <circle *ngFor="let seg of getTypeSegments()" cx="50" cy="50" r="40" fill="none"
-              [attr.stroke]="seg.color" stroke-width="12"
-              [attr.stroke-dasharray]="seg.dasharray"
-              [attr.stroke-dashoffset]="seg.dashoffset"
-              transform="rotate(-90 50 50)" class="donut-chart__segment"/>
-          </svg>
-          <div class="donut-chart__center">
-            <span class="donut-chart__total">{{ totalCommissionCount }}</span>
-            <span class="donut-chart__label">Total</span>
-          </div>
-        </div>
-        <div class="donut-legend">
-          <div class="donut-legend__item" *ngFor="let seg of getTypeSegments()">
-            <span class="donut-legend__dot" [style.background-color]="seg.color"></span>
-            <div class="donut-legend__info">
-              <span class="donut-legend__name">{{ seg.label }}</span>
-              <span class="donut-legend__value">{{ formatBif(seg.amount) }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="modal__header-right">
+      <button class="btn-download" (click)="downloadCsv()">
+        <i class="fas fa-download"></i> Télécharger CSV
+      </button>
+      <button class="modal__close" (click)="closeModal()">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
   </div>
 
-  <!-- Second Row -->
-  <div class="charts-row" *ngIf="!isLoading">
-    <!-- Status Breakdown -->
-    <div class="chart-card">
-      <div class="chart-card__header">
-        <h3 class="chart-card__title">Par Statut</h3>
+  <div class="modal__body">
+    <div class="modal__summary">
+      <div class="summary-chip summary-chip--etat">
+        <span class="summary-chip__label">État</span>
+        <span class="summary-chip__value">{{ formatBif(modalTotalEtat) }}</span>
       </div>
-      <div class="chart-card__body chart-card__body--center">
-        <div class="donut-chart">
-          <svg viewBox="0 0 100 100" class="donut-chart__svg">
-            <circle cx="50" cy="50" r="40" fill="none" stroke="var(--border)" stroke-width="12"/>
-            <circle *ngFor="let seg of getStatusSegments()" cx="50" cy="50" r="40" fill="none"
-              [attr.stroke]="seg.color" stroke-width="12"
-              [attr.stroke-dasharray]="seg.dasharray"
-              [attr.stroke-dashoffset]="seg.dashoffset"
-              transform="rotate(-90 50 50)" class="donut-chart__segment"/>
-          </svg>
-          <div class="donut-chart__center">
-            <span class="donut-chart__total">{{ totalCommissionCount }}</span>
-            <span class="donut-chart__label">Total</span>
-          </div>
-        </div>
-        <div class="donut-legend">
-          <div class="donut-legend__item" *ngFor="let seg of getStatusSegments()">
-            <span class="donut-legend__dot" [style.background-color]="seg.color"></span>
-            <div class="donut-legend__info">
-              <span class="donut-legend__name">{{ seg.label }}</span>
-              <span class="donut-legend__value">{{ formatBif(seg.amount) }}</span>
-            </div>
-          </div>
-        </div>
+      <div class="summary-chip summary-chip--iblopay">
+        <span class="summary-chip__label">IBLOPay</span>
+        <span class="summary-chip__value">{{ formatBif(modalTotalIblopay) }}</span>
+      </div>
+      <div class="summary-chip summary-chip--tierce">
+        <span class="summary-chip__label">Tierce</span>
+        <span class="summary-chip__value">{{ formatBif(modalTotalTierce) }}</span>
+      </div>
+      <div class="summary-chip summary-chip--personnelle">
+        <span class="summary-chip__label">Personnelle</span>
+        <span class="summary-chip__value">{{ formatBif(modalTotalPersonnelle) }}</span>
       </div>
     </div>
 
-    <!-- Summary Stats Card -->
-    <div class="chart-card chart-card--wide">
-      <div class="chart-card__header">
-        <h3 class="chart-card__title">Résumé des Commissions</h3>
-      </div>
-      <div class="chart-card__body">
-        <div class="summary-grid">
-          <div class="summary-item" *ngFor="let seg of getTypeSegments()">
-            <div class="summary-item__header">
-              <span class="summary-item__dot" [style.background-color]="seg.color"></span>
-              <span class="summary-item__label">{{ seg.label }}</span>
-            </div>
-            <div class="summary-item__value">{{ formatBif(seg.amount) }}</div>
-            <div class="summary-item__count">{{ seg.count }} transactions</div>
-          </div>
-          <div class="summary-divider"></div>
-          <div class="summary-item summary-item--total">
-            <div class="summary-item__label">Total Général</div>
-            <div class="summary-item__value">{{ formatBif(typeTotal) }}</div>
-            <div class="summary-item__count">{{ totalCommissionCount }} transactions</div>
-          </div>
-        </div>
-      </div>
+    <div class="modal__table-wrapper">
+      <table class="modal-table">
+        <thead>
+          <tr>
+            <th>Référence</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Montant</th>
+            <th>Comm. État</th>
+            <th>Comm. IBLOPay</th>
+            <th>Comm. Tierce</th>
+            <th>Comm. Perso.</th>
+            <th>Répartition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tx of selectedPerson.transactions">
+            <td><code class="ref-code">{{ tx.reference }}</code></td>
+            <td class="td-date">{{ formatDateShort(tx.date) }}</td>
+            <td><span class="type-badge" [ngClass]="getTransactionTypeClass(tx.type)">{{ transactionTypeLabel(tx.type) }}</span></td>
+            <td class="td-amount">{{ formatBif(tx.montant) }}</td>
+            <td class="td-amount amount--etat">{{ formatBif(tx.commissions.etat) }}</td>
+            <td class="td-amount amount--iblopay">{{ formatBif(tx.commissions.iblopay) }}</td>
+            <td class="td-amount amount--tierce">{{ formatBif(tx.commissions.tierce) }}</td>
+            <td class="td-amount amount--personnelle">{{ formatBif(tx.commissions.personnelle) }}</td>
+            <td>
+              <div class="mini-bar" [title]="getMiniBarTitle(getMiniBarPercentages(tx.commissions))">
+                <span class="mini-bar__seg mini-bar__seg--etat" [style.width.%]="getMiniBarPercentages(tx.commissions).etat"></span>
+                <span class="mini-bar__seg mini-bar__seg--iblopay" [style.width.%]="getMiniBarPercentages(tx.commissions).iblopay"></span>
+                <span class="mini-bar__seg mini-bar__seg--tierce" [style.width.%]="getMiniBarPercentages(tx.commissions).tierce"></span>
+                <span class="mini-bar__seg mini-bar__seg--personnelle" [style.width.%]="getMiniBarPercentages(tx.commissions).personnelle"></span>
+              </div>
+            </td>
+          </tr>
+          <!-- Modal totals row -->
+          <tr class="modal-totals-row">
+            <td><strong>TOTAUX</strong></td>
+            <td></td>
+            <td></td>
+            <td class="td-amount"><strong>{{ formatBif(modalTotalMontant) }}</strong></td>
+            <td class="td-amount amount--etat"><strong>{{ formatBif(modalTotalEtat) }}</strong></td>
+            <td class="td-amount amount--iblopay"><strong>{{ formatBif(modalTotalIblopay) }}</strong></td>
+            <td class="td-amount amount--tierce"><strong>{{ formatBif(modalTotalTierce) }}</strong></td>
+            <td class="td-amount amount--personnelle"><strong>{{ formatBif(modalTotalPersonnelle) }}</strong></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
