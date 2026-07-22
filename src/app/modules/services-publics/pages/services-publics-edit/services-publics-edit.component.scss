@@ -1,0 +1,416 @@
+$primary: #4f46e5;
+$primary-hover: #4338ca;
+$success: #22c55e;
+$danger: #ef4444;
+$warning: #f59e0b;
+$info: #3b82f6;
+
+$bg-white: #ffffff;
+$bg-light: #f4f6f9;
+$bg-hover: #f8fafc;
+$bg-header: #f1f5f9;
+
+$text-primary: #1a1a2e;
+$text-secondary: #6b7280;
+$text-dim: #94a3b8;
+
+$border-color: #e8ecf1;
+$border-soft: #f1f5f9;
+
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+$shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.10);
+
+$radius-sm: 6px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 20px;
+
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+.services-publics-edit {
+    padding: 20px;
+    background: $bg-light;
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: $primary;
+    cursor: pointer;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 0;
+    transition: $transition;
+    font-family: inherit;
+
+    &:hover {
+        color: $primary-hover;
+        transform: translateX(-4px);
+    }
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: $text-secondary;
+    gap: 16px;
+
+    .loader-spinner {
+        width: 48px;
+        height: 48px;
+        border: 3px solid $border-color;
+        border-top-color: $primary;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: $text-secondary;
+    gap: 16px;
+
+    svg {
+        stroke: $text-dim;
+        opacity: 0.5;
+    }
+
+    span {
+        font-size: 16px;
+    }
+}
+
+.edit-card {
+    background: $bg-white;
+    border-radius: $radius-xl;
+    padding: 28px 32px;
+    max-width: 800px;
+    border: 1px solid $border-color;
+    box-shadow: $shadow-sm;
+    transition: $transition;
+
+    &:hover {
+        box-shadow: $shadow-md;
+    }
+}
+
+/* ================================================================
+   HEADER (comme la vue détail)
+   ================================================================ */
+.detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid $border-color;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.detail-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    .detail-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: $radius-md;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $bg-white;
+        font-weight: 700;
+        font-size: 20px;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 700;
+        color: $text-primary;
+    }
+
+    .detail-id {
+        font-size: 13px;
+        color: $text-dim;
+        display: block;
+    }
+}
+
+.detail-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+
+    .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    &.badge-interne {
+        background: rgba($info, 0.12);
+        color: #2563eb;
+    }
+
+    &.badge-externe {
+        background: rgba(139, 92, 246, 0.12);
+        color: #7c3aed;
+    }
+
+    &.badge-actif {
+        background: rgba($success, 0.12);
+        color: #16a34a;
+
+        .status-dot {
+            background: #16a34a;
+        }
+    }
+
+    &.badge-inactif {
+        background: rgba($danger, 0.12);
+        color: #dc2626;
+
+        .status-dot {
+            background: #dc2626;
+        }
+    }
+}
+
+/* ================================================================
+   FORMULAIRE
+   ================================================================ */
+.error-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba($danger, 0.08);
+    color: #dc2626;
+    border-radius: $radius-md;
+    margin-bottom: 16px;
+    font-size: 14px;
+
+    svg {
+        stroke: #dc2626;
+        flex-shrink: 0;
+    }
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 20px;
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        &.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            color: $text-secondary;
+        }
+
+        input,
+        select,
+        textarea {
+            padding: 10px 14px;
+            border: 1px solid $border-color;
+            border-radius: $radius-md;
+            font-size: 14px;
+            font-family: inherit;
+            color: $text-primary;
+            transition: $transition;
+            background: $bg-white;
+
+            &:focus {
+                outline: none;
+                border-color: $primary;
+                box-shadow: 0 0 0 4px rgba($primary, 0.08);
+            }
+
+            &:disabled {
+                background: $bg-hover;
+                cursor: not-allowed;
+            }
+
+            &::placeholder {
+                color: $text-dim;
+            }
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+    }
+}
+
+/* ================================================================
+   ACTIONS DU FORMULAIRE
+   ================================================================ */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 2px solid $border-color;
+
+    button {
+        padding: 10px 24px;
+        border: none;
+        border-radius: $radius-md;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: $transition;
+        font-family: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+
+        svg {
+            stroke: currentColor;
+        }
+
+        &:hover {
+            transform: translateY(-2px);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+    }
+
+    .btn-cancel {
+        background: $bg-hover;
+        color: $text-secondary;
+
+        &:hover {
+            background: $border-color;
+        }
+    }
+
+    .btn-save {
+        background: $primary;
+        color: $bg-white;
+
+        svg {
+            stroke: $bg-white;
+        }
+
+        &:hover:not(:disabled) {
+            background: $primary-hover;
+            box-shadow: 0 4px 12px rgba($primary, 0.3);
+        }
+    }
+}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 768px) {
+    .services-publics-edit {
+        padding: 12px;
+    }
+
+    .edit-card {
+        padding: 16px 20px;
+        max-width: 100%;
+    }
+
+    .detail-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .detail-title h2 {
+        font-size: 18px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions button {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .edit-card {
+        padding: 12px 16px;
+    }
+
+    .detail-title {
+        .detail-icon {
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+        }
+
+        h2 {
+            font-size: 16px;
+        }
+    }
+
+    .badge {
+        font-size: 10px;
+        padding: 3px 10px;
+    }
+
+    .form-grid .form-group input,
+    .form-grid .form-group select,
+    .form-grid .form-group textarea {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+}
