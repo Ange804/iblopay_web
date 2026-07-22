@@ -13,6 +13,7 @@ export class TransactionTableComponent {
   @Input() pageSize = 20;
   @Output() pageChange = new EventEmitter<number>();
   @Output() rowClick = new EventEmitter<string>();
+  @Output() reverseClick = new EventEmitter<string>();
 
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.total / this.pageSize));
@@ -36,12 +37,26 @@ export class TransactionTableComponent {
     return range;
   }
 
-  getChannelIcon(channel: string): string {
-    const map: Record<string, string> = { mobile: '📱', agent: '🏦', web: '🖥️', nfc: '📶', ussd: '📞' };
-    return map[channel] || '📱';
+  getCanalLabel(channel: string): string {
+    const map: Record<string, string> = {
+      wallet: 'Wallet',
+      card: 'Carte',
+      attribué: 'Attribué',
+      mobile: 'Mobile',
+      agent: 'Agent',
+      web: 'Web',
+      nfc: 'NFC',
+      ussd: 'USSD'
+    };
+    return map[channel] || channel;
   }
 
   onRowClick(transactionNo: string): void {
     this.rowClick.emit(transactionNo);
+  }
+
+  onReverseClick(event: MouseEvent, transactionNo: string): void {
+    event.stopPropagation();
+    this.reverseClick.emit(transactionNo);
   }
 }

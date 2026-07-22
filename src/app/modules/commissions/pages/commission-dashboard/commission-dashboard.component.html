@@ -71,11 +71,11 @@
   <div class="tabs-bar">
     <button class="tab-btn" [class.tab-btn--active]="activeTab === 'agent'" (click)="switchTab('agent')">
       <i class="fas fa-user-tie"></i> Agents
-      <span class="tab-btn__count">{{ agents.length }}</span>
+      <span class="tab-btn__count">{{ agentRows.length }}</span>
     </button>
     <button class="tab-btn" [class.tab-btn--active]="activeTab === 'super_agent'" (click)="switchTab('super_agent')">
       <i class="fas fa-users"></i> Super-Agents
-      <span class="tab-btn__count">{{ superAgents.length }}</span>
+      <span class="tab-btn__count">{{ superAgentRows.length }}</span>
     </button>
   </div>
 
@@ -104,10 +104,10 @@
             <td class="col-avatar"></td>
             <td class="col-name" colspan="2"><strong>TOTAUX GÉNÉRAUX</strong></td>
             <td class="col-contact"></td>
-            <td class="col-commission"><span class="amount amount--etat">{{ formatBif(totals.etat) }}</span></td>
-            <td class="col-commission"><span class="amount amount--iblopay">{{ formatBif(totals.iblopay) }}</span></td>
-            <td class="col-commission"><span class="amount amount--tierce">{{ formatBif(totals.tierce) }}</span></td>
-            <td class="col-commission"><span class="amount amount--personnelle">{{ formatBif(totals.personnelle) }}</span></td>
+            <td class="col-commission"><span class="amount amount--etat">{{ formatBif(totalsEtat) }}</span></td>
+            <td class="col-commission"><span class="amount amount--iblopay">{{ formatBif(totalsIblopay) }}</span></td>
+            <td class="col-commission"><span class="amount amount--tierce">{{ formatBif(totalsTierce) }}</span></td>
+            <td class="col-commission"><span class="amount amount--personnelle">{{ formatBif(totalsPersonnelle) }}</span></td>
             <td class="col-minibar"></td>
             <td class="col-action"></td>
           </tr>
@@ -155,9 +155,12 @@
   </div>
 </div>
 
-<!-- ═══ MODAL ═══ -->
+<!-- ═══════════════════════════════════════════════════════
+     MODALE DE DÉTAIL
+     ═══════════════════════════════════════════════════════ -->
 <div class="modal-overlay" [class.modal-overlay--open]="isModalOpen" (click)="closeModal()"></div>
 <div class="modal" [class.modal--open]="isModalOpen" *ngIf="selectedPerson">
+  <!-- 1. EN-TÊTE : Avatar + Identité + Rôle + Wallet + Nb transactions -->
   <div class="modal__header">
     <div class="modal__header-left">
       <span class="avatar avatar--lg" [style.background-color]="getAvatarColor(getInitials(selectedPerson.nom, selectedPerson.prenom))">
@@ -165,16 +168,16 @@
       </span>
       <div>
         <h2 class="modal__title">{{ selectedPerson.prenom }} {{ selectedPerson.nom }}</h2>
-        <p class="modal__subtitle">
-          {{ selectedPerson.wallet }} · {{ selectedPerson.contact }}
-          <span *ngIf="selectedPerson.superAgentNom"> · {{ selectedPerson.superAgentNom }}</span>
-        </p>
+        <div class="modal__meta">
+          <span class="modal__role-badge">{{ selectedPersonRoleLabel }}</span>
+          <span class="modal__meta-sep">·</span>
+          <code class="modal__wallet">{{ selectedPerson.wallet }}</code>
+          <span class="modal__meta-sep">·</span>
+          <span class="modal__tx-count">{{ selectedPersonTransactionCount }} transaction{{ selectedPersonTransactionCount > 1 ? 's' : '' }}</span>
+        </div>
       </div>
     </div>
     <div class="modal__header-right">
-      <button class="btn-download" (click)="downloadCsv()">
-        <i class="fas fa-download"></i> Télécharger CSV
-      </button>
       <button class="modal__close" (click)="closeModal()">
         <i class="fas fa-times"></i>
       </button>
@@ -182,25 +185,27 @@
   </div>
 
   <div class="modal__body">
+    <!-- 2. BANDEAU DE TOTAUX -->
     <div class="modal__summary">
       <div class="summary-chip summary-chip--etat">
-        <span class="summary-chip__label">État</span>
+        <span class="summary-chip__label">Commission État</span>
         <span class="summary-chip__value">{{ formatBif(modalTotalEtat) }}</span>
       </div>
       <div class="summary-chip summary-chip--iblopay">
-        <span class="summary-chip__label">IBLOPay</span>
+        <span class="summary-chip__label">Commission IBLOPay</span>
         <span class="summary-chip__value">{{ formatBif(modalTotalIblopay) }}</span>
       </div>
       <div class="summary-chip summary-chip--tierce">
-        <span class="summary-chip__label">Tierce</span>
+        <span class="summary-chip__label">Commission {{ selectedPersonThirdCommissionLabel }}</span>
         <span class="summary-chip__value">{{ formatBif(modalTotalTierce) }}</span>
       </div>
       <div class="summary-chip summary-chip--personnelle">
-        <span class="summary-chip__label">Personnelle</span>
+        <span class="summary-chip__label">Commission Personnelle</span>
         <span class="summary-chip__value">{{ formatBif(modalTotalPersonnelle) }}</span>
       </div>
     </div>
 
+    <!-- 3. LISTE DÉTAILLÉE DES TRANSACTIONS -->
     <div class="modal__table-wrapper">
       <table class="modal-table">
         <thead>
@@ -211,9 +216,8 @@
             <th>Montant</th>
             <th>Comm. État</th>
             <th>Comm. IBLOPay</th>
-            <th>Comm. Tierce</th>
-            <th>Comm. Perso.</th>
-            <th>Répartition</th>
+            <th>Comm. {{ selectedPersonThirdCommissionLabel }}</th>
+            <th>Comm. Personnelle</th>
           </tr>
         </thead>
         <tbody>
@@ -222,33 +226,24 @@
             <td class="td-date">{{ formatDateShort(tx.date) }}</td>
             <td><span class="type-badge" [ngClass]="getTransactionTypeClass(tx.type)">{{ transactionTypeLabel(tx.type) }}</span></td>
             <td class="td-amount">{{ formatBif(tx.montant) }}</td>
-            <td class="td-amount amount--etat">{{ formatBif(tx.commissions.etat) }}</td>
-            <td class="td-amount amount--iblopay">{{ formatBif(tx.commissions.iblopay) }}</td>
-            <td class="td-amount amount--tierce">{{ formatBif(tx.commissions.tierce) }}</td>
-            <td class="td-amount amount--personnelle">{{ formatBif(tx.commissions.personnelle) }}</td>
-            <td>
-              <div class="mini-bar" [title]="getMiniBarTitle(getMiniBarPercentages(tx.commissions))">
-                <span class="mini-bar__seg mini-bar__seg--etat" [style.width.%]="getMiniBarPercentages(tx.commissions).etat"></span>
-                <span class="mini-bar__seg mini-bar__seg--iblopay" [style.width.%]="getMiniBarPercentages(tx.commissions).iblopay"></span>
-                <span class="mini-bar__seg mini-bar__seg--tierce" [style.width.%]="getMiniBarPercentages(tx.commissions).tierce"></span>
-                <span class="mini-bar__seg mini-bar__seg--personnelle" [style.width.%]="getMiniBarPercentages(tx.commissions).personnelle"></span>
-              </div>
-            </td>
-          </tr>
-          <!-- Modal totals row -->
-          <tr class="modal-totals-row">
-            <td><strong>TOTAUX</strong></td>
-            <td></td>
-            <td></td>
-            <td class="td-amount"><strong>{{ formatBif(modalTotalMontant) }}</strong></td>
-            <td class="td-amount amount--etat"><strong>{{ formatBif(modalTotalEtat) }}</strong></td>
-            <td class="td-amount amount--iblopay"><strong>{{ formatBif(modalTotalIblopay) }}</strong></td>
-            <td class="td-amount amount--tierce"><strong>{{ formatBif(modalTotalTierce) }}</strong></td>
-            <td class="td-amount amount--personnelle"><strong>{{ formatBif(modalTotalPersonnelle) }}</strong></td>
-            <td></td>
+            <td class="td-amount td-amount--etat">{{ formatBif(tx.commissions.etat) }}</td>
+            <td class="td-amount td-amount--iblopay">{{ formatBif(tx.commissions.iblopay) }}</td>
+            <td class="td-amount td-amount--tierce">{{ formatBif(tx.commissions.tierce) }}</td>
+            <td class="td-amount td-amount--personnelle">{{ formatBif(tx.commissions.personnelle) }}</td>
           </tr>
         </tbody>
       </table>
     </div>
+  </div>
+
+  <!-- 4. PIED : Total mouvementé + Bouton Télécharger CSV -->
+  <div class="modal__footer">
+    <div class="modal__footer-left">
+      <span class="modal__footer-label">Total mouvementé</span>
+      <span class="modal__footer-total">{{ formatBif(modalTotalMontant) }}</span>
+    </div>
+    <button class="btn-download" (click)="downloadCsv()">
+      <i class="fas fa-download"></i> Télécharger (CSV)
+    </button>
   </div>
 </div>

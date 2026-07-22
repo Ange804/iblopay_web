@@ -193,6 +193,11 @@ export class CommissionDashboardComponent implements OnInit {
   // Data
   allPersons: Person[] = [];
   filteredPersons: Person[] = [];
+
+  // Pre-computed rows for current tab (avoid getter re-creation issues)
+  agentRows: PersonRow[] = [];
+  superAgentRows: PersonRow[] = [];
+
   activeTab: PersonRole = 'agent';
 
   // Search
@@ -202,7 +207,7 @@ export class CommissionDashboardComponent implements OnInit {
   selectedPerson: Person | null = null;
   isModalOpen = false;
 
-  // Modal precomputed totals (to avoid arrow functions in template)
+  // Modal precomputed totals
   modalTotalMontant = 0;
   modalTotalEtat = 0;
   modalTotalIblopay = 0;
@@ -216,21 +221,16 @@ export class CommissionDashboardComponent implements OnInit {
   totalCommissionPersonnelle = 0;
   totalToutesCommissions = 0;
 
+  // Precomputed totals for the table footer
+  totalsEtat = 0;
+  totalsIblopay = 0;
+  totalsTierce = 0;
+  totalsPersonnelle = 0;
+  totalsGlobale = 0;
+
   ngOnInit(): void {
     this.allPersons = generateAllPersons();
     this.applyFilter();
-  }
-
-  get agents(): PersonRow[] {
-    return this.filteredPersons
-      .filter(p => p.role === 'agent')
-      .map(p => this.toRow(p));
-  }
-
-  get superAgents(): PersonRow[] {
-    return this.filteredPersons
-      .filter(p => p.role === 'super_agent')
-      .map(p => this.toRow(p));
   }
 
   private toRow(person: Person): PersonRow {
@@ -250,23 +250,12 @@ export class CommissionDashboardComponent implements OnInit {
   }
 
   get currentRows(): PersonRow[] {
-    return this.activeTab === 'agent' ? this.agents : this.superAgents;
-  }
-
-  get totals(): { etat: number; iblopay: number; tierce: number; personnelle: number; total: number } {
-    const rows = this.currentRows;
-    return {
-      etat: rows.reduce((s, r) => s + r.totalCommissionEtat, 0),
-      iblopay: rows.reduce((s, r) => s + r.totalCommissionIblopay, 0),
-      tierce: rows.reduce((s, r) => s + r.totalCommissionTierce, 0),
-      personnelle: rows.reduce((s, r) => s + r.totalCommissionPersonnelle, 0),
-      total: rows.reduce((s, r) => s + r.totalToutesCommissions, 0),
-    };
+    return this.activeTab === 'agent' ? this.agentRows : this.superAgentRows;
   }
 
   switchTab(tab: PersonRole): void {
     this.activeTab = tab;
-    this.applyFilter();
+    this.computeTableTotals();
   }
 
   onSearch(): void {
@@ -287,7 +276,18 @@ export class CommissionDashboardComponent implements OnInit {
           p.contact.includes(q)
       );
     }
+
+    // Pre-compute rows and totals in one pass
+    this.agentRows = this.filteredPersons
+      .filter(p => p.role === 'agent')
+      .map(p => this.toRow(p));
+
+    this.superAgentRows = this.filteredPersons
+      .filter(p => p.role === 'super_agent')
+      .map(p => this.toRow(p));
+
     this.computeKpis();
+    this.computeTableTotals();
   }
 
   private computeKpis(): void {
@@ -297,6 +297,27 @@ export class CommissionDashboardComponent implements OnInit {
     this.totalCommissionTierce = visible.reduce((s, p) => s + p.transactions.reduce((t, tx) => t + tx.commissions.tierce, 0), 0);
     this.totalCommissionPersonnelle = visible.reduce((s, p) => s + p.transactions.reduce((t, tx) => t + tx.commissions.personnelle, 0), 0);
     this.totalToutesCommissions = this.totalCommissionEtat + this.totalCommissionIblopay + this.totalCommissionTierce + this.totalCommissionPersonnelle;
+  }
+
+  private computeTableTotals(): void {
+    const rows = this.currentRows;
+    this.totalsEtat = rows.reduce((s, r) => s + r.totalCommissionEtat, 0);
+    this.totalsIblopay = rows.reduce((s, r) => s + r.totalCommissionIblopay, 0);
+    this.totalsTierce = rows.reduce((s, r) => s + r.totalCommissionTierce, 0);
+    this.totalsPersonnelle = rows.reduce((s, r) => s + r.totalCommissionPersonnelle, 0);
+    this.totalsGlobale = rows.reduce((s, r) => s + r.totalToutesCommissions, 0);
+  }
+
+  get selectedPersonRoleLabel(): string {
+    return this.selectedPerson?.role === 'agent' ? 'Agent' : 'Super-Agent';
+  }
+
+  get selectedPersonThirdCommissionLabel(): string {
+    return this.selectedPerson?.role === 'agent' ? 'Super-Agent' : 'Réseau';
+  }
+
+  get selectedPersonTransactionCount(): number {
+    return this.selectedPerson?.transactions.length ?? 0;
   }
 
   // ─── Modal ──────────────────────────────────────────────────────

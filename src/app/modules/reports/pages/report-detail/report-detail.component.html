@@ -10,6 +10,23 @@
     <p class="detail-desc">{{ reportDef?.description }}</p>
   </div>
 
+  <!-- ─── KPI CARDS (stats above filters) ─────────── -->
+  <div class="kpi-grid">
+    <div class="kpi-card" *ngFor="let kpi of kpis">
+      <div class="kpi__label">{{ kpi.label }}</div>
+      <div class="kpi__value">{{ kpi.prefix || '' }}{{ (kpi.value | number:'1.0-0':'fr-FR') || kpi.value }}{{ kpi.suffix || '' }}</div>
+      <div class="kpi__footer">
+        <span class="kpi__change" *ngIf="kpi.change !== undefined"
+              [class.kpi__change--up]="kpi.change >= 0"
+              [class.kpi__change--down]="kpi.change < 0"
+              [class.kpi__change--neutral]="kpi.change === 0">
+          <i class="fa-solid" [class.fa-arrow-up]="kpi.change >= 0" [class.fa-arrow-down]="kpi.change < 0"></i>
+          {{ kpi.change >= 0 ? '' : '-' }}{{ Math.abs(kpi.change) }}% {{ kpi.changeLabel || '' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
   <!-- ─── FILTERS ─────────────────────────────────── -->
   <div class="filters-card">
     <div class="filters-grid">
@@ -43,23 +60,6 @@
         <button class="btn-reset" (click)="resetFilters()">
           <i class="fa-solid fa-rotate-left"></i> Réinitialiser
         </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ─── KPI CARDS ───────────────────────────────── -->
-  <div class="kpi-grid">
-    <div class="kpi-card" *ngFor="let kpi of kpis">
-      <div class="kpi-icon" [style.background]="kpi.color + '18'" [style.color]="kpi.color">
-        <i [class]="kpi.icon"></i>
-      </div>
-      <div class="kpi-info">
-        <span class="kpi-label">{{ kpi.label }}</span>
-        <span class="kpi-value">{{ kpi.prefix || '' }}{{ (kpi.value | number:'1.0-0':'fr-FR') || kpi.value }}{{ kpi.suffix || '' }}</span>
-        <span class="kpi-change" *ngIf="kpi.change !== undefined" [style.color]="kpi.change >= 0 ? '#22c55e' : '#ef4444'">
-          <i class="fa-solid" [class.fa-arrow-up]="kpi.change >= 0" [class.fa-arrow-down]="kpi.change < 0"></i>
-          {{ kpi.change >= 0 ? '' : '-' }}{{ Math.abs(kpi.change) }}% {{ kpi.changeLabel || '' }}
-        </span>
       </div>
     </div>
   </div>
