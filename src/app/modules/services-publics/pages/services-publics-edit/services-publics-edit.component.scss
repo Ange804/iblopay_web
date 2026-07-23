@@ -1,3 +1,6 @@
+/* ================================================================
+   VARIABLES
+   ================================================================ */
 $primary: #4f46e5;
 $primary-hover: #4338ca;
 $success: #22c55e;
@@ -28,6 +31,9 @@ $radius-xl: 20px;
 
 $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
+/* ================================================================
+   CONTENEUR PRINCIPAL
+   ================================================================ */
 .services-publics-edit {
     padding: 20px;
     background: $bg-light;
@@ -35,6 +41,9 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+/* ================================================================
+   BOUTON RETOUR
+   ================================================================ */
 .back-btn {
     display: inline-flex;
     align-items: center;
@@ -56,6 +65,9 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 }
 
+/* ================================================================
+   LOADING & NOT FOUND
+   ================================================================ */
 .loading {
     display: flex;
     flex-direction: column;
@@ -100,6 +112,9 @@ $transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 }
 
+/* ================================================================
+   CARTE D'ÉDITION
+   ================================================================ */
 .edit-card {
     background: $bg-white;
     border-radius: $radius-xl;

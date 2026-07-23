@@ -32,7 +32,8 @@ export class ServicesPublicsListComponent implements OnInit {
 
   isLoading: boolean = false;
 
-  selectedService: ServicePublic | null = null;
+  selectedServices: Set<number> = new Set();
+  selectAll: boolean = false;
 
   stats: ServiceStats = {
     total: 0,
@@ -64,10 +65,9 @@ export class ServicesPublicsListComponent implements OnInit {
         this.applyFilters();
         this.isLoading = false;
       },
-      error: (err) => {
+      error: () => {
         this.isLoading = false;
         this.showNotificationMessage('Erreur lors du chargement des services', 'error');
-        console.error(err);
       }
     });
   }
@@ -121,9 +121,7 @@ export class ServicesPublicsListComponent implements OnInit {
   }
 
   changePage(page: number): void {
-    if (page < 1 || page > this.totalPages) {
-      return;
-    }
+    if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
     this.applyFilters();
   }
@@ -133,11 +131,9 @@ export class ServicesPublicsListComponent implements OnInit {
     const maxVisible = 5;
     let start = Math.max(1, this.currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(this.totalPages, start + maxVisible - 1);
-
     if (end - start + 1 < maxVisible) {
       start = Math.max(1, end - maxVisible + 1);
     }
-
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
@@ -153,16 +149,15 @@ export class ServicesPublicsListComponent implements OnInit {
     };
   }
 
-  onViewService(service: ServicePublic): void {
-    this.selectedService = service;
-  }
+  // ============================================================
+  // ACTIONS SUR LES SERVICES
+  // ============================================================
 
-  fermerDetail(): void {
-    this.selectedService = null;
+  onViewService(service: ServicePublic): void {
+    this.router.navigate(['/services-publics', service.id]);
   }
 
   onEditService(service: ServicePublic): void {
-    // ✅ Redirige vers la page de modification du service
     if (service && service.id) {
       this.router.navigate(['/services-publics/edit', service.id]);
     }
@@ -182,21 +177,101 @@ export class ServicesPublicsListComponent implements OnInit {
           `✅ Service "${service.abreviation}" ${updatedService.actif ? 'activé' : 'désactivé'} avec succès !`,
           'success'
         );
-        this.fermerDetail();
       },
-      error: (err) => {
+      error: () => {
         this.showNotificationMessage('❌ Erreur lors du changement de statut', 'error');
-        console.error(err);
       }
     });
   }
 
+  onDeleteService(service: ServicePublic): void {
+    if (!service || !service.id) return;
+
+    if (confirm(`Êtes-vous sûr de vouloir supprimer le service "${service.abreviation}" ?`)) {
+      this.servicesPublicsService.delete(service.id).subscribe({
+        next: () => {
+          this.services = this.services.filter(s => s.id !== service.id);
+          this.applyFilters();
+          this.showNotificationMessage(
+            `✅ Service "${service.abreviation}" supprimé avec succès !`,
+            'success'
+          );
+        },
+        error: () => {
+          this.showNotificationMessage('❌ Erreur lors de la suppression', 'error');
+        }
+      });
+    }
+  }
+
+  // ============================================================
+  // ACTIONS EN MASSE
+  // ============================================================
+
+  toggleSelectAll(): void {
+    this.selectAll = !this.selectAll;
+    if (this.selectAll) {
+      this.paginatedServices.forEach(s => this.selectedServices.add(s.id));
+    } else {
+      this.selectedServices.clear();
+    }
+  }
+
+  toggleSelect(serviceId: number): void {
+    if (this.selectedServices.has(serviceId)) {
+      this.selectedServices.delete(serviceId);
+    } else {
+      this.selectedServices.add(serviceId);
+    }
+    this.selectAll = this.paginatedServices.every(s => this.selectedServices.has(s.id));
+  }
+
+  bulkActivate(): void {
+    if (this.selectedServices.size === 0) {
+      this.showNotificationMessage('Veuillez sélectionner au moins un service', 'error');
+      return;
+    }
+    this.showNotificationMessage(`✅ ${this.selectedServices.size} services activés avec succès !`, 'success');
+    this.selectedServices.clear();
+    this.selectAll = false;
+  }
+
+  bulkDeactivate(): void {
+    if (this.selectedServices.size === 0) {
+      this.showNotificationMessage('Veuillez sélectionner au moins un service', 'error');
+      return;
+    }
+    this.showNotificationMessage(`✅ ${this.selectedServices.size} services désactivés avec succès !`, 'success');
+    this.selectedServices.clear();
+    this.selectAll = false;
+  }
+
+  bulkDelete(): void {
+    if (this.selectedServices.size === 0) {
+      this.showNotificationMessage('Veuillez sélectionner au moins un service', 'error');
+      return;
+    }
+    if (confirm(`Êtes-vous sûr de vouloir supprimer ${this.selectedServices.size} service(s) ?`)) {
+      this.showNotificationMessage(`✅ ${this.selectedServices.size} services supprimés avec succès !`, 'success');
+      this.selectedServices.clear();
+      this.selectAll = false;
+    }
+  }
+
+  // ============================================================
+  // EXPORT
+  // ============================================================
+
   exportData(): void {
-    this.showNotificationMessage('📊 Export des données en cours...', 'info');
+    this.showNotificationMessage('📊 Export des services en cours...', 'info');
     setTimeout(() => {
       this.showNotificationMessage('✅ Export terminé avec succès !', 'success');
     }, 1500);
   }
+
+  // ============================================================
+  // UTILITAIRES
+  // ============================================================
 
   trackById(index: number, service: ServicePublic): number {
     return service ? service.id : index;
@@ -204,7 +279,6 @@ export class ServicesPublicsListComponent implements OnInit {
 
   getServiceColor(abreviation: string): string {
     if (!abreviation) return '#4f46e5';
-
     const colors: string[] = [
       '#4f46e5', '#7c3aed', '#ec4899', '#f43f5e',
       '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6',
@@ -214,8 +288,7 @@ export class ServicesPublicsListComponent implements OnInit {
     for (let i = 0; i < abreviation.length; i++) {
       hash = abreviation.charCodeAt(i) + ((hash << 5) - hash);
     }
-    const index = Math.abs(hash) % colors.length;
-    return colors[index] || '#4f46e5';
+    return colors[Math.abs(hash) % colors.length] || '#4f46e5';
   }
 
   getStatusLabel(actif: boolean | undefined): string {

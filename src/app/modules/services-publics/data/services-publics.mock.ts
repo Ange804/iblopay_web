@@ -1,14 +1,22 @@
-import { ServicePublic, Commission, Transaction } from '../models/service-public.model';
+import {
+    ServicePublic,
+    Utilisateur,
+    Categorie,
+    Frais,
+    DocumentRequis,
+    CategorieStatistiques,
+    TypeRNF,
+    SousTypeRNF,
+    PaiementRNF,
+    Statistiques
+} from '../models/service-public.model';
 
 // ============================================================
 // FONCTIONS HELPER
 // ============================================================
 const getRandomItem = <T>(array: readonly T[], fallback: T): T => {
-    if (!array || array.length === 0) {
-        return fallback;
-    }
-    const index = Math.floor(Math.random() * array.length);
-    return array[index] ?? fallback;
+    if (!array || array.length === 0) return fallback;
+    return array[Math.floor(Math.random() * array.length)] || fallback;
 };
 
 const getRandomInt = (min: number, max: number): number => {
@@ -24,114 +32,285 @@ const getRandomBoolean = (probability: number = 0.5): boolean => {
 };
 
 // ============================================================
-// TYPES CONSTANTS
+// GÉNÉRATION DE CATÉGORIES
 // ============================================================
-const COMMISSION_TYPES = ['FIXE', 'PERCENTAGE'] as const;
-type CommissionType = typeof COMMISSION_TYPES[number];
+const generateCategories = (serviceId: number, count: number): Categorie[] => {
+    const categories: Categorie[] = [];
+    const noms = ['RNF', 'FISCALE', 'ADMINISTRATIVE', 'TECHNIQUE', 'ENVIRONNEMENTALE'];
+    const types = ['RNF', 'FISCALE', 'AUTRE'] as const;
+    const codes = ['CAT-001', 'CAT-002', 'CAT-003', 'CAT-004', 'CAT-005'];
 
-const COMMISSION_FREQUENCES = ['MENSUEL', 'TRIMESTRIEL', 'ANNUEL', 'PONCTUEL'] as const;
-type CommissionFrequence = typeof COMMISSION_FREQUENCES[number];
+    const generateFrais = (categorieId: number): Frais[] => {
+        const frais: Frais[] = [];
+        const typesFrais = ['FIXE', 'PERCENTAGE', 'FORFAITAIRE'] as const;
+        const frequences = ['MENSUEL', 'TRIMESTRIEL', 'ANNUEL', 'PONCTUEL'] as const;
+        const nomsFrais = ['Frais de dossier', 'Commission de gestion', 'Frais de traitement', 'Redevance'];
 
-const TRANSACTION_TYPES = ['PAIEMENT', 'REMBOURSEMENT', 'ADJUSTEMENT'] as const;
-type TransactionType = typeof TRANSACTION_TYPES[number];
+        for (let i = 0; i < getRandomInt(2, 4); i++) {
+            const type = getRandomItem(typesFrais, 'FIXE');
+            const isPercentage = type === 'PERCENTAGE';
 
-const TRANSACTION_STATUTS = ['SUCCES', 'ECHEC', 'EN_ATTENTE'] as const;
-type TransactionStatut = typeof TRANSACTION_STATUTS[number];
+            const fraisItem: Frais = {
+                id: i + 1,
+                nom: getRandomItem(nomsFrais, 'Frais de dossier'),
+                description: `Description du frais ${i + 1}`,
+                montant: isPercentage ? 0 : Math.round((Math.random() * 100000 + 1000) / 10) * 10,
+                devise: 'BIF',
+                type: type,
+                frequence: getRandomItem(frequences, 'ANNUEL'),
+                actif: getRandomBoolean(0.7),
+                dateCreation: getRandomDate(365),
+                categorieId: categorieId
+            };
 
-const COMMISSION_NAMES = [
-    'Frais de dossier',
-    'Commission de gestion',
-    'Frais de traitement',
-    'Redevance annuelle',
-    "Frais d'activation",
-    'Commission de transaction',
-    'Frais de maintenance',
-    "Frais d'agrément"
-];
+            if (isPercentage) {
+                fraisItem.pourcentage = Math.round((Math.random() * 10 + 1) * 100) / 100;
+                fraisItem.montantMin = Math.round((Math.random() * 10000 + 1000) / 10) * 10;
+                fraisItem.montantMax = Math.round((Math.random() * 100000 + 50000) / 10) * 10;
+            }
 
-const TRANSACTION_DESCRIPTIONS = [
-    'Paiement reçu',
-    'Remboursement effectué',
-    'Ajustement de compte',
-    'Transaction mensuelle',
-    'Paiement commission',
-    'Frais de service'
-];
+            frais.push(fraisItem);
+        }
+        return frais;
+    };
 
-// ============================================================
-// COMMISSIONS MOCK
-// ============================================================
-const generateMockCommissions = (serviceId: number, count: number): Commission[] => {
-    const commissions: Commission[] = [];
+    const generateDocumentsRequis = (categorieId: number): DocumentRequis[] => {
+        const documents: DocumentRequis[] = [];
+        const types = ['FORMULAIRE', 'CERTIFICAT', 'ATTRESTATION', 'AUTRE'] as const;
+        const formats = ['PDF', 'DOCX', 'XLSX', 'IMAGE', 'AUTRE'] as const;
+        const noms = ['Attestation de conformité', 'Certificat d\'homologation', 'Formulaire de demande', 'Pièce d\'identité'];
+
+        for (let i = 0; i < getRandomInt(2, 4); i++) {
+            documents.push({
+                id: i + 1,
+                nom: getRandomItem(noms, 'Document requis'),
+                description: `Description du document ${i + 1}`,
+                type: getRandomItem(types, 'FORMULAIRE'),
+                obligatoire: getRandomBoolean(0.8),
+                format: getRandomItem(formats, 'PDF'),
+                dateCreation: getRandomDate(365),
+                categorieId: categorieId,
+                version: `1.${i}.0`
+            });
+        }
+        return documents;
+    };
+
+    const generateStatistiques = (): CategorieStatistiques => {
+        return {
+            totalFrais: getRandomInt(2, 6),
+            totalDocuments: getRandomInt(2, 5),
+            totalOperations: getRandomInt(10, 50),
+            montantTotal: Math.round((Math.random() * 10000000 + 500000) / 10) * 10,
+            dernierMois: {
+                operations: getRandomInt(5, 20),
+                montant: Math.round((Math.random() * 2000000 + 200000) / 10) * 10
+            }
+        };
+    };
 
     for (let i = 0; i < count; i++) {
-        const type = getRandomItem(COMMISSION_TYPES, 'FIXE');
-        const frequence = getRandomItem(COMMISSION_FREQUENCES, 'MENSUEL');
-        const nom = getRandomItem(COMMISSION_NAMES, 'Frais de dossier');
+        const categorieId = i + 1;
+        const frais = generateFrais(categorieId);
+        const documentsRequis = generateDocumentsRequis(categorieId);
 
-        commissions.push({
-            id: i + 1,
+        const code = codes[i % codes.length] || 'CAT-001';
+        const nom = getRandomItem(noms, 'RNF');
+
+        categories.push({
+            id: categorieId,
             nom: nom,
-            description: `Description de la commission ${i + 1} pour le service ${serviceId}`,
-            montant: Math.round((Math.random() * 100000 + 1000) / 10) * 10,
-            devise: 'BIF',
-            type: type,
-            frequence: frequence,
-            actif: getRandomBoolean(0.7),
-            dateCreation: getRandomDate(365)
+            code: code,
+            description: `Description de la catégorie ${i + 1}`,
+            type: getRandomItem(types, 'RNF'),
+            actif: getRandomBoolean(0.8),
+            dateCreation: getRandomDate(730),
+            dateModification: getRandomDate(30),
+            serviceId: serviceId,
+            frais: frais,
+            documentsRequis: documentsRequis,
+            statistiques: generateStatistiques()
         });
     }
-    return commissions;
+    return categories;
 };
 
 // ============================================================
-// TRANSACTIONS MOCK
+// GÉNÉRATION DES TYPES RNF
 // ============================================================
-const generateMockTransactions = (serviceId: number, count: number): Transaction[] => {
-    const transactions: Transaction[] = [];
+const generateTypesRNF = (serviceId: number): TypeRNF[] => {
+    const typesRNF: TypeRNF[] = [];
+
+    // Type A - Redevances ARCT
+    const typeA: TypeRNF = {
+        id: 1,
+        numero: 1,
+        libelle: 'REDEVANCES ANNUELLES FACTUREES PAR ARCT',
+        description: 'Redevances annuelles facturées par ARCT',
+        typePaiement: 'A',
+        categorie: 'Redevances annuelles',
+        institution: 'ARCT',
+        actif: true,
+        dateCreation: getRandomDate(730),
+        serviceId: serviceId,
+        sousTypes: [
+            { id: 1, nom: 'Autorisation réseaux radioélectriques', description: 'Autorisation pour réseaux radioélectriques', typeRNFId: 1, actif: true, dateCreation: getRandomDate(365) },
+            { id: 2, nom: 'Etude du dossier', description: 'Frais d\'étude du dossier', typeRNFId: 1, actif: true, dateCreation: getRandomDate(365) }
+        ]
+    };
+    typesRNF.push(typeA);
+
+    // Type B - ABREMA
+    const typeB: TypeRNF = {
+        id: 2,
+        numero: 1,
+        libelle: 'RECETTES COLLECTEES PAR ABREMA',
+        description: 'Recettes collectées par ABREMA',
+        typePaiement: 'B',
+        categorie: 'Recettes ABREMA',
+        institution: 'ABREMA',
+        actif: true,
+        dateCreation: getRandomDate(730),
+        serviceId: serviceId,
+        sousTypes: [
+            { id: 3, nom: 'Redevance administrative des services ABREMA', description: 'Redevance administrative ABREMA', typeRNFId: 2, actif: true, dateCreation: getRandomDate(365) }
+        ]
+    };
+    typesRNF.push(typeB);
+
+    return typesRNF;
+};
+
+// ============================================================
+// GÉNÉRATION DE PAIEMENTS RNF
+// ============================================================
+const generatePaiementsRNF = (serviceId: number, count: number, typesRNF: TypeRNF[]): PaiementRNF[] => {
+    const paiements: PaiementRNF[] = [];
+    const statuts = ['PAYE', 'EN_ATTENTE', 'ANNULE', 'PARTIEL'] as const;
+    const modesPaiement = ['VIREMENT', 'ESPECES', 'CHEQUE', 'MOBILE'] as const;
+    const comptes = ['Compte Transit OBR', 'Compte Séquestre KCB', 'Compte Administratif'];
+    const utilisateurs = ['Jean Ndayishimiye', 'Marie Uwimana', 'Pierre Nkurunziza', 'Claire Niyonzima'];
 
     for (let i = 0; i < count; i++) {
-        const type = getRandomItem(TRANSACTION_TYPES, 'PAIEMENT');
-        const statut = getRandomItem(TRANSACTION_STATUTS, 'SUCCES');
-        const description = getRandomItem(TRANSACTION_DESCRIPTIONS, 'Paiement reçu');
+        const typeRNF = getRandomItem(typesRNF, typesRNF[0]);
+        if (!typeRNF) continue;
 
-        // ✅ CORRECTION : commissionId est optionnel, on ne l'ajoute que si présent
-        const commissionId = Math.random() > 0.5 ? getRandomInt(1, 5) : undefined;
-
-        const transaction: Transaction = {
-            id: i + 1,
-            reference: `TXN-${String(serviceId).padStart(3, '0')}-${String(i + 1).padStart(6, '0')}`,
-            type: type,
-            montant: Math.round((Math.random() * 500000 + 10000) / 10) * 10,
-            devise: 'BIF',
-            statut: statut,
-            dateTransaction: getRandomDate(180),
-            description: description,
-            utilisateur: `Utilisateur ${getRandomInt(1, 50)}`
-        };
-
-        // ✅ CORRECTION : on ajoute commissionId uniquement s'il est défini
-        if (commissionId !== undefined) {
-            transaction.commissionId = commissionId;
+        const sousTypes = typeRNF.sousTypes || [];
+        let sousTypeRNFId: number | undefined = undefined;
+        if (sousTypes.length > 0) {
+            const sousType = getRandomItem(sousTypes, sousTypes[0]);
+            if (sousType) {
+                sousTypeRNFId = sousType.id;
+            }
         }
 
-        transactions.push(transaction);
+        const datePaiement = getRandomDate(90);
+        const dateEcheance = new Date(datePaiement);
+        dateEcheance.setMonth(dateEcheance.getMonth() + 1);
+
+        const paiement: PaiementRNF = {
+            id: i + 1,
+            reference: `PAY-${String(serviceId).padStart(3, '0')}-${String(i + 1).padStart(6, '0')}`,
+            typeRNFId: typeRNF.id,
+            montant: Math.round((Math.random() * 5000000 + 100000) / 10) * 10,
+            devise: 'BIF',
+            statut: getRandomItem(statuts, 'PAYE'),
+            datePaiement: datePaiement,
+            dateEcheance: dateEcheance,
+            description: `Paiement de ${sousTypeRNFId ? 'sous-type' : typeRNF.libelle}`,
+            utilisateurId: getRandomInt(1, 20),
+            utilisateurNom: getRandomItem(utilisateurs, 'Jean Ndayishimiye'),
+            serviceId: serviceId,
+            compteDestinataire: getRandomItem(comptes, 'Compte Transit OBR'),
+            modePaiement: getRandomItem(modesPaiement, 'VIREMENT')
+        };
+
+        if (sousTypeRNFId !== undefined) {
+            paiement.sousTypeRNFId = sousTypeRNFId;
+        }
+
+        const refPaiement = Math.random() > 0.5 ? `REF-${String(Math.random() * 1000000).padStart(6, '0')}` : undefined;
+        if (refPaiement !== undefined) {
+            paiement.referencePaiement = refPaiement;
+        }
+
+        const observations = Math.random() > 0.7 ? 'Paiement effectué avec succès' : undefined;
+        if (observations !== undefined) {
+            paiement.observations = observations;
+        }
+
+        paiements.push(paiement);
     }
-    return transactions;
+    return paiements;
 };
 
 // ============================================================
-// SERVICES PUBLICS MOCK - TOUS LES SERVICES DU FICHIER EXCEL
+// GÉNÉRATION D'UTILISATEURS
+// ============================================================
+const generateUtilisateurs = (serviceId: number, count: number): Utilisateur[] => {
+    const utilisateurs: Utilisateur[] = [];
+    const noms = ['Ndayishimiye', 'Uwimana', 'Niyonzima', 'Mukiza', 'Nishimwe', 'Hakizimana', 'Nkurunziza'];
+    const prenoms = ['Jean', 'Marie', 'Pierre', 'Sophie', 'Lucas', 'Emma', 'Thomas', 'Julie', 'David', 'Laura'];
+    const roles = ['ADMIN', 'AGENT', 'CLIENT', 'SUPERVISEUR'] as const;
+    const statuts = ['ACTIF', 'INACTIF', 'SUSPENDU'] as const;
+
+    for (let i = 0; i < count; i++) {
+        const nom = getRandomItem(noms, 'Ndayishimiye');
+        const prenom = getRandomItem(prenoms, 'Jean');
+        utilisateurs.push({
+            id: i + 1,
+            nom: nom,
+            prenom: prenom,
+            email: `${prenom.toLowerCase()}.${nom.toLowerCase()}@email.bi`,
+            telephone: `+257 6${String(Math.floor(Math.random() * 10000000)).padStart(7, '0')}`,
+            role: getRandomItem(roles, 'CLIENT'),
+            statut: getRandomItem(statuts, 'ACTIF'),
+            dateInscription: getRandomDate(365),
+            dernierAcces: getRandomDate(30),
+            serviceId: serviceId
+        });
+    }
+    return utilisateurs;
+};
+
+// ============================================================
+// GÉNÉRATION DE STATISTIQUES
+// ============================================================
+const generateStatistiques = (serviceId: number, typesRNF: TypeRNF[], paiements: PaiementRNF[]): Statistiques => {
+    const totalUtilisateurs = getRandomInt(10, 100);
+    const totalTypesRNF = typesRNF.length;
+    const totalSousTypes = typesRNF.reduce((acc, t) => acc + (t.sousTypes?.length || 0), 0);
+    const totalPaiements = paiements.length;
+    const montantTotalPaiements = paiements.reduce((acc, p) => acc + p.montant, 0);
+
+    return {
+        totalUtilisateurs: totalUtilisateurs,
+        utilisateursActifs: Math.round(totalUtilisateurs * (0.6 + Math.random() * 0.3)),
+        totalTypesRNF: totalTypesRNF,
+        totalSousTypes: totalSousTypes,
+        totalPaiements: totalPaiements,
+        montantTotalPaiements: montantTotalPaiements,
+        totalCategories: getRandomInt(2, 5),
+        totalInstitutions: getRandomInt(3, 8),
+        dernierMois: {
+            mois: new Date().toLocaleString('fr-FR', { month: 'long', year: 'numeric' }),
+            paiements: getRandomInt(10, 30),
+            montant: Math.round((Math.random() * 10000000 + 1000000) / 10) * 10,
+            utilisateurs: getRandomInt(5, 20),
+            nouveauxTypes: getRandomInt(1, 5)
+        }
+    };
+};
+
+// ============================================================
+// SERVICES PUBLICS MOCK - COMPLET
 // ============================================================
 export const SERVICES_PUBLICS_MOCK: ServicePublic[] = [
-    // ============================================================
-    // SYSTEMES INTERNES A L'OBR
-    // ============================================================
     {
         id: 1,
         numero: 1,
         abreviation: 'GPR-RNF',
-        description: 'Système de gestion des factures émises par ARCT - Redevances annuelles, autorisations réseaux, fréquences',
+        description: 'Système de gestion des factures émises par ARCT',
         type: 'INTERNE',
         actif: true,
         dateCreation: new Date(2022, 5, 15),
@@ -140,395 +319,86 @@ export const SERVICES_PUBLICS_MOCK: ServicePublic[] = [
         email: 'gpr-rnf@obr.bi',
         telephone: '+257 22 22 22 22',
         siteWeb: 'https://obr.bi/gpr-rnf',
-        commissions: generateMockCommissions(1, 5),
-        transactions: generateMockTransactions(1, 15)
-    },
-    {
-        id: 2,
-        numero: 2,
-        abreviation: 'SIGFIP',
-        description: "Système d'Information pour la Gestion des Finances Publiques",
-        type: 'INTERNE',
-        actif: true,
-        dateCreation: new Date(2023, 0, 15),
-        version: '4.0.0',
-        responsable: 'Pierre Nkurunziza',
-        email: 'sigfip@obr.bi',
-        telephone: '+257 22 22 22 23',
-        siteWeb: 'https://obr.bi/sigfip',
-        commissions: generateMockCommissions(2, 4),
-        transactions: generateMockTransactions(2, 20)
-    },
-    {
-        id: 3,
-        numero: 3,
-        abreviation: 'GED-ADMIN',
-        description: "Gestion Électronique des Documents Administratifs de l'OBR",
-        type: 'INTERNE',
-        actif: true,
-        dateCreation: new Date(2023, 3, 1),
-        version: '2.1.5',
-        responsable: 'Marie Uwimana',
-        email: 'ged-admin@obr.bi',
-        telephone: '+257 22 22 22 24',
-        siteWeb: 'https://obr.bi/ged-admin',
-        commissions: generateMockCommissions(3, 3),
-        transactions: generateMockTransactions(3, 12)
-    },
-    {
-        id: 4,
-        numero: 4,
-        abreviation: 'GPE-RH',
-        description: "Gestion du Personnel et des Rémunérations de l'État",
-        type: 'INTERNE',
-        actif: true,
-        dateCreation: new Date(2023, 7, 20),
-        version: '1.0.0',
-        responsable: 'Joseph Hakizimana',
-        email: 'gpe-rh@obr.bi',
-        telephone: '+257 22 22 22 25',
-        siteWeb: 'https://obr.bi/gpe-rh',
-        commissions: generateMockCommissions(4, 3),
-        transactions: generateMockTransactions(4, 25)
-    },
-
-    // ============================================================
-    // SYSTEMES EXTERNES A L'OBR
-    // ============================================================
-    {
-        id: 5,
-        numero: 1,
-        abreviation: 'Easy-business',
-        description: "Système utilisé par l'ADB pour la gestion des entreprises et des licences d'exploitation",
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2021, 2, 10),
-        version: '3.0.5',
-        responsable: 'Claire Niyonzima',
-        email: 'easy-business@adb.bi',
-        telephone: '+257 22 22 22 26',
-        siteWeb: 'https://adb.bi/easy-business',
-        commissions: generateMockCommissions(5, 6),
-        transactions: generateMockTransactions(5, 30)
-    },
-    {
-        id: 6,
-        numero: 2,
-        abreviation: 'BANCOBU E-NOTI',
-        description: "Système de gestion des stands dans les marchés de l'Etat - Locations des stands et shops",
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2022, 8, 1),
-        version: '1.4.2',
-        responsable: 'David Manirakiza',
-        email: 'bancoebu@obr.bi',
-        telephone: '+257 22 22 22 27',
-        siteWeb: 'https://obr.bi/bancoebu',
-        commissions: generateMockCommissions(6, 4),
-        transactions: generateMockTransactions(6, 18)
-    },
-    {
-        id: 7,
-        numero: 3,
-        abreviation: 'OTRACO',
-        description: 'Système de gestion de contrôle technique des véhicules - Permis de conduire et contrôles',
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2020, 11, 5),
-        version: '2.1.0',
-        responsable: 'Eric Bashirahishize',
-        email: 'otraco@otraco.bi',
-        telephone: '+257 22 22 22 28',
-        siteWeb: 'https://otraco.bi',
-        commissions: generateMockCommissions(7, 5),
-        transactions: generateMockTransactions(7, 22)
-    },
-    {
-        id: 8,
-        numero: 4,
-        abreviation: 'PAFE/MIGRATIONS',
-        description: 'Système de gestion des documents de voyage - Passeports, visas et titres de voyage',
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2019, 6, 20),
-        version: '3.2.8',
-        responsable: 'Isabelle Ndayisaba',
-        email: 'pafe@migrations.bi',
-        telephone: '+257 22 22 22 29',
-        siteWeb: 'https://migrations.bi',
-        commissions: generateMockCommissions(8, 7),
-        transactions: generateMockTransactions(8, 35)
-    },
-    {
-        id: 9,
-        numero: 5,
-        abreviation: 'PSR',
-        description: 'Système de gestion de production des permis de conduire',
-        type: 'EXTERNE',
-        actif: false,
-        dateCreation: new Date(2020, 3, 15),
-        version: '1.9.3',
-        responsable: 'André Habonimana',
-        email: 'psr@transports.bi',
-        telephone: '+257 22 22 22 30',
-        siteWeb: 'https://transports.bi/psr',
-        commissions: generateMockCommissions(9, 3),
-        transactions: generateMockTransactions(9, 8)
-    },
-    {
-        id: 10,
-        numero: 6,
-        abreviation: 'TITRES FONCIERS - BPS',
-        description: 'Système de facturation Proforma pour transfert de titres de propriétés - Redevances domaniales',
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2021, 9, 1),
-        version: '2.0.4',
-        responsable: 'Lucien Barakamfitiye',
-        email: 'bps@titresfonciers.bi',
-        telephone: '+257 22 22 22 31',
-        siteWeb: 'https://titresfonciers.bi/bps',
-        commissions: generateMockCommissions(10, 6),
-        transactions: generateMockTransactions(10, 28)
-    },
-    {
-        id: 11,
-        numero: 7,
-        abreviation: 'TITRES FONCIERS - PMS',
-        description: "Système de gestion des données d'expertise lors des transferts de propriété",
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2021, 9, 1),
-        version: '1.8.1',
-        responsable: 'Martine Ndikumana',
-        email: 'pms@titresfonciers.bi',
-        telephone: '+257 22 22 22 32',
-        siteWeb: 'https://titresfonciers.bi/pms',
-        commissions: generateMockCommissions(11, 4),
-        transactions: generateMockTransactions(11, 16)
-    },
-    {
-        id: 12,
-        numero: 8,
-        abreviation: 'PJP/INTERPOL',
-        description: 'Système de gestion des données liées au vol ou non des véhicules/motos',
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2022, 1, 10),
-        version: '1.2.6',
-        responsable: 'Charles Niyongabo',
-        email: 'pjp@police.bi',
-        telephone: '+257 22 22 22 33',
-        siteWeb: 'https://police.bi/pjp',
-        commissions: generateMockCommissions(12, 3),
-        transactions: generateMockTransactions(12, 10)
-    },
-    {
-        id: 13,
-        numero: 9,
-        abreviation: 'e-CMR',
-        description: 'Système de gestion électronique des certificats de transport - Autorisation de transport',
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2022, 6, 20),
-        version: '1.3.2',
-        responsable: 'Jeanne Ntakarutimana',
-        email: 'e-cmr@transport.bi',
-        telephone: '+257 22 22 22 34',
-        siteWeb: 'https://transport.bi/e-cmr',
-        commissions: generateMockCommissions(13, 5),
-        transactions: generateMockTransactions(13, 14)
-    },
-    {
-        id: 14,
-        numero: 10,
-        abreviation: 'PORTAL-IMPOTS',
-        description: 'Portail des contribuables pour les déclarations fiscales - Attestations fiscales, NIF',
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2022, 10, 5),
-        version: '3.0.0',
-        responsable: 'Marcel Niyungeko',
-        email: 'portal@impots.bi',
-        telephone: '+257 22 22 22 35',
-        siteWeb: 'https://impots.bi/portal',
-        commissions: generateMockCommissions(14, 8),
-        transactions: generateMockTransactions(14, 40)
-    },
-    {
-        id: 15,
-        numero: 11,
-        abreviation: 'e-DOUANES',
-        description: 'Système de dédouanement électronique - Droits de douane',
-        type: 'EXTERNE',
-        actif: false,
-        dateCreation: new Date(2021, 5, 12),
-        version: '2.2.3',
-        responsable: 'Suzanne Gahungu',
-        email: 'e-douanes@douanes.bi',
-        telephone: '+257 22 22 22 36',
-        siteWeb: 'https://douanes.bi/e-douanes',
-        commissions: generateMockCommissions(15, 6),
-        transactions: generateMockTransactions(15, 12)
-    },
-    {
-        id: 16,
-        numero: 12,
-        abreviation: 'AGREMENT-GARAGES',
-        description: 'Système de gestion des agréments des garages et agences de transport',
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2022, 11, 1),
-        version: '1.0.5',
-        responsable: 'Sylvie Ndamukunda',
-        email: 'agrement@transport.bi',
-        telephone: '+257 22 22 22 37',
-        siteWeb: 'https://transport.bi/agrement',
-        commissions: generateMockCommissions(16, 4),
-        transactions: generateMockTransactions(16, 20)
-    },
-    {
-        id: 17,
-        numero: 13,
-        abreviation: 'LICENCES-DEBITS',
-        description: "Système de gestion des licences d'exploitation des débits de boissons, restaurants et hôtels",
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2022, 8, 15),
-        version: '2.0.0',
-        responsable: 'Emmanuel Hakizinka',
-        email: 'licences@commercial.bi',
-        telephone: '+257 22 22 22 38',
-        siteWeb: 'https://commercial.bi/licences',
-        commissions: generateMockCommissions(17, 7),
-        transactions: generateMockTransactions(17, 25)
-    },
-    {
-        id: 18,
-        numero: 14,
-        abreviation: 'AMENDES-ROUTIERES',
-        description: 'Système de gestion des amendes routières et commerciales',
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2023, 1, 10),
-        version: '1.2.0',
-        responsable: 'François Rutayisire',
-        email: 'amendes@securite.bi',
-        telephone: '+257 22 22 22 39',
-        siteWeb: 'https://securite.bi/amendes',
-        commissions: generateMockCommissions(18, 4),
-        transactions: generateMockTransactions(18, 35)
-    },
-    {
-        id: 19,
-        numero: 15,
-        abreviation: 'REDEVANCES-ENVIRONNEMENT',
-        description: 'Système de gestion des redevances environnementales - Redevances annuelles environnementales',
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2022, 4, 20),
-        version: '1.1.0',
-        responsable: 'Rose Ndayizeye',
-        email: 'environnement@minenv.bi',
-        telephone: '+257 22 22 22 40',
-        siteWeb: 'https://environnement.bi/redevances',
-        commissions: generateMockCommissions(19, 5),
-        transactions: generateMockTransactions(19, 18)
-    },
-    {
-        id: 20,
-        numero: 16,
-        abreviation: 'SANTE-PUBLIQUE',
-        description: 'Système de gestion des prestations de santé et des pharmacies - Prestations des services de santé',
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2022, 7, 1),
-        version: '2.1.0',
-        responsable: 'Claude Mukiza',
-        email: 'sante@minsante.bi',
-        telephone: '+257 22 22 22 41',
-        siteWeb: 'https://sante.bi/services',
-        commissions: generateMockCommissions(20, 6),
-        transactions: generateMockTransactions(20, 30)
-    },
-    {
-        id: 21,
-        numero: 17,
-        abreviation: 'AGRICULTURE-SEMENCES',
-        description: 'Système de gestion des ventes de semences et produits agricoles - Ventes des semences',
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2022, 2, 15),
-        version: '1.0.0',
-        responsable: 'Henri Niyonshuti',
-        email: 'agriculture@minagri.bi',
-        telephone: '+257 22 22 22 42',
-        siteWeb: 'https://agriculture.bi/semences',
-        commissions: generateMockCommissions(21, 4),
-        transactions: generateMockTransactions(21, 12)
-    },
-    {
-        id: 22,
-        numero: 18,
-        abreviation: 'DIVIDENDES-ETAT',
-        description: "Système de gestion des dividendes de l'État - Dividendes entreprises financières et non financières",
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2021, 11, 10),
-        version: '1.5.0',
-        responsable: 'Jeannine Niyikiza',
-        email: 'dividendes@minfin.bi',
-        telephone: '+257 22 22 22 43',
-        siteWeb: 'https://minfin.bi/dividendes',
-        commissions: generateMockCommissions(22, 3),
-        transactions: generateMockTransactions(22, 45)
-    },
-    {
-        id: 23,
-        numero: 19,
-        abreviation: 'PROTECTION-MARQUES',
-        description: 'Système de gestion des dépôts et publications de marques - Protection des marques',
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2022, 9, 5),
-        version: '1.0.2',
-        responsable: 'Bertrand Hakorimana',
-        email: 'marques@opi.bi',
-        telephone: '+257 22 22 22 44',
-        siteWeb: 'https://opi.bi/marques',
-        commissions: generateMockCommissions(23, 4),
-        transactions: generateMockTransactions(23, 8)
-    },
-    {
-        id: 24,
-        numero: 20,
-        abreviation: 'POIDS-MESURES',
-        description: 'Système de gestion de la vérification des poids et mesures',
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2022, 6, 15),
-        version: '1.0.1',
-        responsable: 'Suzanne Niyomugabo',
-        email: 'poids@commerce.bi',
-        telephone: '+257 22 22 22 45',
-        siteWeb: 'https://commerce.bi/poids',
-        commissions: generateMockCommissions(24, 3),
-        transactions: generateMockTransactions(24, 15)
-    },
-    {
-        id: 25,
-        numero: 21,
-        abreviation: 'ATTESTATIONS-FISCALES',
-        description: 'Système de gestion des attestations fiscales et réimpression de NIF',
-        type: 'EXTERNE',
-        actif: true,
-        dateCreation: new Date(2022, 10, 20),
-        version: '2.0.0',
-        responsable: 'Aline Ndayisenga',
-        email: 'attestations@impots.bi',
-        telephone: '+257 22 22 22 46',
-        siteWeb: 'https://impots.bi/attestations',
-        commissions: generateMockCommissions(25, 5),
-        transactions: generateMockTransactions(25, 28)
+        utilisateurs: generateUtilisateurs(1, 25),
+        categories: generateCategories(1, 3),
+        typesRNF: generateTypesRNF(1),
+        paiements: generatePaiementsRNF(1, 30, generateTypesRNF(1)),
+        statistiques: generateStatistiques(1, generateTypesRNF(1), generatePaiementsRNF(1, 30, generateTypesRNF(1)))
     }
+];
+
+// Générer les 24 autres services
+const generateAllServices = (): ServicePublic[] => {
+    const services: ServicePublic[] = [];
+    const noms = [
+        'SIGFIP', 'GED-ADMIN', 'GPE-RH', 'Easy-business', 'BANCOBU E-NOTI',
+        'OTRACO', 'PAFE/MIGRATIONS', 'PSR', 'TITRES FONCIERS - BPS', 'TITRES FONCIERS - PMS',
+        'PJP/INTERPOL', 'e-CMR', 'PORTAL-IMPOTS', 'e-DOUANES', 'AGREMENT-GARAGES',
+        'LICENCES-DEBITS', 'AMENDES-ROUTIERES', 'REDEVANCES-ENVIRONNEMENT', 'SANTE-PUBLIQUE',
+        'AGRICULTURE-SEMENCES', 'DIVIDENDES-ETAT', 'PROTECTION-MARQUES', 'POIDS-MESURES',
+        'ATTESTATIONS-FISCALES'
+    ];
+
+    const descriptions = [
+        "Système d'Information pour la Gestion des Finances Publiques",
+        "Gestion Électronique des Documents Administratifs de l'OBR",
+        "Gestion du Personnel et des Rémunérations de l'État",
+        "Système utilisé par l'ADB pour la gestion des entreprises",
+        "Système de gestion des stands dans les marchés de l'Etat",
+        "Système de gestion de contrôle technique des véhicules",
+        "Système de gestion des documents de voyage",
+        "Système de gestion de production des permis de conduire",
+        "Système de facturation Proforma pour transfert de titres de propriétés",
+        "Système de gestion des données d'expertise lors des transferts de propriété",
+        "Système de gestion des données liées au vol ou non des véhicules",
+        "Système de gestion électronique des certificats de transport",
+        "Portail des contribuables pour les déclarations fiscales",
+        "Système de dédouanement électronique",
+        "Système de gestion des agréments des garages",
+        "Système de gestion des licences d'exploitation",
+        "Système de gestion des amendes routières",
+        "Système de gestion des redevances environnementales",
+        "Système de gestion des prestations de santé",
+        "Système de gestion des ventes de semences",
+        "Système de gestion des dividendes de l'État",
+        "Système de gestion des dépôts et publications de marques",
+        "Système de gestion de la vérification des poids et mesures",
+        "Système de gestion des attestations fiscales"
+    ];
+
+    for (let i = 0; i < noms.length; i++) {
+        const id = i + 2;
+        const nom = noms[i] || 'UNKNOWN';
+        const desc = descriptions[i] || 'Description non disponible';
+        const utilisateurs = generateUtilisateurs(id, getRandomInt(10, 50));
+        const typesRNF = generateTypesRNF(id);
+        const paiements = generatePaiementsRNF(id, getRandomInt(20, 60), typesRNF);
+
+        services.push({
+            id: id,
+            numero: i + 2,
+            abreviation: nom,
+            description: desc,
+            type: i < 3 ? 'INTERNE' : 'EXTERNE',
+            actif: getRandomBoolean(0.8),
+            dateCreation: getRandomDate(730),
+            version: `${getRandomInt(1, 3)}.${getRandomInt(0, 9)}.${getRandomInt(0, 9)}`,
+            responsable: `Responsable ${nom}`,
+            email: `${nom.toLowerCase()}@service.bi`,
+            telephone: `+257 22 ${String(22 + i).padStart(2, '0')} ${String(22 + i).padStart(2, '0')}`,
+            siteWeb: `https://${nom.toLowerCase()}.service.bi`,
+            utilisateurs: utilisateurs,
+            categories: generateCategories(id, getRandomInt(2, 4)),
+            typesRNF: typesRNF,
+            paiements: paiements,
+            statistiques: generateStatistiques(id, typesRNF, paiements)
+        });
+    }
+
+    return services;
+};
+
+export const SERVICES_PUBLICS_MOCK_COMPLETE: ServicePublic[] = [
+    ...SERVICES_PUBLICS_MOCK.slice(0, 1),
+    ...generateAllServices()
 ];

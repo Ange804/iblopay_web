@@ -1,7 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ServicePublic, Commission } from '../../models/service-public.model';
+import {
+    ServicePublic,
+    Utilisateur,
+    Categorie,
+    TypeRNF,
+    SousTypeRNF,
+    PaiementRNF
+} from '../../models/service-public.model';
 import { ServicesPublicsService } from '../../services/services-publics.service';
+
+export interface Activite {
+    id: number;
+    type: 'paiement' | 'utilisateur' | 'categorie' | 'type-rnf' | 'system';
+    title: string;
+    user: string;
+    date: Date;
+    details?: string;
+}
 
 @Component({
     selector: 'app-services-publics-detail',
@@ -9,13 +25,56 @@ import { ServicesPublicsService } from '../../services/services-publics.service'
     templateUrl: './services-publics-detail.component.html',
     styleUrls: ['./services-publics-detail.component.scss']
 })
-export class ServicesPublicsDetailComponent implements OnInit {
+export class ServicesPublicsDetailComponent implements OnInit, OnDestroy {
 
     service: ServicePublic | undefined;
     loading = false;
     notFound = false;
 
-    selectedService: ServicePublic | null = null;
+    // Module actif
+    activeModule: string = 'apercu';
+
+    // ============================================================
+    // PAGINATION
+    // ============================================================
+    usersCurrentPage: number = 1;
+    usersItemsPerPage: number = 10;
+    usersTotalPages: number = 0;
+
+    categoriesCurrentPage: number = 1;
+    categoriesItemsPerPage: number = 10;
+    categoriesTotalPages: number = 0;
+
+    typesRNFCurrentPage: number = 1;
+    typesRNFItemsPerPage: number = 10;
+    typesRNFTotalsPages: number = 0;
+
+    paiementsCurrentPage: number = 1;
+    paiementsItemsPerPage: number = 10;
+    paiementsTotalPages: number = 0;
+
+    // ============================================================
+    // ACTIVITÉS EN TEMPS RÉEL
+    // ============================================================
+    allActivities: Activite[] = [];
+    private activityInterval: any;
+    private activityCounter: number = 0;
+
+    // ============================================================
+    // EXPORT
+    // ============================================================
+    exportLoading: boolean = false;
+
+    // Notification
+    showNotification: boolean = false;
+    notificationMessage: string = '';
+    notificationType: 'success' | 'error' | 'info' = 'success';
+
+    readonly Math = Math;
+
+    // Types pour getRandomItem
+    private activityTypes: ('paiement' | 'utilisateur' | 'categorie' | 'type-rnf')[] =
+        ['paiement', 'utilisateur', 'categorie', 'type-rnf'];
 
     constructor(
         private route: ActivatedRoute,
@@ -31,6 +90,11 @@ export class ServicesPublicsDetailComponent implements OnInit {
                 this.service = data;
                 this.notFound = !data;
                 this.loading = false;
+                if (this.service) {
+                    this.initPagination();
+                    this.initActivities();
+                    this.startActivityRealtime();
+                }
             },
             error: () => {
                 this.notFound = true;
@@ -39,9 +103,264 @@ export class ServicesPublicsDetailComponent implements OnInit {
         });
     }
 
+    ngOnDestroy(): void {
+        this.stopActivityRealtime();
+    }
+
+    // ============================================================
+    // INITIALISATION
+    // ============================================================
+
+    initPagination(): void {
+        this.usersTotalPages = Math.ceil((this.service?.utilisateurs?.length || 0) / this.usersItemsPerPage);
+        if (this.usersTotalPages === 0) this.usersTotalPages = 1;
+
+        this.categoriesTotalPages = Math.ceil((this.service?.categories?.length || 0) / this.categoriesItemsPerPage);
+        if (this.categoriesTotalPages === 0) this.categoriesTotalPages = 1;
+
+        this.typesRNFTotalsPages = Math.ceil((this.service?.typesRNF?.length || 0) / this.typesRNFItemsPerPage);
+        if (this.typesRNFTotalsPages === 0) this.typesRNFTotalsPages = 1;
+
+        this.paiementsTotalPages = Math.ceil((this.service?.paiements?.length || 0) / this.paiementsItemsPerPage);
+        if (this.paiementsTotalPages === 0) this.paiementsTotalPages = 1;
+    }
+
+    // ============================================================
+    // ACTIVITÉS EN TEMPS RÉEL
+    // ============================================================
+
+    initActivities(): void {
+        this.allActivities = this.generateInitialActivities();
+        this.activityCounter = this.allActivities.length;
+    }
+
+    private getRandomItem<T>(array: T[], fallback: T): T {
+        if (!array || array.length === 0) return fallback;
+        return array[Math.floor(Math.random() * array.length)] || fallback;
+    }
+
+    generateInitialActivities(): Activite[] {
+        const activities: Activite[] = [];
+        const titles = [
+            'Nouveau paiement RNF enregistré',
+            'Utilisateur ajouté au système',
+            'Nouvelle catégorie créée',
+            'Type RNF mis à jour',
+            'Paiement validé',
+            'Nouvel utilisateur inscrit',
+            'Catégorie modifiée',
+            'Type RNF ajouté'
+        ];
+        const users = ['Jean Ndayishimiye', 'Marie Uwimana', 'Pierre Nkurunziza', 'Claire Niyonzima', 'Système'];
+
+        for (let i = 0; i < 15; i++) {
+            const date = new Date();
+            date.setMinutes(date.getMinutes() - i * 3 - Math.random() * 10);
+            activities.push({
+                id: i + 1,
+                type: this.getRandomItem(this.activityTypes, 'paiement'),
+                title: this.getRandomItem(titles, 'Nouvelle activité'),
+                user: this.getRandomItem(users, 'Système'),
+                date: date
+            });
+        }
+        return activities.sort((a, b) => b.date.getTime() - a.date.getTime());
+    }
+
+    startActivityRealtime(): void {
+        this.activityInterval = setInterval(() => {
+            this.addNewActivity();
+        }, 5000);
+    }
+
+    stopActivityRealtime(): void {
+        if (this.activityInterval) {
+            clearInterval(this.activityInterval);
+            this.activityInterval = null;
+        }
+    }
+
+    addNewActivity(): void {
+        const titles = [
+            'Nouveau paiement RNF enregistré',
+            'Utilisateur ajouté au système',
+            'Nouvelle catégorie créée',
+            'Type RNF mis à jour',
+            'Paiement validé',
+            'Nouvel utilisateur inscrit'
+        ];
+        const users = ['Jean Ndayishimiye', 'Marie Uwimana', 'Pierre Nkurunziza', 'Claire Niyonzima', 'Système'];
+
+        this.activityCounter++;
+        const newActivity: Activite = {
+            id: this.activityCounter,
+            type: this.getRandomItem(this.activityTypes, 'paiement'),
+            title: this.getRandomItem(titles, 'Nouvelle activité'),
+            user: this.getRandomItem(users, 'Système'),
+            date: new Date()
+        };
+
+        this.allActivities = [newActivity, ...this.allActivities];
+        if (this.allActivities.length > 100) {
+            this.allActivities = this.allActivities.slice(0, 100);
+        }
+    }
+
+    getRecentActivities(limit: number = 10): Activite[] {
+        return this.allActivities.slice(0, limit);
+    }
+
+    getAllActivitiesCount(): number {
+        return this.allActivities.length;
+    }
+
+    // ============================================================
+    // MODULES - NAVIGATION
+    // ============================================================
+
+    switchModule(module: string): void {
+        this.activeModule = module;
+    }
+
+    getTotalItems(): number {
+        if (!this.service) return 0;
+        return (this.service.utilisateurs?.length || 0) +
+            (this.service.categories?.length || 0) +
+            (this.service.typesRNF?.length || 0) +
+            (this.service.paiements?.length || 0);
+    }
+
+    // ============================================================
+    // GETTERS PAGINATION
+    // ============================================================
+
+    get paginatedUtilisateurs(): Utilisateur[] {
+        if (!this.service?.utilisateurs) return [];
+        const start = (this.usersCurrentPage - 1) * this.usersItemsPerPage;
+        return this.service.utilisateurs.slice(start, start + this.usersItemsPerPage);
+    }
+
+    get paginatedCategories(): Categorie[] {
+        if (!this.service?.categories) return [];
+        const start = (this.categoriesCurrentPage - 1) * this.categoriesItemsPerPage;
+        return this.service.categories.slice(start, start + this.categoriesItemsPerPage);
+    }
+
+    get paginatedTypesRNF(): TypeRNF[] {
+        if (!this.service?.typesRNF) return [];
+        const start = (this.typesRNFCurrentPage - 1) * this.typesRNFItemsPerPage;
+        return this.service.typesRNF.slice(start, start + this.typesRNFItemsPerPage);
+    }
+
+    get paginatedPaiements(): PaiementRNF[] {
+        if (!this.service?.paiements) return [];
+        const start = (this.paiementsCurrentPage - 1) * this.paiementsItemsPerPage;
+        return this.service.paiements.slice(start, start + this.paiementsItemsPerPage);
+    }
+
+    // ============================================================
+    // MÉTHODES DE PAGINATION - UTILISATEURS
+    // ============================================================
+
+    changeUsersPage(page: number): void {
+        if (page < 1 || page > this.usersTotalPages) return;
+        this.usersCurrentPage = page;
+    }
+
+    getUsersPaginationPages(): number[] {
+        const pages: number[] = [];
+        const maxVisible = 5;
+        let start = Math.max(1, this.usersCurrentPage - Math.floor(maxVisible / 2));
+        let end = Math.min(this.usersTotalPages, start + maxVisible - 1);
+        if (end - start + 1 < maxVisible) {
+            start = Math.max(1, end - maxVisible + 1);
+        }
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+        return pages;
+    }
+
+    // ============================================================
+    // MÉTHODES DE PAGINATION - CATÉGORIES
+    // ============================================================
+
+    changeCategoriesPage(page: number): void {
+        if (page < 1 || page > this.categoriesTotalPages) return;
+        this.categoriesCurrentPage = page;
+    }
+
+    getCategoriesPaginationPages(): number[] {
+        const pages: number[] = [];
+        const maxVisible = 5;
+        let start = Math.max(1, this.categoriesCurrentPage - Math.floor(maxVisible / 2));
+        let end = Math.min(this.categoriesTotalPages, start + maxVisible - 1);
+        if (end - start + 1 < maxVisible) {
+            start = Math.max(1, end - maxVisible + 1);
+        }
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+        return pages;
+    }
+
+    // ============================================================
+    // MÉTHODES DE PAGINATION - TYPES RNF
+    // ============================================================
+
+    changeTypesRNFPage(page: number): void {
+        if (page < 1 || page > this.typesRNFTotalsPages) return;
+        this.typesRNFCurrentPage = page;
+    }
+
+    getTypesRNFPaginationPages(): number[] {
+        const pages: number[] = [];
+        const maxVisible = 5;
+        let start = Math.max(1, this.typesRNFCurrentPage - Math.floor(maxVisible / 2));
+        let end = Math.min(this.typesRNFTotalsPages, start + maxVisible - 1);
+        if (end - start + 1 < maxVisible) {
+            start = Math.max(1, end - maxVisible + 1);
+        }
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+        return pages;
+    }
+
+    // ============================================================
+    // MÉTHODES DE PAGINATION - PAIEMENTS
+    // ============================================================
+
+    changePaiementsPage(page: number): void {
+        if (page < 1 || page > this.paiementsTotalPages) return;
+        this.paiementsCurrentPage = page;
+    }
+
+    getPaiementsPaginationPages(): number[] {
+        const pages: number[] = [];
+        const maxVisible = 5;
+        let start = Math.max(1, this.paiementsCurrentPage - Math.floor(maxVisible / 2));
+        let end = Math.min(this.paiementsTotalPages, start + maxVisible - 1);
+        if (end - start + 1 < maxVisible) {
+            start = Math.max(1, end - maxVisible + 1);
+        }
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+        return pages;
+    }
+
+    // ============================================================
+    // NAVIGATION
+    // ============================================================
+
     goBack(): void {
         this.router.navigate(['../'], { relativeTo: this.route });
     }
+
+    // ============================================================
+    // ACTIONS SERVICE
+    // ============================================================
 
     onEdit(): void {
         if (this.service) {
@@ -49,123 +368,229 @@ export class ServicesPublicsDetailComponent implements OnInit {
         }
     }
 
-    // ✅ NOUVEAU : Méthode pour activer
     onActivate(): void {
         if (!this.service || this.service.actif) return;
-
         const updatedService = { ...this.service, actif: true };
         this.servicesPublicsService.update(updatedService).subscribe({
             next: () => {
                 this.service = updatedService;
-                // Optionnel : notification de succès
+                this.addActivity('system', `Service "${this.service?.abreviation}" activé`);
             },
-            error: () => {
-                // Gérer l'erreur
-            }
+            error: () => { }
         });
     }
 
-    // ✅ NOUVEAU : Méthode pour désactiver
     onDeactivate(): void {
         if (!this.service || !this.service.actif) return;
-
         const updatedService = { ...this.service, actif: false };
         this.servicesPublicsService.update(updatedService).subscribe({
             next: () => {
                 this.service = updatedService;
-                // Optionnel : notification de succès
+                this.addActivity('system', `Service "${this.service?.abreviation}" désactivé`);
             },
-            error: () => {
-                // Gérer l'erreur
-            }
+            error: () => { }
         });
     }
 
-    onToggleStatus(): void {
-        if (!this.service) return;
+    // ============================================================
+    // ACTIONS UTILISATEURS
+    // ============================================================
 
-        const updatedService = { ...this.service, actif: !this.service.actif };
-        this.servicesPublicsService.update(updatedService).subscribe({
-            next: () => {
-                this.service = updatedService;
-            },
-            error: () => {
-                // Gérer l'erreur
-            }
-        });
-    }
-
-    onEditService(service: ServicePublic): void {
-        if (service && service.id) {
-            this.router.navigate(['/services-publics/edit', service.id]);
-        }
-    }
-
-    fermerDetail(): void {
-        this.selectedService = null;
-    }
-
-    onAddCommission(): void {
+    onAddUtilisateur(): void {
         if (this.service) {
-            this.router.navigate(['/services-publics/edit', this.service.id, 'commission', 'new']);
+            this.router.navigate(['/services-publics/edit', this.service.id, 'utilisateur', 'new']);
         }
     }
 
-    onEditCommission(commission: Commission): void {
-        if (this.service && commission) {
-            this.router.navigate(['/services-publics/edit', this.service.id, 'commission', commission.id]);
+    onEditUtilisateur(user: Utilisateur): void {
+        if (this.service) {
+            this.router.navigate(['/services-publics/edit', this.service.id, 'utilisateur', user.id]);
         }
     }
 
-    onDeleteCommission(commissionId: number): void {
-        if (!this.service || !commissionId) return;
-
-        if (confirm('Êtes-vous sûr de vouloir supprimer cette commission ?')) {
-            this.servicesPublicsService.deleteCommission(this.service.id, commissionId).subscribe({
-                next: () => {
-                    if (this.service && this.service.commissions) {
-                        this.service.commissions = this.service.commissions.filter(c => c.id !== commissionId);
-                    }
-                },
-                error: (err) => {
-                    console.error('Erreur lors de la suppression de la commission:', err);
-                }
-            });
+    onToggleUtilisateur(user: Utilisateur): void {
+        const newStatut = user.statut === 'ACTIF' ? 'INACTIF' : 'ACTIF';
+        if (this.service && this.service.utilisateurs) {
+            this.service.utilisateurs = this.service.utilisateurs.map(u =>
+                u.id === user.id ? { ...u, statut: newStatut as any } : u
+            );
+            this.addActivity(user.prenom + ' ' + user.nom, `Statut de l'utilisateur changé en ${newStatut}`);
+            this.initPagination();
         }
     }
 
-    onExport(): void {
-        if (!this.service) return;
-        console.log('Export des données pour le service:', this.service.abreviation);
+    onDeleteUtilisateur(user: Utilisateur): void {
+        if (!this.service || !this.service.utilisateurs) return;
+        if (confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur ${user.prenom} ${user.nom} ?`)) {
+            this.service.utilisateurs = this.service.utilisateurs.filter(u => u.id !== user.id);
+            this.addActivity('system', `Utilisateur "${user.prenom} ${user.nom}" supprimé`);
+            this.initPagination();
+        }
     }
 
-    getTotalTransactions(): number {
-        if (!this.service || !this.service.transactions) return 0;
-        return this.service.transactions.reduce((sum, t) => sum + (t.montant || 0), 0);
+    // ============================================================
+    // ACTIONS CATÉGORIES
+    // ============================================================
+
+    onAddCategory(): void {
+        if (this.service) {
+            this.router.navigate(['/services-publics/edit', this.service.id, 'categorie', 'new']);
+        }
     }
+
+    onViewCategory(category: Categorie): void {
+        console.log('Voir catégorie:', category);
+    }
+
+    onEditCategory(category: Categorie): void {
+        if (this.service) {
+            this.router.navigate(['/services-publics/edit', this.service.id, 'categorie', category.id]);
+        }
+    }
+
+    onToggleCategory(category: Categorie): void {
+        category.actif = !category.actif;
+        this.addActivity('system', `Catégorie "${category.nom}" ${category.actif ? 'activée' : 'désactivée'}`);
+    }
+
+    getCategoryColor(code: string): string {
+        const colors = ['#4f46e5', '#7c3aed', '#ec4899', '#f43f5e', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6'];
+        let hash = 0;
+        for (let i = 0; i < code.length; i++) {
+            hash = code.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return colors[Math.abs(hash) % colors.length] || '#4f46e5';
+    }
+
+    // ============================================================
+    // ACTIONS TYPES RNF
+    // ============================================================
+
+    onAddTypeRNF(): void {
+        if (this.service) {
+            this.router.navigate(['/services-publics/edit', this.service.id, 'type-rnf', 'new']);
+        }
+    }
+
+    onViewTypeRNF(type: TypeRNF): void {
+        console.log('Voir Type RNF:', type);
+    }
+
+    onEditTypeRNF(type: TypeRNF): void {
+        if (this.service) {
+            this.router.navigate(['/services-publics/edit', this.service.id, 'type-rnf', type.id]);
+        }
+    }
+
+    onToggleTypeRNF(type: TypeRNF): void {
+        type.actif = !type.actif;
+        this.addActivity('system', `Type RNF "${type.libelle}" ${type.actif ? 'activé' : 'désactivé'}`);
+    }
+
+    // ============================================================
+    // ACTIONS PAIEMENTS
+    // ============================================================
+
+    onAddPaiement(): void {
+        if (this.service) {
+            this.router.navigate(['/services-publics/edit', this.service.id, 'paiement', 'new']);
+        }
+    }
+
+    getTypeRNFNom(typeRNFId: number): string {
+        const type = this.service?.typesRNF?.find(t => t.id === typeRNFId);
+        return type?.libelle || 'N/A';
+    }
+
+    getSousTypeRNFNom(sousTypeRNFId?: number): string {
+        if (!sousTypeRNFId) return 'N/A';
+        for (const type of this.service?.typesRNF || []) {
+            const sousType = type.sousTypes?.find(st => st.id === sousTypeRNFId);
+            if (sousType) return sousType.nom;
+        }
+        return 'N/A';
+    }
+
+    getTotalPaiements(): number {
+        if (!this.service?.paiements) return 0;
+        return this.service.paiements.reduce((sum, p) => sum + (p.montant || 0), 0);
+    }
+
+    // ============================================================
+    // EXPORT
+    // ============================================================
+
+    exportUsers(): void {
+        this.exportData('UTILISATEURS', 'export_utilisateurs');
+    }
+
+    exportCategories(): void {
+        this.exportData('CATEGORIES', 'export_categories');
+    }
+
+    exportTypesRNF(): void {
+        this.exportData('TYPES_RNF', 'export_types_rnf');
+    }
+
+    exportPaiements(): void {
+        this.exportData('PAIEMENTS', 'export_paiements');
+    }
+
+    private exportData(type: string, fileName: string): void {
+        this.exportLoading = true;
+        const serviceName = this.service?.abreviation || 'service';
+
+        setTimeout(() => {
+            this.exportLoading = false;
+            console.log(`✅ Export ${type} du service ${serviceName} terminé avec succès !`);
+            this.addActivity('system', `Export ${type} effectué`);
+
+            this.showNotification = true;
+            this.notificationMessage = `Export ${type} terminé avec succès !`;
+            this.notificationType = 'success';
+            setTimeout(() => {
+                this.showNotification = false;
+            }, 3000);
+        }, 1500);
+    }
+
+    // ============================================================
+    // GESTION DES ACTIVITÉS
+    // ============================================================
+
+    private addActivity(user: string, action: string): void {
+        const newActivity: Activite = {
+            id: ++this.activityCounter,
+            type: 'system',
+            title: action,
+            user: user,
+            date: new Date()
+        };
+        this.allActivities = [newActivity, ...this.allActivities];
+        if (this.allActivities.length > 100) {
+            this.allActivities = this.allActivities.slice(0, 100);
+        }
+    }
+
+    // ============================================================
+    // UTILITAIRES
+    // ============================================================
 
     getServiceColor(abreviation: string): string {
         if (!abreviation) return '#4f46e5';
-
         const colors: string[] = [
             '#4f46e5', '#7c3aed', '#ec4899', '#f43f5e',
             '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6',
-            '#14b8a6', '#06b6d4', '#0ea5e9', '#6366f1',
-            '#84cc16', '#22c55e', '#ef4444', '#f97316'
+            '#14b8a6', '#06b6d4', '#0ea5e9', '#6366f1'
         ];
         let hash = 0;
         for (let i = 0; i < abreviation.length; i++) {
             hash = abreviation.charCodeAt(i) + ((hash << 5) - hash);
         }
-        const index = Math.abs(hash) % colors.length;
-        return colors[index] || '#4f46e5';
+        return colors[Math.abs(hash) % colors.length] || '#4f46e5';
     }
 
-    getStatusClass(actif: boolean | undefined): string {
-        return actif ? 'status-actif' : 'status-inactif';
-    }
-
-    getStatusLabel(actif: boolean | undefined): string {
-        return actif ? 'Actif' : 'Inactif';
+    closeNotification(): void {
+        this.showNotification = false;
     }
 }

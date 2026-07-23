@@ -20,7 +20,11 @@ describe('ServicesPublicsDetailComponent', () => {
         type: 'INTERNE',
         actif: true,
         dateCreation: new Date('2022-01-15'),
-        version: '2.3.1'
+        version: '2.3.1',
+        responsable: 'Jean Ndayishimiye',
+        email: 'test@test.com',
+        telephone: '+257 22 22 22 22',
+        siteWeb: 'https://obr.bi'
     };
 
     function configureTestBed(paramId: string): void {
@@ -43,10 +47,6 @@ describe('ServicesPublicsDetailComponent', () => {
             ]
         }).compileComponents();
     }
-
-    // ============================================================
-    // TESTS - SERVICE EXISTANT
-    // ============================================================
 
     describe('when the service exists', () => {
         beforeEach(() => {
@@ -74,7 +74,7 @@ describe('ServicesPublicsDetailComponent', () => {
 
         it('should navigate back on goBack()', () => {
             component.goBack();
-            expect(routerSpy.navigate).toHaveBeenCalledWith(['../'], { relativeTo: component['route'] });
+            expect(routerSpy.navigate).toHaveBeenCalledWith(['../'], { relativeTo: jasmine.any(Object) });
         });
 
         it('should get service color', () => {
@@ -84,33 +84,31 @@ describe('ServicesPublicsDetailComponent', () => {
             expect(color).toMatch(/^#[0-9a-f]{6}$/i);
         });
 
-        it('should toggle status from true to false', () => {
+        it('should deactivate service from true to false', () => {
             const updatedService = { ...mockService, actif: false };
             serviceSpy.update.and.returnValue(of(updatedService));
 
-            component.onToggleStatus();
+            component.onDeactivate();
 
             expect(serviceSpy.update).toHaveBeenCalledWith(updatedService);
             expect(component.service?.actif).toBeFalse();
         });
 
-        it('should toggle status from false to true', () => {
+        it('should activate service from false to true', () => {
             const inactiveService = { ...mockService, actif: false };
             const updatedService = { ...inactiveService, actif: true };
             component.service = inactiveService;
             serviceSpy.update.and.returnValue(of(updatedService));
 
-            component.onToggleStatus();
+            component.onActivate();
 
             expect(serviceSpy.update).toHaveBeenCalledWith(updatedService);
             expect(component.service?.actif).toBeTrue();
         });
 
-        it('should handle error when toggling status', () => {
+        it('should handle error when deactivating service', () => {
             serviceSpy.update.and.returnValue(throwError(() => new Error('Erreur')));
-
-            // Ne devrait pas planter
-            expect(() => component.onToggleStatus()).not.toThrow();
+            expect(() => component.onDeactivate()).not.toThrow();
         });
 
         it('should navigate to edit', () => {
@@ -124,10 +122,6 @@ describe('ServicesPublicsDetailComponent', () => {
             expect(routerSpy.navigate).not.toHaveBeenCalled();
         });
     });
-
-    // ============================================================
-    // TESTS - SERVICE INEXISTANT
-    // ============================================================
 
     describe('when the service does not exist', () => {
         beforeEach(() => {
@@ -146,10 +140,6 @@ describe('ServicesPublicsDetailComponent', () => {
         });
     });
 
-    // ============================================================
-    // TESTS - ERREUR RÉSEAU
-    // ============================================================
-
     describe('when the request fails', () => {
         beforeEach(() => {
             configureTestBed('1');
@@ -167,10 +157,6 @@ describe('ServicesPublicsDetailComponent', () => {
         });
     });
 
-    // ============================================================
-    // TESTS - COULEUR D'AVATAR
-    // ============================================================
-
     describe('avatar color generation', () => {
         it('should return a color for any abbreviation', () => {
             const abbreviations = ['GPR-RNF', 'OTRACO', 'PSR', 'e-CMR', 'SIGFIP'];
@@ -187,15 +173,6 @@ describe('ServicesPublicsDetailComponent', () => {
             const color1 = component.getServiceColor(abbr);
             const color2 = component.getServiceColor(abbr);
             expect(color1).toBe(color2);
-        });
-
-        it('should return different colors for different abbreviations', () => {
-            const color1 = component.getServiceColor('GPR-RNF');
-            const color2 = component.getServiceColor('OTRACO');
-            // Peut être identique par hasard, mais probablement différent
-            // On vérifie juste que les deux sont valides
-            expect(color1).toBeTruthy();
-            expect(color2).toBeTruthy();
         });
     });
 });

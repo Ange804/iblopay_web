@@ -1,0 +1,274 @@
+<div class="category-detail">
+    <!-- Bouton Retour -->
+    <button class="back-btn" (click)="goBack()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Retour aux catégories
+    </button>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading">
+        <div class="loader-spinner"></div>
+        <span>Chargement...</span>
+    </div>
+
+    <!-- Not Found -->
+    <div *ngIf="!loading && notFound" class="not-found">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="15" y1="9" x2="9" y2="15" />
+            <line x1="9" y1="9" x2="15" y2="15" />
+        </svg>
+        <span>Catégorie introuvable</span>
+    </div>
+
+    <!-- Détail -->
+    <div *ngIf="!loading && category" class="detail-container">
+        <!-- Carte d'information -->
+        <div class="detail-card">
+            <div class="detail-header">
+                <div class="detail-title">
+                    <span class="detail-icon" [style.background]="getCategoryColor(category.code)">
+                        {{ category.nom.charAt(0) }}
+                    </span>
+                    <div>
+                        <h2>{{ category.nom }}</h2>
+                        <span class="detail-id">Code: {{ category.code }}</span>
+                    </div>
+                </div>
+                <div class="detail-badges">
+                    <span class="badge"
+                        [ngClass]="category.type === 'RNF' ? 'badge-rnf' : category.type === 'FISCALE' ? 'badge-fiscale' : 'badge-autre'">
+                        {{ category.type }}
+                    </span>
+                    <span class="badge" [ngClass]="category.actif ? 'badge-actif' : 'badge-inactif'">
+                        <span class="status-dot"></span>
+                        {{ category.actif ? 'Actif' : 'Inactif' }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="detail-body">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="label">Description</span>
+                        <span class="value">{{ category.description }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Date de création</span>
+                        <span class="value">{{ category.dateCreation | date:'dd/MM/yyyy' }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Statistiques</span>
+                        <span class="value">
+                            <span class="stat-badge" *ngIf="category.statistiques">
+                                {{ category.statistiques.totalOperations }} opérations
+                            </span>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Montant total</span>
+                        <span class="value" *ngIf="category.statistiques">
+                            {{ category.statistiques.montantTotal | number }} BIF
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs-nav">
+            <button class="tab-btn" [class.active]="activeTab === 'frais'" (click)="activeTab = 'frais'">
+                💰 Frais ({{ (category.frais || []).length }})
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'documents'" (click)="activeTab = 'documents'">
+                📄 Documents requis ({{ (category.documentsRequis || []).length }})
+            </button>
+        </div>
+
+        <!-- Tab: Frais -->
+        <div *ngIf="activeTab === 'frais'" class="tab-content">
+            <div class="module-header">
+                <h3>Liste des frais</h3>
+                <div class="module-actions">
+                    <button class="btn-add" (click)="onAddFrais()">+ Ajouter</button>
+                    <span class="total-amount">Total: {{ getTotalFrais() | number }} BIF</span>
+                </div>
+            </div>
+
+            <div class="table-scroll" *ngIf="category.frais && category.frais.length > 0">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Montant</th>
+                            <th>Type</th>
+                            <th>Fréquence</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let frais of paginatedFrais">
+                            <td>{{ frais.nom }}</td>
+                            <td>
+                                <span *ngIf="frais.type === 'FIXE' || frais.type === 'FORFAITAIRE'">
+                                    {{ frais.montant | number }} {{ frais.devise }}
+                                </span>
+                                <span *ngIf="frais.type === 'PERCENTAGE'">
+                                    {{ frais.pourcentage }}%
+                                    <span *ngIf="frais.montantMin">(min: {{ frais.montantMin | number }})</span>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge"
+                                    [ngClass]="frais.type === 'FIXE' ? 'badge-fixe' : frais.type === 'PERCENTAGE' ? 'badge-percentage' : 'badge-forfaitaire'">
+                                    {{ getFraisTypeLabel(frais.type) }}
+                                </span>
+                            </td>
+                            <td>{{ getFrequenceLabel(frais.frequence) }}</td>
+                            <td>
+                                <span class="badge" [ngClass]="frais.actif ? 'badge-actif' : 'badge-inactif'">
+                                    {{ frais.actif ? 'Actif' : 'Inactif' }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="actions-cell">
+                                    <button class="action-btn edit" (click)="onEditFrais(frais)" title="Modifier">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                        </svg>
+                                    </button>
+                                    <button class="action-btn delete" (click)="onDeleteFrais(frais.id)"
+                                        title="Supprimer">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer" *ngIf="category.frais && category.frais.length > 0">
+                <span class="pagination-info">{{ (fraisCurrentPage - 1) * fraisItemsPerPage + 1 }} - {{
+                    Math.min(fraisCurrentPage * fraisItemsPerPage, category.frais.length) }} / {{ category.frais.length
+                    }}</span>
+                <div class="pagination-controls">
+                    <button (click)="changeFraisPage(fraisCurrentPage - 1)" [disabled]="fraisCurrentPage === 1">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <button *ngFor="let page of getFraisPaginationPages()" (click)="changeFraisPage(page)"
+                        [class.active]="fraisCurrentPage === page">{{ page }}</button>
+                    <button (click)="changeFraisPage(fraisCurrentPage + 1)"
+                        [disabled]="fraisCurrentPage === fraisTotalPages">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Documents Requis -->
+        <div *ngIf="activeTab === 'documents'" class="tab-content">
+            <div class="module-header">
+                <h3>Documents requis</h3>
+                <div class="module-actions">
+                    <button class="btn-add" (click)="onAddDocument()">+ Ajouter</button>
+                </div>
+            </div>
+
+            <div class="table-scroll" *ngIf="category.documentsRequis && category.documentsRequis.length > 0">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Format</th>
+                            <th>Obligatoire</th>
+                            <th>Version</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let doc of paginatedDocuments">
+                            <td>{{ doc.nom }}</td>
+                            <td>{{ doc.description }}</td>
+                            <td>
+                                <span class="badge" [ngClass]="'badge-' + doc.type.toLowerCase()">
+                                    {{ doc.type }}
+                                </span>
+                            </td>
+                            <td>{{ doc.format }}</td>
+                            <td>
+                                <span class="badge"
+                                    [ngClass]="doc.obligatoire ? 'badge-obligatoire' : 'badge-optionnel'">
+                                    {{ doc.obligatoire ? 'Obligatoire' : 'Optionnel' }}
+                                </span>
+                            </td>
+                            <td>{{ doc.version || 'N/A' }}</td>
+                            <td>
+                                <div class="actions-cell">
+                                    <button class="action-btn edit" (click)="onEditDocument(doc)" title="Modifier">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                        </svg>
+                                    </button>
+                                    <button class="action-btn delete" (click)="onDeleteDocument(doc.id)"
+                                        title="Supprimer">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer" *ngIf="category.documentsRequis && category.documentsRequis.length > 0">
+                <span class="pagination-info">{{ (documentsCurrentPage - 1) * documentsItemsPerPage + 1 }} - {{
+                    Math.min(documentsCurrentPage * documentsItemsPerPage, category.documentsRequis.length) }} / {{
+                    category.documentsRequis.length }}</span>
+                <div class="pagination-controls">
+                    <button (click)="changeDocumentsPage(documentsCurrentPage - 1)"
+                        [disabled]="documentsCurrentPage === 1">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <button *ngFor="let page of getDocumentsPaginationPages()" (click)="changeDocumentsPage(page)"
+                        [class.active]="documentsCurrentPage === page">{{ page }}</button>
+                    <button (click)="changeDocumentsPage(documentsCurrentPage + 1)"
+                        [disabled]="documentsCurrentPage === documentsTotalPages">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
