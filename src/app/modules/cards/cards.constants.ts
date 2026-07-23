@@ -12,7 +12,8 @@ export const CARD_STATUS_META: Record<CardStatus, StatusMeta> = {
   [CardStatus.ACTIVE]: { label: 'Active', color: '#1fae5b' },
   [CardStatus.BLOCKED]: { label: 'Blocked', color: '#e0932c' },
   [CardStatus.REPLACED]: { label: 'Replaced', color: '#6f6fef' },
-  [CardStatus.CLOSED]: { label: 'Closed', color: '#e14b4b' }
+  [CardStatus.CLOSED]: { label: 'Closed', color: '#e14b4b' },
+  [CardStatus.SUSPENDED]: { label: 'Suspended', color: '#f2a90c' }
 };
 
 export const CARD_TYPE_META: Record<CardType, { label: string; icon: string }> = {
