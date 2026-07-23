@@ -6,6 +6,7 @@ $primary: #6366F1;
 $primary-light: #818CF8;
 $primary-dark: #4F46E5;
 $accent: #8B5CF6;
+$accent-light: #A78BFA;
 $bg-dark: #0F0F23;
 $bg-card: #1A1A2E;
 $bg-input: #16213E;
@@ -30,6 +31,7 @@ $radius-xl: 24px;
   justify-content: center;
   overflow: hidden;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: $bg-dark;
 }
 
 // ─── Animated Background ─────────────────────
@@ -41,86 +43,108 @@ $radius-xl: 24px;
   .bg-gradient {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, $bg-dark 0%, #1a1a3e 25%, $bg-dark 50%, #0d1b2a 100%);
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba($primary, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba($accent, 0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(#06B6D4, 0.08) 0%, transparent 50%),
+      linear-gradient(135deg, $bg-dark 0%, #1a1a3e 30%, $bg-dark 60%, #0d1b2a 100%);
   }
 
-  .bg-pattern {
+  .bg-grid {
     position: absolute;
     inset: 0;
-    opacity: 0.03;
-    background-image: radial-gradient(circle at 25% 25%, $primary 1px, transparent 1px),
-                       radial-gradient(circle at 75% 75%, $accent 1px, transparent 1px);
-    background-size: 50px 50px;
+    opacity: 0.04;
+    background-image:
+      linear-gradient(rgba($primary, 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, rgba($primary, 0.3) 1px, transparent 1px);
+    background-size: 60px 60px;
   }
 
-  .floating-shapes {
+  .bg-particles {
     position: absolute;
     inset: 0;
     overflow: hidden;
   }
 
-  .shape {
+  .particle {
     position: absolute;
     border-radius: 50%;
-    filter: blur(60px);
-    animation: float 20s infinite;
+    background: rgba(255, 255, 255, 0.15);
+    animation: particleFloat 25s infinite;
 
-    &.shape-1 {
-      width: 400px;
-      height: 400px;
-      background: rgba($primary, 0.08);
-      top: -100px;
-      left: -100px;
-      animation-duration: 25s;
+    &.particle-1 {
+      width: 4px; height: 4px;
+      top: 15%; left: 10%;
+      animation-delay: 0s;
     }
 
-    &.shape-2 {
-      width: 300px;
-      height: 300px;
-      background: rgba($accent, 0.06);
-      top: 50%;
-      right: -50px;
-      animation-duration: 20s;
-      animation-delay: -5s;
-    }
-
-    &.shape-3 {
-      width: 250px;
-      height: 250px;
-      background: rgba(#06B6D4, 0.05);
-      bottom: -50px;
-      left: 30%;
-      animation-duration: 22s;
-      animation-delay: -10s;
-    }
-
-    &.shape-4 {
-      width: 200px;
-      height: 200px;
-      background: rgba($primary-light, 0.04);
-      top: 20%;
-      left: 60%;
-      animation-duration: 18s;
+    &.particle-2 {
+      width: 3px; height: 3px;
+      top: 25%; left: 80%;
       animation-delay: -3s;
+      animation-duration: 20s;
     }
 
-    &.shape-5 {
-      width: 350px;
-      height: 350px;
-      background: rgba(#EC4899, 0.03);
-      bottom: 20%;
-      right: 30%;
+    &.particle-3 {
+      width: 5px; height: 5px;
+      top: 60%; left: 5%;
+      animation-delay: -6s;
+      animation-duration: 30s;
+    }
+
+    &.particle-4 {
+      width: 3px; height: 3px;
+      top: 70%; left: 70%;
+      animation-delay: -9s;
+      animation-duration: 22s;
+    }
+
+    &.particle-5 {
+      width: 4px; height: 4px;
+      top: 40%; left: 50%;
+      animation-delay: -12s;
       animation-duration: 28s;
-      animation-delay: -8s;
+    }
+
+    &.particle-6 {
+      width: 2px; height: 2px;
+      top: 85%; left: 30%;
+      animation-delay: -15s;
+      animation-duration: 18s;
+    }
+
+    &.particle-7 {
+      width: 4px; height: 4px;
+      top: 10%; left: 45%;
+      animation-delay: -18s;
+      animation-duration: 26s;
+    }
+
+    &.particle-8 {
+      width: 3px; height: 3px;
+      top: 55%; left: 90%;
+      animation-delay: -21s;
     }
   }
 }
 
-@keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(30px, -30px) scale(1.05); }
-  50% { transform: translate(-20px, 20px) scale(0.95); }
-  75% { transform: translate(20px, 10px) scale(1.02); }
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0.4;
+  }
+  25% {
+    transform: translateY(-40px) translateX(20px) scale(1.2);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(10px) translateX(-30px) scale(0.9);
+    opacity: 0.3;
+  }
+  75% {
+    transform: translateY(-20px) translateX(10px) scale(1.1);
+    opacity: 0.6;
+  }
 }
 
 // ─── Auth Container ──────────────────────────
@@ -134,17 +158,26 @@ $radius-xl: 24px;
   margin: 24px;
   border-radius: $radius-xl;
   overflow: hidden;
-  background: rgba($bg-card, 0.6);
-  backdrop-filter: blur(20px);
+  background: rgba($bg-card, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba($border-color, 0.3);
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4),
-              0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  box-shadow:
+    0 25px 80px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  animation: containerIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes containerIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 // ─── Branding Panel ──────────────────────────
 .auth-branding {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 48px;
@@ -156,8 +189,24 @@ $radius-xl: 24px;
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 30% 50%, rgba($primary, 0.1) 0%, transparent 70%);
+    background: radial-gradient(ellipse at 30% 50%, rgba($primary, 0.15) 0%, transparent 70%);
   }
+}
+
+.branding-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: $primary-light;
+  background: rgba($primary, 0.1);
+  border: 1px solid rgba($primary, 0.15);
+  margin-bottom: 28px;
+  animation: fadeInUp 0.6s 0.1s both;
 }
 
 .branding-content {
@@ -166,11 +215,21 @@ $radius-xl: 24px;
   max-width: 400px;
 }
 
+.branding-divider {
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, $primary, $accent);
+  border-radius: 2px;
+  margin-bottom: 24px;
+  animation: fadeInUp 0.6s 0.3s both;
+}
+
 .logo-section {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 40px;
+  margin-bottom: 28px;
+  animation: fadeInUp 0.6s 0.15s both;
 
   .logo-icon {
     width: 48px;
@@ -180,6 +239,7 @@ $radius-xl: 24px;
     svg {
       width: 100%;
       height: 100%;
+      filter: drop-shadow(0 4px 12px rgba($primary, 0.3));
     }
   }
 
@@ -194,10 +254,11 @@ $radius-xl: 24px;
 }
 
 .branding-text {
-  margin-bottom: 40px;
+  margin-bottom: 36px;
+  animation: fadeInUp 0.6s 0.35s both;
 
   h2 {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
     color: $text-primary;
     margin-bottom: 12px;
@@ -205,36 +266,39 @@ $radius-xl: 24px;
   }
 
   p {
-    font-size: 15px;
+    font-size: 14px;
     color: $text-secondary;
-    line-height: 1.6;
+    line-height: 1.7;
+    max-width: 340px;
   }
 }
 
 .branding-features {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
+  animation: fadeInUp 0.6s 0.45s both;
 }
 
 .feature-item {
   display: flex;
   align-items: flex-start;
   gap: 14px;
-  padding: 16px;
+  padding: 14px 16px;
   border-radius: $radius-md;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba($border-color, 0.15);
   transition: all 0.3s ease;
+  cursor: default;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba($primary, 0.2);
-    transform: translateX(4px);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba($primary, 0.25);
+    transform: translateX(6px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   }
 
   .feature-icon {
-    font-size: 20px;
     width: 36px;
     height: 36px;
     display: flex;
@@ -243,6 +307,7 @@ $radius-xl: 24px;
     background: rgba($primary, 0.1);
     border-radius: 8px;
     flex-shrink: 0;
+    color: $primary-light;
   }
 
   .feature-text {
@@ -251,7 +316,7 @@ $radius-xl: 24px;
     gap: 3px;
 
     strong {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       color: $text-primary;
     }
@@ -259,8 +324,34 @@ $radius-xl: 24px;
     span {
       font-size: 12px;
       color: $text-muted;
+      line-height: 1.4;
     }
   }
+}
+
+.branding-footer {
+  position: absolute;
+  bottom: 24px;
+  display: flex;
+  gap: 8px;
+  z-index: 1;
+  animation: fadeInUp 0.6s 0.6s both;
+}
+
+.branding-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba($text-muted, 0.4);
+  animation: dotPulse 2s ease-in-out infinite;
+
+  &:nth-child(2) { animation-delay: 0.3s; }
+  &:nth-child(3) { animation-delay: 0.6s; }
+}
+
+@keyframes dotPulse {
+  0%, 100% { background: rgba($text-muted, 0.4); transform: scale(1); }
+  50% { background: rgba($primary-light, 0.6); transform: scale(1.3); }
 }
 
 // ─── Form Section ────────────────────────────
@@ -275,6 +366,7 @@ $radius-xl: 24px;
 .auth-form-wrapper {
   width: 100%;
   max-width: 400px;
+  animation: fadeInUp 0.6s 0.2s both;
 }
 
 .mobile-logo {
@@ -290,6 +382,7 @@ $radius-xl: 24px;
     svg {
       width: 100%;
       height: 100%;
+      filter: drop-shadow(0 4px 12px rgba($primary, 0.3));
     }
   }
 
@@ -306,10 +399,11 @@ $radius-xl: 24px;
   margin-bottom: 32px;
 
   h2 {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 700;
     color: $text-primary;
     margin-bottom: 8px;
+    letter-spacing: -0.3px;
   }
 
   p {
@@ -330,12 +424,16 @@ $radius-xl: 24px;
   line-height: 1.4;
   animation: slideDown 0.3s ease;
 
+  svg {
+    flex-shrink: 0;
+  }
+
   &.alert-error {
     background: rgba($error-color, 0.1);
     border: 1px solid rgba($error-color, 0.2);
     color: #FCA5A5;
 
-    svg { stroke: $error-color; }
+    svg { color: $error-color; }
   }
 
   &.alert-warning {
@@ -343,12 +441,17 @@ $radius-xl: 24px;
     border: 1px solid rgba($warning-color, 0.2);
     color: #FDE68A;
 
-    svg { stroke: $warning-color; }
+    svg { color: $warning-color; }
   }
 }
 
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -457,10 +560,14 @@ $radius-xl: 24px;
   margin-bottom: 24px;
 
   .forgot-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-size: 13px;
     color: $primary-light;
     text-decoration: none;
-    transition: color 0.2s;
+    transition: all 0.2s;
+    padding: 4px 0;
 
     &:hover {
       color: $primary;
@@ -489,24 +596,36 @@ $radius-xl: 24px;
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1));
+    background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.15));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
     opacity: 0;
     transition: opacity 0.3s;
   }
 
   &:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 25px rgba($primary, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba($primary, 0.35);
 
     &::before { opacity: 1; }
   }
 
   &:active:not(:disabled) {
     transform: translateY(0);
+    box-shadow: 0 4px 15px rgba($primary, 0.2);
+
+    &::after { opacity: 1; }
   }
 
   &:disabled {
-    opacity: 0.7;
+    opacity: 0.6;
     cursor: not-allowed;
   }
 
@@ -515,11 +634,22 @@ $radius-xl: 24px;
   }
 }
 
+.btn-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
 .btn-loader {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
+  position: relative;
+  z-index: 1;
 
   .spinner {
     width: 18px;
@@ -537,13 +667,41 @@ $radius-xl: 24px;
 
 // ─── Footer ──────────────────────────────────
 .form-footer {
-  margin-top: 32px;
+  margin-top: 36px;
   text-align: center;
+}
 
-  p {
-    font-size: 12px;
-    color: $text-muted;
+.form-footer-divider {
+  position: relative;
+  margin-bottom: 12px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba($border-color, 0.3), transparent);
   }
+
+  span {
+    position: relative;
+    display: inline-block;
+    padding: 0 12px;
+    font-size: 11px;
+    font-weight: 500;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    background: $bg-card;
+  }
+}
+
+.form-footer p {
+  font-size: 12px;
+  color: $text-muted;
+  margin: 0;
 }
 
 // ─── Responsive ──────────────────────────────
@@ -554,10 +712,15 @@ $radius-xl: 24px;
 
   .auth-container {
     max-width: 480px;
+    backdrop-filter: blur(16px);
   }
 
   .mobile-logo {
     display: flex;
+  }
+
+  .auth-form-section {
+    padding: 40px 36px;
   }
 }
 
@@ -568,10 +731,10 @@ $radius-xl: 24px;
   }
 
   .auth-form-section {
-    padding: 32px 24px;
+    padding: 28px 20px;
   }
 
   .form-header h2 {
-    font-size: 24px;
+    font-size: 22px;
   }
 }

@@ -36,11 +36,13 @@ $purple-50: #f5f3ff;
     letter-spacing: 0.6px;
     color: $gray-500;
     margin-bottom: 12px;
+    //3 in a row on desktop, 2 on tablet, 1 on mobile
+
   }
 
   &__row {
-    display: flex;
-    gap: 10px;
+    display: inline-flex;
+    gap: 15px;
     flex-wrap: wrap;
   }
 
@@ -53,7 +55,7 @@ $purple-50: #f5f3ff;
     border-radius: 10px;
     border: 1px solid $gray-200;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 15px;
     text-align: left;
     position: relative;
     transition: all 0.25s ease;
@@ -62,6 +64,7 @@ $purple-50: #f5f3ff;
     color: $gray-700;
     font-family: $font-body;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    margin-left: 30px;
 
     &:hover {
       transform: translateY(-2px);

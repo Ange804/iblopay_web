@@ -170,8 +170,8 @@ $gray-900: #0f172a;
 
 // ─── KPI Grid ───────────────────────────────────────────
 .kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  display: flex;
+  flex-wrap: nowrap;
   gap: 14px;
   margin-bottom: 24px;
 }
@@ -184,6 +184,8 @@ $gray-900: #0f172a;
   display: flex;
   align-items: flex-start;
   gap: 14px;
+  flex: 1;
+  min-width: 0;
   transition: all 0.25s ease;
   animation: scaleIn 0.3s ease both;
 
@@ -225,14 +227,15 @@ $gray-900: #0f172a;
 
   &__value {
     font-family: $font-mono;
-    font-size: 18px;
+    font-size: 13px;
     font-weight: 700;
     display: block;
     line-height: 1.2;
     letter-spacing: -0.3px;
+    white-space: nowrap;
 
     &--xl {
-      font-size: 20px;
+      font-size: 13px;
     }
   }
 
@@ -243,6 +246,7 @@ $gray-900: #0f172a;
     margin-top: 2px;
     display: block;
     opacity: 0.7;
+    white-space: nowrap;
   }
 
   // Per-type theming
@@ -866,11 +870,13 @@ $gray-900: #0f172a;
   }
 
   .kpi-grid {
-    grid-template-columns: 1fr 1fr;
+    flex-wrap: wrap;
   }
 
   .kpi-card {
     padding: 14px 12px;
+    flex: 1 1 calc(50% - 7px);
+    min-width: 0;
 
     &__value {
       font-size: 15px;
@@ -923,7 +929,7 @@ $gray-900: #0f172a;
 }
 
 @media (max-width: 480px) {
-  .kpi-grid {
-    grid-template-columns: 1fr;
+  .kpi-card {
+    flex: 1 1 100%;
   }
 }
