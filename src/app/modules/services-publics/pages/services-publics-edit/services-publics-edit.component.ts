@@ -14,6 +14,7 @@ export class ServicesPublicsEditComponent implements OnInit {
     service: ServicePublic | undefined;
     loading = false;
     error: string = '';
+    isNew: boolean = false;
 
     constructor(
         private route: ActivatedRoute,
@@ -25,9 +26,11 @@ export class ServicesPublicsEditComponent implements OnInit {
         const id = this.route.snapshot.paramMap.get('id');
 
         if (id === 'new') {
+            this.isNew = true;
             this.service = this.getEmptyService();
             this.loading = false;
         } else {
+            this.isNew = false;
             this.loading = true;
             this.servicesPublicsService.getById(Number(id)).subscribe({
                 next: (data) => {
@@ -61,18 +64,18 @@ export class ServicesPublicsEditComponent implements OnInit {
             email: '',
             telephone: '',
             siteWeb: '',
-            commissions: [],
-            transactions: []
+            utilisateurs: [],
+            categories: [],
+            typesRNF: [],
+            paiements: []
         };
     }
 
     goBack(): void {
-        // ✅ Retour à la liste des services (avec les données modifiées si sauvegardées)
         this.router.navigate(['/services-publics']);
     }
 
     cancel(): void {
-        // ✅ Annuler → retour à la liste sans modification
         this.router.navigate(['/services-publics']);
     }
 
@@ -91,7 +94,6 @@ export class ServicesPublicsEditComponent implements OnInit {
 
         operation.subscribe({
             next: (result) => {
-                // ✅ Retour à la liste avec les données modifiées
                 this.router.navigate(['/services-publics']);
             },
             error: (err) => {

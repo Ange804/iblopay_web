@@ -1,4 +1,5 @@
 <div class="services-publics-detail">
+    <!-- Bouton Retour -->
     <button class="back-btn" (click)="goBack()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
@@ -26,8 +27,8 @@
 
     <!-- Détail -->
     <div *ngIf="!loading && service" class="detail-container">
+        <!-- Carte d'information principale -->
         <div class="detail-card">
-            <!-- En-tête -->
             <div class="detail-header">
                 <div class="detail-title">
                     <span class="detail-icon" [style.background]="getServiceColor(service.abreviation)">
@@ -49,229 +50,549 @@
                 </div>
             </div>
 
-            <!-- Corps -->
             <div class="detail-body">
                 <div class="detail-grid">
-                    <div class="detail-item">
-                        <span class="label">Numéro</span>
-                        <span class="value">{{ service.numero }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">Description</span>
-                        <span class="value">{{ service.description }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">Statut</span>
-                        <span class="value">
-                            <span class="badge" [ngClass]="service.actif ? 'badge-actif' : 'badge-inactif'">
-                                <span class="status-dot"></span>
-                                {{ service.actif ? 'Actif' : 'Inactif' }}
-                            </span>
-                        </span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">Date de création</span>
-                        <span class="value">{{ service.dateCreation | date:'dd/MM/yyyy' }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">Version</span>
-                        <span class="value">{{ service.version || 'N/A' }}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="label">Responsable</span>
-                        <span class="value">{{ service.responsable || 'Non défini' }}</span>
-                    </div>
-                    <div class="detail-item" *ngIf="service.email">
-                        <span class="label">Email</span>
-                        <span class="value">{{ service.email }}</span>
-                    </div>
-                    <div class="detail-item" *ngIf="service.telephone">
-                        <span class="label">Téléphone</span>
-                        <span class="value">{{ service.telephone }}</span>
-                    </div>
-                    <div class="detail-item" *ngIf="service.siteWeb">
-                        <span class="label">Site Web</span>
-                        <span class="value"><a [href]="service.siteWeb" target="_blank">{{ service.siteWeb }}</a></span>
-                    </div>
+                    <div class="detail-item"><span class="label">Numéro</span><span class="value">{{ service.numero
+                            }}</span></div>
+                    <div class="detail-item"><span class="label">Version</span><span class="value">{{ service.version ||
+                            'N/A' }}</span></div>
+                    <div class="detail-item"><span class="label">Date de création</span><span class="value">{{
+                            service.dateCreation | date:'dd/MM/yyyy' }}</span></div>
+                    <div class="detail-item"><span class="label">Responsable</span><span class="value">{{
+                            service.responsable || 'Non défini' }}</span></div>
+                    <div class="detail-item"><span class="label">Email</span><span class="value">{{ service.email
+                            }}</span></div>
+                    <div class="detail-item"><span class="label">Téléphone</span><span class="value">{{
+                            service.telephone }}</span></div>
+                    <div class="detail-item"><span class="label">Site Web</span><span class="value"><a
+                                [href]="service.siteWeb" target="_blank">{{ service.siteWeb }}</a></span></div>
+                    <div class="detail-item full-width"><span class="label">Description</span><span class="value">{{
+                            service.description }}</span></div>
                 </div>
             </div>
+        </div>
 
-            <!-- Commissions -->
-            <div class="detail-section">
-                <div class="section-header">
-                    <h3>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 2v4M12 22v-4M4 12H2M6 12H4" />
-                            <path d="M22 12h-2M20 12h-2" />
-                            <circle cx="12" cy="12" r="2" />
-                            <path d="M7.5 7.5L9 9M16.5 16.5L15 15" />
-                            <path d="M7.5 16.5L9 15M16.5 7.5L15 9" />
+        <!-- NAVBAR DES MODULES -->
+        <div class="modules-navbar">
+            <button class="module-tab" [class.active]="activeModule === 'apercu'" (click)="switchModule('apercu')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                </svg>
+                Aperçu
+                <span class="tab-badge">{{ getTotalItems() }}</span>
+            </button>
+            <button class="module-tab" [class.active]="activeModule === 'utilisateurs'"
+                (click)="switchModule('utilisateurs')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                    <path d="M16 3.13a4 4 0 010 7.75" />
+                </svg>
+                Utilisateurs
+                <span class="tab-badge">{{ (service.utilisateurs || []).length }}</span>
+            </button>
+            <button class="module-tab" [class.active]="activeModule === 'categories'"
+                (click)="switchModule('categories')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="2.18" />
+                    <line x1="8" y1="2" x2="8" y2="22" />
+                    <line x1="16" y1="2" x2="16" y2="22" />
+                    <line x1="2" y1="8" x2="22" y2="8" />
+                    <line x1="2" y1="16" x2="22" y2="16" />
+                </svg>
+                Catégories
+                <span class="tab-badge">{{ (service.categories || []).length }}</span>
+            </button>
+            <button class="module-tab" [class.active]="activeModule === 'types-rnf'"
+                (click)="switchModule('types-rnf')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                    <path d="M8 12h8" />
+                </svg>
+                Types RNF
+                <span class="tab-badge">{{ (service.typesRNF || []).length }}</span>
+            </button>
+            <button class="module-tab" [class.active]="activeModule === 'paiements'"
+                (click)="switchModule('paiements')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="2" />
+                    <line x1="8" y1="2" x2="8" y2="22" />
+                    <line x1="16" y1="2" x2="16" y2="22" />
+                    <line x1="2" y1="8" x2="22" y2="8" />
+                    <line x1="2" y1="16" x2="22" y2="16" />
+                </svg>
+                Paiements
+                <span class="tab-badge">{{ (service.paiements || []).length }}</span>
+            </button>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- MODULE : APERÇU -->
+        <!-- ============================================================ -->
+        <div *ngIf="activeModule === 'apercu'" class="module-content">
+            <!-- Statistiques horizontales -->
+            <div class="stats-horizontal">
+                <div class="stat-card-horizontal">
+                    <div class="stat-icon total">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="2" y="4" width="20" height="16" rx="2" />
+                            <path d="M8 12h8" />
                         </svg>
-                        Commissions
-                        <span class="count-badge">{{ (service.commissions || []).length }}</span>
-                    </h3>
-                    <button class="btn-add" (click)="onAddCommission()">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 5v14M5 12h14" />
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ service.statistiques?.totalUtilisateurs || 0 }}</span>
+                        <span class="stat-label">Utilisateurs</span>
+                    </div>
+                </div>
+                <div class="stat-card-horizontal">
+                    <div class="stat-icon active">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
                         </svg>
-                        Ajouter
-                    </button>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ service.statistiques?.utilisateursActifs || 0 }}</span>
+                        <span class="stat-label">Actifs</span>
+                    </div>
                 </div>
-
-                <div class="table-scroll" *ngIf="service.commissions && service.commissions.length > 0">
-                    <table class="modern-table">
-                        <thead>
-                            <tr>
-                                <th>Nom</th>
-                                <th>Montant</th>
-                                <th>Type</th>
-                                <th>Fréquence</th>
-                                <th>Statut</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let commission of service.commissions">
-                                <td>{{ commission.nom }}</td>
-                                <td>{{ commission.montant | number }} {{ commission.devise }}</td>
-                                <td>
-                                    <span class="badge"
-                                        [ngClass]="commission.type === 'FIXE' ? 'badge-fixe' : 'badge-percentage'">
-                                        {{ commission.type === 'FIXE' ? 'Fixe' : 'Pourcentage' }}
-                                    </span>
-                                </td>
-                                <td>{{ commission.frequence }}</td>
-                                <td>
-                                    <span class="badge" [ngClass]="commission.actif ? 'badge-actif' : 'badge-inactif'">
-                                        <span class="status-dot"></span>
-                                        {{ commission.actif ? 'Actif' : 'Inactif' }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <div class="actions-cell">
-                                        <button class="action-btn edit" (click)="onEditCommission(commission)"
-                                            title="Modifier">
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                            </svg>
-                                        </button>
-                                        <button class="action-btn delete" (click)="onDeleteCommission(commission.id)"
-                                            title="Supprimer">
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <line x1="18" y1="6" x2="6" y2="18" />
-                                                <line x1="6" y1="6" x2="18" y2="18" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="stat-card-horizontal">
+                    <div class="stat-icon categories">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="2.18" />
+                            <line x1="8" y1="2" x2="8" y2="22" />
+                            <line x1="16" y1="2" x2="16" y2="22" />
+                            <line x1="2" y1="8" x2="22" y2="8" />
+                            <line x1="2" y1="16" x2="22" y2="16" />
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ service.statistiques?.totalCategories || 0 }}</span>
+                        <span class="stat-label">Catégories</span>
+                    </div>
                 </div>
-
-                <div *ngIf="!service.commissions || service.commissions.length === 0" class="empty-state">
-                    <span>Aucune commission pour ce service</span>
+                <div class="stat-card-horizontal">
+                    <div class="stat-icon types">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="2" y="4" width="20" height="16" rx="2" />
+                            <path d="M8 12h8" />
+                        </svg>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ service.statistiques?.totalTypesRNF || 0 }}</span>
+                        <span class="stat-label">Types RNF</span>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Transactions -->
-            <div class="detail-section">
-                <div class="section-header">
-                    <h3>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <div class="stat-card-horizontal">
+                    <div class="stat-icon paiements">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <rect x="2" y="2" width="20" height="20" rx="2" />
                             <line x1="8" y1="2" x2="8" y2="22" />
                             <line x1="16" y1="2" x2="16" y2="22" />
                             <line x1="2" y1="8" x2="22" y2="8" />
                             <line x1="2" y1="16" x2="22" y2="16" />
                         </svg>
-                        Transactions
-                        <span class="count-badge">{{ (service.transactions || []).length }}</span>
-                    </h3>
-                    <span class="total-amount">
-                        Total: {{ getTotalTransactions() | number }} BIF
-                    </span>
-                </div>
-
-                <div class="table-scroll" *ngIf="service.transactions && service.transactions.length > 0">
-                    <table class="modern-table">
-                        <thead>
-                            <tr>
-                                <th>Référence</th>
-                                <th>Type</th>
-                                <th>Montant</th>
-                                <th>Statut</th>
-                                <th>Date</th>
-                                <th>Utilisateur</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let transaction of service.transactions">
-                                <td>{{ transaction.reference }}</td>
-                                <td>
-                                    <span class="badge"
-                                        [ngClass]="transaction.type === 'PAIEMENT' ? 'badge-paiement' : 
-                                        transaction.type === 'REMBOURSEMENT' ? 'badge-remboursement' : 'badge-adjustement'">
-                                        {{ transaction.type }}
-                                    </span>
-                                </td>
-                                <td>{{ transaction.montant | number }} {{ transaction.devise }}</td>
-                                <td>
-                                    <span class="badge" [ngClass]="transaction.statut === 'SUCCES' ? 'badge-succes' : 
-                                        transaction.statut === 'ECHEC' ? 'badge-echec' : 'badge-attente'">
-                                        {{ transaction.statut }}
-                                    </span>
-                                </td>
-                                <td>{{ transaction.dateTransaction | date:'dd/MM/yyyy HH:mm' }}</td>
-                                <td>{{ transaction.utilisateur || 'N/A' }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div *ngIf="!service.transactions || service.transactions.length === 0" class="empty-state">
-                    <span>Aucune transaction pour ce service</span>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-value">{{ service.statistiques?.totalPaiements || 0 }}</span>
+                        <span class="stat-label">Paiements</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- ✅ BOUTONS : Modifier + Activer + Désactiver -->
-            <div class="detail-actions">
-                <!-- Bouton Modifier -->
-                <button class="detail-btn btn-edit" (click)="onEdit()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-                    </svg>
-                    Modifier
-                </button>
+            <!-- Dernières activités en temps réel -->
+            <div class="activity-card">
+                <div class="activity-header">
+                    <h3>📊 Dernières activités <span class="activity-realtime">● En direct</span></h3>
+                    <button class="btn-voir-tout" (click)="switchModule('activites')">Voir toutes les activités
+                        →</button>
+                </div>
+                <div class="activity-list">
+                    <div class="activity-item" *ngFor="let act of getRecentActivities(10)">
+                        <div class="activity-icon" [class]="act.type">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle *ngIf="act.type === 'paiement'" cx="12" cy="12" r="10" />
+                                <path *ngIf="act.type === 'paiement'" d="M12 8v8M8 12h8" />
+                                <path *ngIf="act.type === 'utilisateur'" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                                <circle *ngIf="act.type === 'utilisateur'" cx="12" cy="7" r="4" />
+                                <path *ngIf="act.type === 'categorie'" d="M12 2v4M12 22v-4M4 12H2M6 12H4" />
+                                <path *ngIf="act.type === 'categorie'" d="M22 12h-2M20 12h-2" />
+                                <circle *ngIf="act.type === 'categorie'" cx="12" cy="12" r="2" />
+                                <path *ngIf="act.type === 'type-rnf'"
+                                    d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                                <polyline *ngIf="act.type === 'type-rnf'" points="14 2 14 8 20 8" />
+                            </svg>
+                        </div>
+                        <div class="activity-content">
+                            <span class="activity-title">{{ act.title }}</span>
+                            <span class="activity-date">{{ act.date | date:'dd/MM/yyyy HH:mm' }}</span>
+                            <span class="activity-user" *ngIf="act.user">par {{ act.user }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                <!-- ✅ Bouton Activer -->
-                <button class="detail-btn btn-activate" (click)="onActivate()" [disabled]="service.actif">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 5v14M5 12h14" />
-                    </svg>
-                    Activer
-                </button>
+        <!-- ============================================================ -->
+        <!-- MODULE : UTILISATEURS -->
+        <!-- ============================================================ -->
+        <div *ngIf="activeModule === 'utilisateurs'" class="module-content">
+            <div class="module-header">
+                <h3>👤 Gestion des utilisateurs</h3>
+                <div class="module-actions">
+                    <button class="btn-export-sm" (click)="exportUsers()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        Exporter
+                    </button>
+                    <button class="btn-add" (click)="onAddUtilisateur()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 5v14M5 12h14" />
+                        </svg>
+                        Ajouter
+                    </button>
+                </div>
+            </div>
 
-                <!-- ✅ Bouton Désactiver -->
-                <button class="detail-btn btn-deactivate" (click)="onDeactivate()" [disabled]="!service.actif">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                        <path d="M7 11V7a5 5 0 0110 0v4" />
-                    </svg>
-                    Désactiver
-                </button>
+            <div class="table-scroll" *ngIf="service.utilisateurs && service.utilisateurs.length > 0">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Email</th>
+                            <th>Téléphone</th>
+                            <th>Rôle</th>
+                            <th>Statut</th>
+                            <th>Inscription</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of paginatedUtilisateurs">
+                            <td>{{ user.nom }}</td>
+                            <td>{{ user.prenom }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.telephone }}</td>
+                            <td><span class="badge" [ngClass]="'badge-role-' + user.role.toLowerCase()">{{ user.role
+                                    }}</span></td>
+                            <td><span class="badge"
+                                    [ngClass]="user.statut === 'ACTIF' ? 'badge-actif' : user.statut === 'SUSPENDU' ? 'badge-suspendu' : 'badge-inactif'"><span
+                                        class="status-dot"></span>{{ user.statut }}</span></td>
+                            <td>{{ user.dateInscription | date:'dd/MM/yyyy' }}</td>
+                            <td>
+                                <div class="actions-cell">
+                                    <button class="action-btn edit" (click)="onEditUtilisateur(user)" title="Modifier">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                        </svg>
+                                    </button>
+                                    <button class="action-btn toggle" (click)="onToggleUtilisateur(user)"
+                                        title="Changer statut">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <rect x="2" y="2" width="20" height="20" rx="2" />
+                                            <circle cx="12" cy="12" r="4" />
+                                        </svg>
+                                    </button>
+                                    <button class="action-btn delete" (click)="onDeleteUtilisateur(user)"
+                                        title="Supprimer">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer" *ngIf="service.utilisateurs && service.utilisateurs.length > 0">
+                <span class="pagination-info">{{ (usersCurrentPage - 1) * usersItemsPerPage + 1 }} - {{
+                    Math.min(usersCurrentPage * usersItemsPerPage, service.utilisateurs.length) }} / {{
+                    service.utilisateurs.length }}</span>
+                <div class="pagination-controls">
+                    <button (click)="changeUsersPage(usersCurrentPage - 1)" [disabled]="usersCurrentPage === 1">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <button *ngFor="let page of getUsersPaginationPages()" (click)="changeUsersPage(page)"
+                        [class.active]="usersCurrentPage === page">{{ page }}</button>
+                    <button (click)="changeUsersPage(usersCurrentPage + 1)"
+                        [disabled]="usersCurrentPage === usersTotalPages">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- MODULE : CATÉGORIES -->
+        <!-- ============================================================ -->
+        <div *ngIf="activeModule === 'categories'" class="module-content">
+            <div class="module-header">
+                <h3>📂 Catégories du service</h3>
+                <div class="module-actions">
+                    <button class="btn-export-sm" (click)="exportCategories()">Exporter</button>
+                    <button class="btn-add" (click)="onAddCategory()">+ Ajouter</button>
+                </div>
+            </div>
+
+            <div class="categories-grid">
+                <div class="category-card" *ngFor="let category of paginatedCategories">
+                    <div class="category-header">
+                        <span class="category-icon" [style.background]="getCategoryColor(category.code)">
+                            {{ category.nom.charAt(0) }}
+                        </span>
+                        <div class="category-info">
+                            <h4>{{ category.nom }}</h4>
+                            <span class="category-code">{{ category.code }}</span>
+                        </div>
+                        <span class="badge" [ngClass]="category.actif ? 'badge-actif' : 'badge-inactif'">
+                            {{ category.actif ? 'Actif' : 'Inactif' }}
+                        </span>
+                    </div>
+                    <div class="category-body">
+                        <p>{{ category.description }}</p>
+                        <div class="category-meta">
+                            <span><strong>Type:</strong> {{ category.type }}</span>
+                            <span><strong>Créé le:</strong> {{ category.dateCreation | date:'dd/MM/yyyy' }}</span>
+                        </div>
+                        <div class="category-stats">
+                            <div class="stat-item">
+                                <span class="stat-value">{{ category.statistiques?.totalFrais || 0 }}</span>
+                                <span class="stat-label">Frais</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">{{ category.statistiques?.totalDocuments || 0 }}</span>
+                                <span class="stat-label">Documents</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">{{ category.statistiques?.totalOperations || 0 }}</span>
+                                <span class="stat-label">Opérations</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-value">{{ category.statistiques?.montantTotal | number }} BIF</span>
+                                <span class="stat-label">Montant</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="category-footer">
+                        <button class="action-btn view" (click)="onViewCategory(category)" title="Voir">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                        </button>
+                        <button class="action-btn edit" (click)="onEditCategory(category)" title="Modifier">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                        </button>
+                        <button class="action-btn toggle" (click)="onToggleCategory(category)" title="Changer statut">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="2" />
+                                <circle cx="12" cy="12" r="4" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- MODULE : TYPES RNF -->
+        <!-- ============================================================ -->
+        <div *ngIf="activeModule === 'types-rnf'" class="module-content">
+            <div class="module-header">
+                <h3>📋 Types de RNF</h3>
+                <div class="module-actions">
+                    <button class="btn-export-sm" (click)="exportTypesRNF()">Exporter</button>
+                    <button class="btn-add" (click)="onAddTypeRNF()">+ Ajouter</button>
+                </div>
+            </div>
+
+            <div class="types-rnf-grid">
+                <div class="type-rnf-card" *ngFor="let type of paginatedTypesRNF">
+                    <div class="type-header">
+                        <span class="type-badge" [ngClass]="'type-' + type.typePaiement.toLowerCase()">
+                            Type {{ type.typePaiement }}
+                        </span>
+                        <span class="badge" [ngClass]="type.actif ? 'badge-actif' : 'badge-inactif'">
+                            {{ type.actif ? 'Actif' : 'Inactif' }}
+                        </span>
+                    </div>
+                    <div class="type-body">
+                        <h4>{{ type.libelle }}</h4>
+                        <p>{{ type.description }}</p>
+                        <div class="type-meta">
+                            <span><strong>Institution:</strong> {{ type.institution }}</span>
+                            <span><strong>Catégorie:</strong> {{ type.categorie }}</span>
+                        </div>
+                        <div class="sous-types">
+                            <span class="sous-type-label">Sous-types:</span>
+                            <span class="sous-type-item" *ngFor="let sousType of type.sousTypes">
+                                {{ sousType.nom }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="type-footer">
+                        <button class="action-btn view" (click)="onViewTypeRNF(type)" title="Voir">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                        </button>
+                        <button class="action-btn edit" (click)="onEditTypeRNF(type)" title="Modifier">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                        </button>
+                        <button class="action-btn toggle" (click)="onToggleTypeRNF(type)" title="Changer statut">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="2" />
+                                <circle cx="12" cy="12" r="4" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-footer" *ngIf="service.typesRNF && service.typesRNF.length > 0">
+                <span class="pagination-info">{{ (typesRNFCurrentPage - 1) * typesRNFItemsPerPage + 1 }} - {{
+                    Math.min(typesRNFCurrentPage * typesRNFItemsPerPage, service.typesRNF.length) }} / {{
+                    service.typesRNF.length }}</span>
+                <div class="pagination-controls">
+                    <button (click)="changeTypesRNFPage(typesRNFCurrentPage - 1)"
+                        [disabled]="typesRNFCurrentPage === 1">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <button *ngFor="let page of getTypesRNFPaginationPages()" (click)="changeTypesRNFPage(page)"
+                        [class.active]="typesRNFCurrentPage === page">{{ page }}</button>
+                    <button (click)="changeTypesRNFPage(typesRNFCurrentPage + 1)"
+                        [disabled]="typesRNFCurrentPage === typesRNFTotalsPages">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- MODULE : PAIEMENTS RNF -->
+        <!-- ============================================================ -->
+        <div *ngIf="activeModule === 'paiements'" class="module-content">
+            <div class="module-header">
+                <h3>💳 Paiements des RNF</h3>
+                <div class="module-actions">
+                    <button class="btn-export-sm" (click)="exportPaiements()">Exporter</button>
+                    <button class="btn-add" (click)="onAddPaiement()">+ Ajouter</button>
+                    <span class="total-amount">Total: {{ getTotalPaiements() | number }} BIF</span>
+                </div>
+            </div>
+
+            <div class="table-scroll" *ngIf="service.paiements && service.paiements.length > 0">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Référence</th>
+                            <th>Type RNF</th>
+                            <th>Sous-type</th>
+                            <th>Montant</th>
+                            <th>Statut</th>
+                            <th>Date paiement</th>
+                            <th>Échéance</th>
+                            <th>Mode</th>
+                            <th>Utilisateur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let paiement of paginatedPaiements">
+                            <td>{{ paiement.reference }}</td>
+                            <td>{{ getTypeRNFNom(paiement.typeRNFId) }}</td>
+                            <td>{{ getSousTypeRNFNom(paiement.sousTypeRNFId) }}</td>
+                            <td>{{ paiement.montant | number }} {{ paiement.devise }}</td>
+                            <td>
+                                <span class="badge" [ngClass]="'badge-' + paiement.statut.toLowerCase()">
+                                    {{ paiement.statut }}
+                                </span>
+                            </td>
+                            <td>{{ paiement.datePaiement | date:'dd/MM/yyyy' }}</td>
+                            <td>{{ paiement.dateEcheance | date:'dd/MM/yyyy' }}</td>
+                            <td>
+                                <span class="badge" [ngClass]="'badge-mode-' + paiement.modePaiement.toLowerCase()">
+                                    {{ paiement.modePaiement }}
+                                </span>
+                            </td>
+                            <td>{{ paiement.utilisateurNom || 'N/A' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer" *ngIf="service.paiements && service.paiements.length > 0">
+                <span class="pagination-info">{{ (paiementsCurrentPage - 1) * paiementsItemsPerPage + 1 }} - {{
+                    Math.min(paiementsCurrentPage * paiementsItemsPerPage, service.paiements.length) }} / {{
+                    service.paiements.length }}</span>
+                <div class="pagination-controls">
+                    <button (click)="changePaiementsPage(paiementsCurrentPage - 1)"
+                        [disabled]="paiementsCurrentPage === 1">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M15 18l-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <button *ngFor="let page of getPaiementsPaginationPages()" (click)="changePaiementsPage(page)"
+                        [class.active]="paiementsCurrentPage === page">{{ page }}</button>
+                    <button (click)="changePaiementsPage(paiementsCurrentPage + 1)"
+                        [disabled]="paiementsCurrentPage === paiementsTotalPages">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M9 18l6-6-6-6" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
